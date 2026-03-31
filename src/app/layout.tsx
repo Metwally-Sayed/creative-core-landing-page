@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter, Playfair_Display } from "next/font/google";
 import PageLoadingBar from "@/components/ui/PageLoadingBar";
 import Header from "@/components/Header";
@@ -37,7 +38,9 @@ export default function RootLayout({
     >
       <body className="min-h-full">
         <LenisProvider>
-          <PageLoadingBar />
+          <Suspense fallback={null}>
+            <PageLoadingBar />
+          </Suspense>
           <div aria-hidden className="site-ambient fixed inset-0 -z-10 overflow-hidden" />
           <div className="relative z-10 flex min-h-full flex-col">
             <Header />

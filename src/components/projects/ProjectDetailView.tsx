@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
 import { ArrowUpRight, Plus, Minus, ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -122,6 +124,8 @@ function FloatingNavPill({ title, progress }: { title: string, progress: number 
 }
 
 function MarqueeTicker({ words }: { words: string[] }) {
+  const isClient = useSyncExternalStore(emptySubscribe, () => true, () => false);
+
   const content = words.join(" — ") + " — ";
   return (
     <div className="w-full py-20 md:py-32 bg-[hsl(var(--accent))] text-white overflow-hidden relative rotate-[-2deg] scale-[1.05] z-30 flex items-center">
@@ -130,7 +134,7 @@ function MarqueeTicker({ words }: { words: string[] }) {
       <div className="flex whitespace-nowrap will-change-transform py-4">
         {/* We animate two copies to create seamless infinite loop */}
         <motion.div 
-          animate={{ x: ["0%", "-50%"] }} 
+          animate={isClient ? { x: ["0%", "-50%"] } : {}} 
           transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
           className="flex whitespace-nowrap text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight ml-4"
         >

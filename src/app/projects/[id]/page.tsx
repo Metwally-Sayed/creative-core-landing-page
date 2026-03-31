@@ -9,8 +9,10 @@ type ProjectPageProps = {
   }>;
 };
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  return projectIds.map((id) => ({ id }));
+  return projectIds.map((id) => ({ id: String(id) }));
 }
 
 export async function generateMetadata({

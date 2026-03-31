@@ -1,13 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 const scenes = ["Products", "Branding", "Products", "Branding", "Experiences", "Branding"] as const;
 
 export default function Hero() {
   const [sceneIndex, setSceneIndex] = useState(0);
+  const isClient = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const heroRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -111,10 +114,10 @@ export default function Hero() {
             />
 
             <motion.span
-              animate={{
+              animate={isClient ? {
                 y: [0, 8, 0],
                 opacity: [0.4, 1, 0.4],
-              }}
+              } : {}}
               transition={{
                 duration: 2.5,
                 repeat: Infinity,
