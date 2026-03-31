@@ -1,0 +1,80 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Man character -->
+  <g id="man" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Head -->
+    <ellipse cx="140" cy="80" rx="35" ry="40"/>
+    <!-- Hair -->
+    <path d="M105 70 Q105 40 140 35 Q175 40 175 70" fill="#000"/>
+    <!-- Eyes (closed/sleepy) -->
+    <path d="M125 85 Q130 88 135 85"/>
+    <path d="M145 85 Q150 88 155 85"/>
+    <!-- Mouth -->
+    <path d="M135 105 Q140 108 145 105"/>
+    <!-- Neck -->
+    <line x1="140" y1="120" x2="140" y2="140"/>
+    <!-- Torso -->
+    <path d="M110 140 Q105 200 110 240 L110 280"/>
+    <path d="M170 140 Q175 200 170 240 L170 280"/>
+    <!-- Underwear -->
+    <path d="M110 240 Q140 260 170 240" fill="#000"/>
+    <path d="M110 240 L110 280"/>
+    <path d="M170 240 L170 280"/>
+    <!-- Legs -->
+    <path d="M110 280 Q105 350 110 420 L110 450"/>
+    <path d="M170 280 Q175 350 170 420 L170 450"/>
+    <!-- Knees -->
+    <ellipse cx="110" cy="350" rx="8" ry="10"/>
+    <ellipse cx="170" cy="350" rx="8" ry="10"/>
+    <!-- Feet -->
+    <path d="M95 450 Q110 460 125 450"/>
+    <path d="M155 450 Q170 460 185 450"/>
+    <!-- Arms -->
+    <path d="M110 150 Q80 200 85 250"/>
+    <path d="M170 150 Q200 200 195 250"/>
+    <!-- Hands -->
+    <ellipse cx="85" cy="255" rx="10" ry="12"/>
+    <ellipse cx="195" cy="255" rx="10" ry="12"/>
+  </g>
+  
+  <!-- Woman character -->
+  <g id="woman" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Head -->
+    <ellipse cx="280" cy="80" rx="32" ry="38"/>
+    <!-- Hair bun -->
+    <circle cx="280" cy="35" r="15" fill="#000"/>
+    <!-- Hair flowing down -->
+    <path d="M248 60 Q240 100 245 140" fill="#000"/>
+    <path d="M312 60 Q320 100 315 140" fill="#000"/>
+    <!-- Eyes (one open, one winking) -->
+    <circle cx="268" cy="82" r="4" fill="#000"/>
+    <path d="M288 82 Q293 85 298 82"/>
+    <!-- Mouth -->
+    <path d="M275 105 Q280 108 285 105"/>
+    <!-- Neck -->
+    <line x1="280" y1="118" x2="280" y2="138"/>
+    <!-- Dress -->
+    <path d="M250 138 Q245 200 250 280 L250 320"/>
+    <path d="M310 138 Q315 200 310 280 L310 320"/>
+    <!-- Dress stripes -->
+    <line x1="248" y1="170" x2="312" y2="170"/>
+    <line x1="247" y1="200" x2="313" y2="200"/>
+    <line x1="248" y1="230" x2="312" y2="230"/>
+    <line x1="249" y1="260" x2="311" y2="260"/>
+    <line x1="250" y1="290" x2="310" y2="290"/>
+    <!-- Dress bottom -->
+    <path d="M250 320 Q280 340 310 320"/>
+    <!-- Legs -->
+    <path d="M265 320 Q260 380 265 420 L265 450"/>
+    <path d="M295 320 Q300 380 295 420 L295 450"/>
+    <!-- Feet -->
+    <path d="M255 450 Q265 458 275 450"/>
+    <path d="M285 450 Q295 458 305 450"/>
+    <!-- Arms -->
+    <path d="M250 150 Q230 200 240 240"/>
+    <path d="M310 150 Q330 200 320 240"/>
+    <!-- Hand near face -->
+    <ellipse cx="242" cy="245" rx="10" ry="12"/>
+    <!-- Other hand -->
+    <ellipse cx="318" cy="245" rx="10" ry="12"/>
+  </g>
+</svg>

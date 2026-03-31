@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { motion, useSpring } from 'framer-motion';
 
@@ -13,7 +15,8 @@ export default function CustomCursor() {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice) return;
 
-    setIsVisible(true);
+    // Delay visibility to avoid synchronous state update in effect
+    const timer = setTimeout(() => setIsVisible(true), 0);
 
     const handleMouseMove = (e: MouseEvent) => {
       cursorX.set(e.clientX);
@@ -40,6 +43,7 @@ export default function CustomCursor() {
       window.removeEventListener('mouseover', handleElementHover);
       document.removeEventListener('mouseenter', handleMouseEnter);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      clearTimeout(timer);
     };
   }, [cursorX, cursorY]);
 
@@ -49,7 +53,7 @@ export default function CustomCursor() {
     <>
       {/* Main cursor */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 pointer-events-none z-9999 mix-blend-difference"
         style={{
           x: cursorX,
           y: cursorY,

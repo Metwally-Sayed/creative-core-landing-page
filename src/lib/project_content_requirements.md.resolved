@@ -1,0 +1,259 @@
+# Project Page — Content Requirements Brief
+
+> **Purpose**: This document is a handoff guide for **designers**, **content managers**, and **marketers**. It lists every piece of content (text, image, video) required to populate a single project detail page on the website. It also includes a CMS-ready data schema so the backend team knows exactly what fields to create.
+
+---
+
+## CMS Data Schema (Per Project)
+
+> [!IMPORTANT]
+> Every project is a **single content entry** in the CMS. The schema below maps 1:1 to the [ProjectDetail](file:///Users/metwally/Desktop/Kimi_Agent_Clone%20Hello%20Monday%20Site%202/nextjs-app/src/lib/project-catalog.ts#45-61) TypeScript type used in the frontend code. When building the CMS, replicate these fields exactly.
+
+### Top-Level Fields
+
+| Field | Type | Required | Description | Example |
+|---|---|---|---|---|
+| [id](file:///Users/metwally/Desktop/Kimi_Agent_Clone%20Hello%20Monday%20Site%202/nextjs-app/src/components/LiquidCard.tsx#146-304) | Slug | ✅ | URL-safe unique ID | `google-gemini-competition` |
+| `title` | Short Text | ✅ | Full project title (Client — Tagline) | `Google — Gemini Developer Competition` |
+| `tags` | Multi-Select | ✅ | Category labels | `Experiences`, `Branding`, `Platform`, `Products`, `E-commerce` |
+| `image` | Image | ✅ | Primary card thumbnail (used on homepage grid) | 1920×1080 JPG |
+| `aspectRatio` | Enum | ✅ | Card shape on homepage: `portrait`, `landscape`, `square` | `landscape` |
+
+### Hero Section
+
+| Field | Type | Required | Description | Spec for Designer |
+|---|---|---|---|---|
+| `heroLabel` | Short Text | ✅ | Eyebrow text above hero title | _"Case Study"_ or _"Google / Launch Experience"_ |
+| `heroTitle` | Short Text | ✅ | The massive hero headline | Max ~4 words. Will be split into per-character animation |
+| `heroSubtitle` | Short Text | ✅ | Sub-headline below hero title | 1 sentence, ~15 words max |
+| `heroSummary` | Long Text | ❌ | Internal summary (SEO meta description) | 1–2 sentences |
+
+### Intro Meta Bar (Overview Strip)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `introMeta.launchLabel` | Short Text | ✅ | CTA button text (e.g., "Launch project", "Visit site") |
+| `introMeta.type` | Short Text | ✅ | Project type label |
+| `introMeta.client` | Short Text | ✅ | Client name |
+| `introMeta.deliverables` | Short Text | ✅ | Comma-separated deliverable list |
+
+### Overview Facts (4 items)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `overview[].label` | Short Text | ✅ | Fact label (e.g., "Client", "Timeline") |
+| `overview[].value` | Short Text | ✅ | Fact value (e.g., "Google", "6 weeks") |
+
+> [!TIP]
+> Recommended labels: **Client**, **Scope/Program**, **Deliverables**, **Timeline**
+
+### Editorial Intro (2 paragraphs)
+
+| Field | Type | Required | Description | Word Count |
+|---|---|---|---|---|
+| `intro[0]` | Long Text | ✅ | Opening paragraph — sets the story context | 40–60 words |
+| `intro[1]` | Long Text | ✅ | Second paragraph — design approach or insight | 30–50 words |
+
+### Primary Showcase Image
+
+| Field | Type | Required | Spec for Designer |
+|---|---|---|---|
+| `primaryShowcase.src` | Image | ✅ | **Hero image**: 2400×1200px minimum, 2:1 or 4:3 aspect ratio, JPG/WebP |
+| `primaryShowcase.alt` | Short Text | ✅ | Accessible description |
+| `primaryShowcase.label` | Short Text | ❌ | Internal label |
+
+### Process Steps (4 items)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `process[].phase` | Short Text | ✅ | Phase number: "01", "02", "03", "04" |
+| `process[].label` | Short Text | ✅ | Phase name: e.g., "Discovery", "Design", "Build", "Launch" |
+| `process[].desc` | Long Text | ✅ | 1-sentence description of what happened during that phase |
+
+### Story Chapters (3 sections recommended)
+
+Each chapter is a **repeatable block** in the CMS:
+
+| Field | Type | Required | Spec |
+|---|---|---|---|
+| `sections[].eyebrow` | Short Text | ✅ | Category label: "Challenge", "System/Interface", "Outcome" |
+| `sections[].title` | Short Text | ✅ | Chapter headline, ~8–12 words |
+| `sections[].body[]` | Long Text (list) | ✅ | 2 paragraphs, ~30–40 words each |
+| `sections[].image` | Image | ✅ | **Chapter image**: 1600×2000px (portrait) or 1600×1400px. JPG/WebP |
+| `sections[].imageAlt` | Short Text | ✅ | Accessible image description |
+| `sections[].imageLayout` | Enum | ✅ | `"left"` or `"right"` — alternates per chapter |
+| `sections[].tone` | Enum | ❌ | `"light"` (default) or `"navy"` (dark background) |
+
+### Impact Metrics (3 items)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `impactMetrics[].label` | Short Text | ✅ | The headline metric (e.g., "3,000+ Apps", "40% Increase") |
+| `impactMetrics[].value` | Short Text | ✅ | Supporting context (e.g., "Submissions received", "In engagement") |
+
+### Visual Gallery (4–6 images)
+
+| Field | Type | Required | Spec for Designer |
+|---|---|---|---|
+| `gallery[].src` | Image | ✅ | **Gallery image**: 2400×1350px (16:9), JPG/WebP |
+| `gallery[].alt` | Short Text | ✅ | Description |
+| `gallery[].label` | Short Text | ❌ | Internal label |
+
+### Testimonials (2–3 items)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `testimonials[].quote` | Long Text | ✅ | Client/stakeholder quote, 1–2 sentences |
+| `testimonials[].author` | Short Text | ✅ | Person's name |
+| `testimonials[].role` | Short Text | ✅ | Title/role |
+
+### Color Palette (3–5 swatches)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `colors[].hex` | Short Text | ✅ | Hex code (e.g., `#0a1b3f`) |
+| `colors[].name` | Short Text | ✅ | Friendly name (e.g., "Deep Navy") |
+
+### Credits (3–5 entries)
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `credits[].label` | Short Text | ✅ | Role (e.g., "Strategy", "Design", "Motion", "Build") |
+| `credits[].value` | Short Text | ✅ | Description (e.g., "Launch narrative", "UI + art direction") |
+
+### Related Projects
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `relatedIds` | Reference (multi) | ✅ | 2–3 project references |
+
+---
+
+## Image & Video Asset Specifications
+
+### Summary Table
+
+| Asset | Count per project | Min Resolution | Aspect Ratio | Format | Notes |
+|---|---|---|---|---|---|
+| Card Thumbnail | 1 | 1920×1080 | 16:9 or 4:3 | JPG/WebP | Used on homepage grid |
+| Primary Showcase | 1 | 2400×1200 | 2:1 or 4:3 | JPG/WebP | Full-width cinematic |
+| Chapter Images | 3 | 1600×2000 | ~4:5 portrait | JPG/WebP | Alternating L/R layout |
+| Gallery Images | 4–6 | 2400×1350 | 16:9 | JPG/WebP | Horizontal scroll strip |
+| **Total images** | **9–11** | | | | |
+
+> [!NOTE]
+> **Video (optional future CMS field)**: If a project has a video hero or demo reel, provide a 1080p MP4 (max 30s, <10MB) or embed URL (Vimeo/YouTube). The frontend can be extended to support `heroVideo` and `showcaseVideo` fields.
+
+### Image Quality Guidelines for Designers
+
+- **No text baked into images** — all text is rendered by the frontend.
+- **Consistent color grading** — images should feel cohesive within a single project.
+- **People/devices are okay** — but avoid heavy watermarks or logos unless intentional.
+- **Optimize for web** — target <300KB per image after compression. Use `squoosh.app` or `tinypng.com`.
+
+---
+
+## Content Writing Guide (For Content Managers & Marketers)
+
+### Tone of Voice
+- **Confident but not boastful** — let the work speak.
+- **Editorial, not promotional** — think magazine feature, not ad copy.
+- **Third person** — "We designed…" or "The team crafted…"
+- **Present tense for outcomes** — "The page becomes the template…"
+
+### Per-Section Writing Prompts
+
+| Section | Prompt to answer | Target length |
+|---|---|---|
+| `heroTitle` | What is the project's memorable name? | 2–4 words |
+| `heroSubtitle` | What was the deliverable or experience type? | ~10 words |
+| `intro[0]` | What was the client's need and the project context? | 40–60 words |
+| `intro[1]` | What was the design approach or creative strategy? | 30–50 words |
+| Chapter 1 "Challenge" | What problem did the team solve? | 2 paragraphs × 30 words |
+| Chapter 2 "System" | What design/technical system was built? | 2 paragraphs × 30 words |
+| Chapter 3 "Outcome" | What was the final result and its impact? | 2 paragraphs × 30 words |
+| `impactMetrics` | 3 quantifiable or qualitative results | Label: 2–3 words, Value: 2–4 words |
+| `testimonials` | Real client feedback (or paraphrased with permission) | 1–2 sentences each |
+| `process` | Brief description of each phase | 1 sentence each |
+
+---
+
+## Per-Project Content Checklist
+
+Use this checklist for **each of the 23 projects** when collecting content:
+
+```
+PROJECT: ___________________________
+
+□ Card thumbnail image (1920×1080)
+□ Primary showcase image (2400×1200)
+□ 3 chapter images (1600×2000 each)
+□ 4–6 gallery images (2400×1350 each)
+□ Hero title (2–4 words)
+□ Hero subtitle (~10 words)
+□ Hero summary (1–2 sentences, for SEO)
+□ Client name
+□ Project type/tags
+□ Deliverables list
+□ Timeline (e.g., "6 weeks", "3 months")
+□ CTA button text (e.g., "Launch project")
+□ 2 intro paragraphs
+□ 3 story chapters (eyebrow + title + 2 paragraphs each)
+□ 3 impact metrics (label + value)
+□ 4 process steps (phase, label, description)
+□ 2–3 testimonial quotes (quote + author + role)
+□ 3–5 color palette swatches (hex + name)
+□ 3–5 credits (role + description)
+□ 2–3 related project references
+□ Optional: video hero (MP4 or embed URL)
+□ Optional: live project URL for CTA
+```
+
+---
+
+## Current Project Inventory (23 Projects)
+
+The following projects already exist in the codebase. Each one needs the content above:
+
+| # | ID | Title | Tags | Status |
+|---|---|---|---|---|
+| 1 | `1` | Google — Gemini Developer Competition | Experiences | ✅ Has custom content |
+| 2 | `2` | Bang & Olufsen — See yourself in Sound | Experiences | ⚠️ Uses default/placeholder |
+| 3 | `3` | Gemini — AI for Every Developer | Experiences, Branding, Platform | ⚠️ Uses default/placeholder |
+| 4 | `4` | Zipline — The best delivery experience not on earth | Platform, Experiences | ⚠️ Uses default/placeholder |
+| 5 | `5` | Netflix Kids and Family — A delightful identity | Branding | ⚠️ Uses default/placeholder |
+| 6 | `6` | Ramasjang Krea App | Products | ⚠️ Uses default/placeholder |
+| 7 | `7` | Universal Music for Creators | Experiences, Products | ⚠️ Uses default/placeholder |
+| 8 | `8` | Strava — Year In Sport | Platform, Products, Experiences | ⚠️ Uses default/placeholder |
+| 9 | `9` | Google Gemini — Generative AI Apps | Experiences | ⚠️ Uses default/placeholder |
+| 10 | `10` | The Web Can Do What?! with Google | Experiences | ⚠️ Uses default/placeholder |
+| 11 | `11` | Fingerspelling with Machine Learning | Experiences, Products | ⚠️ Uses default/placeholder |
+| 12 | `12` | The best things are the Simple Things | Branding, E-commerce, Platform | ⚠️ Uses default/placeholder |
+| 13 | `13` | Undo the Firewall — Bring Independent News to Russians | Experiences | ⚠️ Uses default/placeholder |
+| 14 | `14` | DIG: Cloud Castles | Experiences | ⚠️ Uses default/placeholder |
+| 15 | `15` | Google — Celebrating the Most Searched in History | Experiences | ⚠️ Uses default/placeholder |
+| 16 | `16` | Aurora Solar — Hitting fast-forward on the solar future | Branding | ⚠️ Uses default/placeholder |
+| 17 | `17` | Designing the Kids Space Universe | Branding, Products | ⚠️ Uses default/placeholder |
+| 18 | `18` | OPPO — A unified design system for a global brand | Platform, Branding | ⚠️ Uses default/placeholder |
+| 19 | `19` | YouTube creates a new generation | Branding | ⚠️ Uses default/placeholder |
+| 20 | `20` | Google's Search On — A series of inspiring stories | Branding, Platform, E-commerce | ⚠️ Uses default/placeholder |
+| 21 | `21` | Lyft — America is an idea. Not a geography. | Experiences | ⚠️ Uses default/placeholder |
+| 22 | `22` | T-Mobile's little device that sets you free | Experiences | ⚠️ Uses default/placeholder |
+| 23 | `23` | Bearaby — Weighted bedding reinvented | Branding | ⚠️ Uses default/placeholder |
+
+> [!CAUTION]
+> Only project **#1 (Google Gemini)** has real, hand-written content. All other 22 projects currently use auto-generated placeholder text from [buildDefaultDetail()](file:///Users/metwally/Desktop/Kimi_Agent_Clone%20Hello%20Monday%20Site%202/nextjs-app/src/lib/project-catalog.ts#247-340). These **must** be replaced with real content before launch.
+
+---
+
+## CMS Migration Notes
+
+When migrating to a headless CMS (e.g., Sanity, Strapi, Contentful, Hygraph):
+
+1. **Content Type**: Create a [Project](file:///Users/metwally/Desktop/Kimi_Agent_Clone%20Hello%20Monday%20Site%202/nextjs-app/src/components/sections/Projects.tsx#137-227) content type with all fields above.
+2. **Repeatable Blocks**: `sections`, `gallery`, `testimonials`, `process`, `colors`, `credits`, `overview`, `impactMetrics` should all be **repeatable component/block** fields.
+3. **References**: `relatedIds` should be a **reference field** pointing to other [Project](file:///Users/metwally/Desktop/Kimi_Agent_Clone%20Hello%20Monday%20Site%202/nextjs-app/src/components/sections/Projects.tsx#137-227) entries.
+4. **Media**: All image fields should use the CMS's built-in media library with focal point cropping.
+5. **Enums**: `aspectRatio` (`portrait`/`landscape`/`square`), `imageLayout` (`left`/`right`), `tone` (`light`/`navy`) should be dropdown selects.
+6. **Slug**: Auto-generate from `title`, allow manual override.
+7. **Preview**: Set up a preview URL pointing to `/projects/[slug]` for live previewing.
