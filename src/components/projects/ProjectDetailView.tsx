@@ -861,20 +861,22 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* NEW: Pinned Horizontal Scroll Section */}
         <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: "200vh" }}>
           {/* Sticky wrapper that holds exactly 100vh and pins during scroll */}
-          <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden">
+          <div className="sticky top-0 h-screen w-full flex flex-col justify-center">
             <div className="site-shell mb-8 md:mb-12 w-full px-6 md:px-12">
               <SplitText text="Visual Exploration" className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
             </div>
             {/* The horizontal track that translates based on vertical scroll */}
-            <motion.div style={{ x: horizontalX }} className="flex gap-6 md:gap-12 px-6 md:px-12 w-[300vw] items-center">
-              {project.gallery.slice(0, 3).map((image, idx) => (
-                <div key={idx} className="w-[85vw] md:w-[60vw] shrink-0">
-                  <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
-                    <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(max-width: 768px) 85vw, 60vw" />
-                  </LiquidCard>
-                </div>
-              ))}
-            </motion.div>
+            <div className="w-full overflow-hidden">
+              <motion.div style={{ x: horizontalX }} className="flex gap-6 md:gap-12 px-6 md:px-12 w-[300vw] items-center">
+                {project.gallery.slice(0, 3).map((image, idx) => (
+                  <div key={idx} className="w-[85vw] md:w-[60vw] shrink-0">
+                    <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
+                      <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(max-width: 768px) 85vw, 60vw" />
+                    </LiquidCard>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
 
             {/* Progress indicator for horizontal scroll */}
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-48 h-1.5 bg-accent/20 rounded-full overflow-hidden hidden md:block z-50">

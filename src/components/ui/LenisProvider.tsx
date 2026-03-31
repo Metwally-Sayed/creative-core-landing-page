@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, ReactNode } from "react";
+import { useEffect, ReactNode, useRef } from "react";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 
 export default function LenisProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -17,6 +18,8 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+
+    lenisRef.current = lenis;
 
     // Disable browser scroll restoration to prevent flicker/jumping
     if (typeof window !== "undefined") {
@@ -39,13 +42,22 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
 
     requestAnimationFrame(raf);
 
-    // Reset scroll to top on route change
-    lenis.scrollTo(0, { immediate: true });
-
     return () => {
       resizeObserver.disconnect();
       lenis.destroy();
+      lenisRef.current = null;
     };
+  }, []);
+
+  // Handle route change scroll reset
+  useEffect(() => {
+    if (lenisRef.current) {
+      // Small timeout to ensure Next.js has finished swapping content
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        lenisRef.current?.scrollTo(0, { immediate: true });
+      });
+    }
   }, [pathname]);
 
   return <>{children}</>;
