@@ -20,6 +20,11 @@ import { ProductPage } from "./globals/ProductPage";
 const databaseURL =
   process.env.DATABASE_URL ??
   "postgresql://postgres:postgres@127.0.0.1:5432/hello_monday_payload";
+const payloadSecret = process.env.PAYLOAD_SECRET;
+
+if (!payloadSecret) {
+  throw new Error("PAYLOAD_SECRET environment variable is required");
+}
 
 export default buildConfig({
   admin: {
@@ -45,7 +50,7 @@ export default buildConfig({
   graphQL: {
     schemaOutputFile: path.resolve(process.cwd(), "src/graphql-schema.graphql"),
   },
-  secret: process.env.PAYLOAD_SECRET ?? "hello-monday-payload-dev-secret",
+  secret: payloadSecret,
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000",
   typescript: {
     outputFile: path.resolve(process.cwd(), "src/payload-types.ts"),

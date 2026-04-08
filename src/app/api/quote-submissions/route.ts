@@ -98,6 +98,53 @@ function parseUploadedFiles(formData: FormData): Record<string, File[]> {
   return filesByField;
 }
 
+function getAllowedFileUploadFieldKeys(
+  quoteForm: QuoteFormDoc,
+  answers: Record<string, unknown>,
+) {
+  const allowedFieldKeys = new Set<string>();
+
+  for (const step of quoteForm.steps ?? []) {
+    if (!isStepVisible(step, answers)) {
+      continue;
+    }
+
+    for (const field of step.fields ?? []) {
+      if (field.type !== "fileUpload" || !isFieldVisible(field, answers)) {
+        continue;
+      }
+
+      const fieldName = String(field.name ?? "").trim();
+      const fieldId = String(field.id ?? "").trim();
+
+      if (fieldName) {
+        allowedFieldKeys.add(fieldName);
+      }
+
+      if (fieldId) {
+        allowedFieldKeys.add(fieldId);
+      }
+    }
+  }
+
+  return allowedFieldKeys;
+}
+
+function sanitizeUploadedFiles(
+  filesByField: Record<string, File[]>,
+  allowedFieldKeys: Set<string>,
+) {
+  const filteredFilesByField: Record<string, File[]> = {};
+
+  for (const [fieldKey, files] of Object.entries(filesByField)) {
+    if (allowedFieldKeys.has(fieldKey)) {
+      filteredFilesByField[fieldKey] = files;
+    }
+  }
+
+  return filteredFilesByField;
+}
+
 function isBlank(value: unknown) {
   if (Array.isArray(value)) {
     return value.length === 0;
@@ -426,7 +473,12 @@ export async function POST(req: NextRequest) {
       depth: 0,
       draft: false,
     })) as QuoteFormDoc;
-    const filesByField = parseUploadedFiles(formData);
+    const uploadedFilesByField = parseUploadedFiles(formData);
+    const allowedFileUploadFieldKeys = getAllowedFileUploadFieldKeys(quoteForm, answers);
+    const filesByField = sanitizeUploadedFiles(
+      uploadedFilesByField,
+      allowedFileUploadFieldKeys,
+    );
 
     // Server-Side Validation
     const validationErrors = validateSubmission(quoteForm, answers, filesByField);
