@@ -4,42 +4,13 @@ import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ArrowUp } from 'lucide-react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { studioLocations, type StudioLocation } from '@/lib/studio-locations';
-
-interface ContactItem {
-  label: string;
-  sublabel: string;
-  value: string;
-  href?: string;
-}
-
-const contactItems: ContactItem[] = [
-  {
-    label: 'Want to collaborate?',
-    sublabel: 'Work with us',
-    value: 'newbusiness@hellomonday.com',
-    href: 'mailto:newbusiness@hellomonday.com',
-  },
-  {
-    label: 'Want to say hi?',
-    sublabel: 'General inquiries',
-    value: 'hello@hellomonday.com',
-    href: 'mailto:hello@hellomonday.com',
-  },
-  {
-    label: 'Want to join us?',
-    sublabel: 'Become a Mondayteer',
-    value: 'Apply here',
-    href: '#careers',
-  },
-  {
-    label: 'Want to learn?',
-    sublabel: 'Become an intern',
-    value: 'Apply here',
-    href: '#careers',
-  },
-];
+import type {
+  ContactCard as ContactItem,
+  LocationData,
+  SiteSettingsData,
+} from '@/lib/cms-site-settings';
 
 function AnimatedLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -66,7 +37,7 @@ function AnimatedLink({ href, children, className = "" }: { href: string; childr
   );
 }
 
-function LocationCard({ location }: { location: StudioLocation }) {
+function LocationCard({ location }: { location: LocationData }) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -93,7 +64,7 @@ function LocationCard({ location }: { location: StudioLocation }) {
           {location.city}
         </h4>
       </div>
-      {location.address.map((line, i) => (
+      {location.addressLines.map((line, i) => (
         <p key={i} className="text-sm text-[color:var(--footer-muted)]">
           {line}
         </p>
@@ -107,7 +78,7 @@ function ContactCard({ item }: { item: ContactItem }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
-    if (item.value.includes('@')) {
+    if (item.copyToClipboard) {
       e.preventDefault();
       navigator.clipboard.writeText(item.value);
       setCopied(true);
@@ -155,7 +126,11 @@ function ContactCard({ item }: { item: ContactItem }) {
   );
 }
 
-export default function Footer() {
+export default function Footer({
+  siteSettings,
+}: {
+  siteSettings: SiteSettingsData;
+}) {
   const pathname = usePathname() || '';
   const isProductPage = pathname.startsWith('/product');
 
@@ -174,44 +149,31 @@ export default function Footer() {
   return (
     <>
       <footer
-        className="bg-[var(--footer-bg)] text-[color:var(--footer-fg)] px-5 pb-0 pt-16 lg:px-20 lg:pt-32"
+        className="bg-[var(--footer-bg)] text-(--footer-fg) px-5 pb-0 pt-16 lg:px-20 lg:pt-32"
         id="contact"
         style={footerThemeStyles}
       >
         <div className="site-shell max-w-[1240px] mx-auto px-0 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             {/* Logo/Illustration */}
-            <div className="lg:col-span-4 flex items-center justify-center lg:items-start lg:pt-8 text-[color:var(--footer-fg)]">
+            <div className="lg:col-span-4 flex items-center justify-center lg:items-start lg:pt-8 text-(--footer-fg)">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <svg
-                viewBox="0 0 120 140"
-                className="w-24 h-auto"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {/* Person at computer illustration */}
-                <ellipse cx="60" cy="25" rx="15" ry="18" />
-                <path d="M45 20 Q45 5 60 5 Q75 5 75 20" fill="hsl(var(--secondary))" />
-                <line x1="60" y1="43" x2="60" y2="55" />
-                <path d="M40 55 Q35 80 40 100 L40 120" />
-                <path d="M80 55 Q85 80 80 100 L80 120" />
-                <ellipse cx="40" cy="125" rx="8" ry="5" />
-                <ellipse cx="80" cy="125" rx="8" ry="5" />
-                <path d="M35 70 Q25 85 30 95" />
-                <path d="M85 70 Q95 85 90 95" />
-                <rect x="45" y="50" width="30" height="25" rx="2" />
-                <line x1="50" y1="58" x2="70" y2="58" />
-                <line x1="50" y1="65" x2="65" y2="65" />
-                <rect x="35" y="75" width="50" height="8" rx="2" />
-              </svg>
+              {siteSettings.logoWordmarkSecondary?.url || siteSettings.logoWordmarkPrimary?.url ? (
+                <Image
+                  src={siteSettings.logoWordmarkSecondary?.url || siteSettings.logoWordmarkPrimary?.url || ""}
+                  alt="Footer logo"
+                  width={1200}
+                  height={400}
+                  sizes="(max-width: 1024px) 260px, 320px"
+                  quality={100}
+                  className="h-auto w-[220px] object-contain sm:w-[250px] lg:w-[300px]"
+                />
+              ) : null}
             </motion.div>
           </div>
 
@@ -234,7 +196,7 @@ export default function Footer() {
                 }}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 lg:gap-x-24"
               >
-                {contactItems.map((item) => (
+                {siteSettings.contactCards.map((item) => (
                   <motion.div
                     key={item.label}
                     variants={{
@@ -265,7 +227,7 @@ export default function Footer() {
               >
                 <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase tracking-[0.2em]">Our Worlds</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 lg:gap-x-24">
-                  {studioLocations.map((location) => (
+                  {siteSettings.locations.map((location) => (
                     <motion.div
                       key={location.city}
                       variants={{
@@ -281,21 +243,23 @@ export default function Footer() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 border-t border-[color:var(--footer-border)] pt-12">
                 <div className="flex gap-8">
-                  {['LinkedIn', 'Instagram', 'Twitter', 'Vimeo'].map((platform) => (
+                  {siteSettings.socialLinks.map((platform) => (
                     <a
-                      key={platform}
-                      href="#"
+                      key={platform.label}
+                      href={platform.href}
+                      target="_blank"
+                      rel="noreferrer"
                       className="text-xs font-bold uppercase tracking-widest text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
                     >
-                      {platform}
+                      {platform.label}
                     </a>
                   ))}
                 </div>
                 <AnimatedLink
-                  href="https://www.deptagency.com/en-nl/privacy-policy/"
+                  href={siteSettings.privacyHref}
                   className="text-xs text-[color:var(--footer-link)] hover:text-[color:var(--footer-fg)]"
                 >
-                  Global Privacy Statement
+                  {siteSettings.privacyLabel}
                 </AnimatedLink>
               </div>
             </div>
@@ -318,7 +282,7 @@ export default function Footer() {
               </g>
             </svg>
             <span className="relative z-10 text-white text-[10px] md:text-xs tracking-[0.15em] font-medium flex items-center gap-2 mt-1 md:mt-2 transition-transform group-hover:-translate-y-0.5">
-              Back to top
+              {siteSettings.backToTopLabel}
               <ArrowUp className="w-3 h-3" strokeWidth={3} />
             </span>
           </motion.button>

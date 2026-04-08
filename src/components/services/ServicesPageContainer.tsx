@@ -1,17 +1,18 @@
 import ServicesPageView from "@/components/services/ServicesPageView";
-import {
-  awardColumns,
-  serviceSections,
-  servicesHero,
-  shinyThings,
-} from "@/lib/services-catalog";
+import type { getServicesPageData } from "@/lib/cms-services";
 
-export default function ServicesPageContainer() {
+type ServicesPageContainerProps = {
+  data: Awaited<ReturnType<typeof getServicesPageData>>;
+};
+
+export default function ServicesPageContainer({ data }: ServicesPageContainerProps) {
+  const { hero, sections, shinyThings, awardColumns } = data;
+
   return (
     <ServicesPageView
       awardColumns={awardColumns}
-      hero={servicesHero}
-      sections={serviceSections}
+      hero={hero}
+      sections={sections}
       shinyThings={shinyThings}
     />
   );

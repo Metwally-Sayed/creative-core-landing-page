@@ -3,27 +3,38 @@
 import { useState } from "react";
 
 import WorkPageView from "@/components/work/WorkPageView";
-import {
-  workFilters,
-  workProjects,
-  type WorkFilter,
-} from "@/lib/work-catalog";
+import type { ProjectSummary } from "@/lib/cms-projects";
+import type { WorkPageFilter } from "@/lib/cms-work";
 
-export default function WorkPageContainer() {
-  const [activeFilter, setActiveFilter] = useState<WorkFilter | null>(null);
+type WorkPageContainerProps = {
+  filters: WorkPageFilter[];
+  projects: ProjectSummary[];
+  heroTitle?: string;
+  heroBody?: string;
+};
+
+export default function WorkPageContainer({
+  filters,
+  projects,
+  heroTitle,
+  heroBody,
+}: WorkPageContainerProps) {
+  const [activeFilter, setActiveFilter] = useState<ProjectSummary["workFilters"][number] | null>(null);
 
   const filteredProjects = activeFilter
-    ? workProjects.filter((project) => project.filters.includes(activeFilter))
-    : workProjects;
+    ? projects.filter((project) => project.workFilters.includes(activeFilter))
+    : projects;
 
   return (
     <WorkPageView
       activeFilter={activeFilter}
-      filters={workFilters}
+      filters={filters}
       projects={filteredProjects}
+      heroTitle={heroTitle}
+      heroBody={heroBody}
       onFilterChange={(filter) => {
         setActiveFilter((currentFilter) =>
-          currentFilter === filter ? null : filter,
+          currentFilter === filter.value ? null : filter.value,
         );
       }}
     />

@@ -1,19 +1,14 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
-import Link from "next/link";
-import type { CSSProperties } from "react";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
-
-const menuItems = [
-  { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Stories", href: "/work" },
-  { label: "Product", href: "/product" },
-];
+import type { SiteSettingsData } from "@/lib/cms-site-settings";
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -26,51 +21,89 @@ const menuShellStyles = {
 function LogoMark({
   inverted = false,
   neutral = false,
+  primaryLogoUrl,
+  secondaryLogoUrl,
+  variant = "header",
   className = "",
 }: {
   inverted?: boolean;
   neutral?: boolean;
+  primaryLogoUrl?: string;
+  secondaryLogoUrl?: string;
+  variant?: "header" | "menu";
   className?: string;
 }) {
+  if (primaryLogoUrl || secondaryLogoUrl) {
+    const filterClasses = inverted
+      ? "brightness-0 invert"
+      : neutral
+        ? "opacity-95"
+        : "";
+
+    const primaryImageClassName = cn(
+      "w-auto object-contain transition-[filter,opacity] duration-300",
+      variant === "menu"
+        ? "h-24 lg:h-32"
+        : "h-24 origin-left scale-[1.35] sm:h-28 sm:scale-[1.4] lg:h-32 lg:scale-[1.45]",
+      filterClasses,
+    );
+    const secondaryImageClassName = cn(
+      "w-auto object-contain transition-[filter,opacity] duration-300",
+      variant === "menu"
+        ? "h-11 lg:h-14"
+        : "h-14 origin-left scale-[1.2] sm:h-16 sm:scale-[1.25] lg:h-18 lg:scale-[1.3]",
+      filterClasses,
+    );
+
+    return (
+      <span
+        className={cn(
+          "flex flex-col leading-[0.9] tracking-[0.08em] uppercase",
+          variant === "menu" ? "gap-2" : "gap-1.5",
+          className,
+        )}
+      >
+        {primaryLogoUrl ? (
+          <Image
+            src={primaryLogoUrl}
+            alt="Hello Monday"
+            width={1200}
+            height={360}
+            sizes="(max-width: 640px) 280px, (max-width: 1024px) 360px, 420px"
+            quality={100}
+            className={primaryImageClassName}
+            priority={variant === "header"}
+          />
+        ) : null}
+
+      </span>
+    );
+  }
+
   return (
-    <span
-      className={`flex flex-col leading-[0.9] tracking-[0.08em] uppercase ${className}`.trim()}
-    >
-      <span
-        className={`text-[0.92rem] font-black transition-colors duration-300 ${
-          inverted
-            ? "text-white"
-            : neutral
-              ? "text-black"
-              : "text-[hsl(var(--accent))]"
-        }`}
-      >
-        Hello Monday
-      </span>
-      <span
-        className={`mt-0.5 text-[0.92rem] font-black transition-colors duration-300 ${
-          inverted
-            ? "text-white"
-            : neutral
-              ? "text-black"
-              : "text-[hsl(var(--accent))]"
-        }`}
-      >
-        / Dept.
-      </span>
-    </span>
+    <></>
   );
 }
 
-export default function Header() {
+export default function Header({
+  siteSettings,
+}: {
+  siteSettings: SiteSettingsData;
+}) {
   const pathname = usePathname() || "";
   const isProjectPage = pathname.startsWith("/projects");
   const isProductPage = pathname.startsWith("/product");
   const isServicesPage = pathname.startsWith("/services");
   const isWorkPage = pathname.startsWith("/work");
   const isAboutPage = pathname.startsWith("/about");
-  const hideQuoteCta = isServicesPage || isWorkPage || isAboutPage || isProductPage;
-  
+  const menuItems = siteSettings.navItems;
+  const hideQuoteCta =
+    (isServicesPage && siteSettings.showQuoteCtaRules.hideOnServices) ||
+    (isWorkPage && siteSettings.showQuoteCtaRules.hideOnWork) ||
+    (isAboutPage && siteSettings.showQuoteCtaRules.hideOnAbout) ||
+    (isProductPage && siteSettings.showQuoteCtaRules.hideOnProduct) ||
+    (isProjectPage && siteSettings.showQuoteCtaRules.hideOnProjects);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const [activeMenuIndex, setActiveMenuIndex] = useState(2);
@@ -86,7 +119,7 @@ export default function Header() {
   useEffect(() => {
     pointerY.set(typeof window !== "undefined" ? window.innerHeight / 2 : 500);
     realMouseY.current = typeof window !== "undefined" ? window.innerHeight / 2 : 500;
-    
+
     const handleMouse = (e: MouseEvent) => {
       realMouseY.current = e.clientY;
       if (window.scrollY > 140) {
@@ -105,7 +138,7 @@ export default function Header() {
       document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
-  
+
   // Projects page has a taller hero, so header stays inverted longer (e.g. 80vh to match the dark hero gradient)
   // Normal scroll threshold for appearing/disappearing is 140px. 
   // Let's use 100 for hiding header, and ~500 for inverted color swap
@@ -116,10 +149,10 @@ export default function Header() {
       const isTop = window.scrollY <= scrollThreshold;
       const hasExtendedHero = isProjectPage || isProductPage;
       const isTopHero = window.scrollY <= (hasExtendedHero ? window.innerHeight * 0.75 : scrollThreshold);
-      
+
       setShowHeader(isTop);
       setInHero(isTopHero);
-      
+
       if (isTop) {
         pointerY.set(typeof window !== "undefined" ? window.innerHeight / 2 : 500);
       } else {
@@ -138,11 +171,12 @@ export default function Header() {
   }, [pointerY, isProjectPage, isProductPage]);
 
   const showHeroTrigger = !isMenuOpen && (inHero || isNearEdge);
-  // Revert back when out of hero or not on project.
-  const forceInvert = (isProjectPage || isProductPage) && inHero;
-  const useNeutralHeader = isWorkPage && !forceInvert;
-  const heroTriggerFill = useNeutralHeader ? "#111111" : "hsl(var(--accent))";
-  const heroTriggerIconFill = useNeutralHeader ? "#111111" : "#ffffff";
+  // Product pages keep the white-on-dark hero treatment. Project pages now inherit
+  // their palette directly instead of forcing the shared chrome back to white.
+  const forceInvert = isProductPage && inHero;
+  const useNeutralHeader = false;
+  const heroTriggerFill = "hsl(var(--accent))";
+  const heroTriggerIconFill = "hsl(var(--background))";
 
   return (
     <>
@@ -155,21 +189,26 @@ export default function Header() {
             transition={{ duration: 0.5, ease: transitionEase }}
             className="pointer-events-none fixed inset-x-0 top-0 z-50"
           >
-            <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-start justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
+            <div className="pointer-events-auto mx-auto flex w-full max-w-[1740px] items-center justify-between px-5 pt-5 lg:px-20 lg:pt-8">
               <Link href="/" aria-label="Hello Monday home">
-                <LogoMark inverted={forceInvert} neutral={useNeutralHeader} />
+                <LogoMark
+                  variant="header"
+                  inverted={forceInvert}
+                  neutral={useNeutralHeader}
+                  primaryLogoUrl={siteSettings.logoWordmarkPrimary?.url}
+                  secondaryLogoUrl={siteSettings.logoWordmarkSecondary?.url}
+                />
               </Link>
 
               <div className="flex items-center gap-3">
                 {!hideQuoteCta ? (
                   <>
                     <QuoteBriefDialog
-                      triggerLabel="Get Quote"
-                      triggerClassName={`hidden h-10 rounded-full px-4 text-[0.78rem] font-semibold lg:inline-flex transition-colors duration-300 ${
-                        forceInvert
-                          ? "bg-white text-black hover:bg-white/90 shadow-md"
-                          : "bg-[#0b1b3b] text-white hover:bg-[#0b1b3b]/90 shadow-[0_4px_16px_rgba(30,52,86,0.14)]"
-                      }`}
+                      triggerLabel={siteSettings.quoteTriggerLabel}
+                      triggerClassName={`hidden h-10 rounded-full px-4 text-[0.78rem] font-semibold lg:inline-flex transition-colors duration-300 ${forceInvert
+                        ? "bg-white text-black hover:bg-white/90 shadow-md"
+                        : "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] hover:bg-[hsl(var(--accent))/0.9] shadow-[0_4px_16px_hsl(var(--accent)/0.24)]"
+                        }`}
                     />
                     {/* <QuoteBriefDialog
                       triggerLabel="Quote"
@@ -184,15 +223,14 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => setIsMenuOpen((open) => !open)}
-                  className={`rounded-full px-4 py-2 text-[0.62rem] tracking-[0.24em] uppercase lg:hidden transition-colors duration-300 ${
-                    forceInvert
-                      ? "text-white border border-white/20 bg-white/10"
-                      : "site-card text-[hsl(var(--accent))]"
-                  }`}
+                  className={`rounded-full px-4 py-2 text-[0.62rem] tracking-[0.24em] uppercase lg:hidden transition-colors duration-300 ${forceInvert
+                    ? "text-white border border-white/20 bg-white/10"
+                    : "site-card text-[hsl(var(--accent))]"
+                    }`}
                   aria-expanded={isMenuOpen}
                   aria-controls="site-menu"
                 >
-                  Menu
+                  {siteSettings.mobileMenuLabel}
                 </button>
               </div>
             </div>
@@ -202,21 +240,21 @@ export default function Header() {
 
       <AnimatePresence>
         {showHeroTrigger && (
-            <motion.button
-              type="button"
-              onClick={() => setIsMenuOpen(true)}
-              initial={{ x: 72, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 72, opacity: 0 }}
-              transition={{ duration: 0.42, ease: transitionEase }}
-              className="fixed inset-y-0 right-0 z-55 hidden w-[6.9rem] items-center justify-end bg-transparent text-white lg:flex"
-              aria-label="Open menu"
-            >
-              <div 
-                className="absolute inset-y-0 right-0 w-[8rem] pointer-events-auto"
-                onMouseEnter={() => setIsHoveringTrigger(true)}
-                onMouseLeave={() => setIsHoveringTrigger(false)}
-              />
+          <motion.button
+            type="button"
+            onClick={() => setIsMenuOpen(true)}
+            initial={{ x: 72, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 72, opacity: 0 }}
+            transition={{ duration: 0.42, ease: transitionEase }}
+            className="fixed inset-y-0 right-0 z-55 hidden w-[6.9rem] items-center justify-end bg-transparent text-white lg:flex"
+            aria-label="Open menu"
+          >
+            <div
+              className="absolute inset-y-0 right-0 w-[8rem] pointer-events-auto"
+              onMouseEnter={() => setIsHoveringTrigger(true)}
+              onMouseLeave={() => setIsHoveringTrigger(false)}
+            />
             <motion.div
               className="absolute right-0 w-full"
               style={{
@@ -312,7 +350,13 @@ export default function Header() {
                 className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
                 aria-label="Hello Monday home"
               >
-                <LogoMark inverted className="opacity-92" />
+                <LogoMark
+                  inverted
+                  variant="menu"
+                  primaryLogoUrl={siteSettings.logoWordmarkPrimary?.url}
+                  secondaryLogoUrl={siteSettings.logoWordmarkSecondary?.url}
+                  className="opacity-92"
+                />
               </Link>
 
               <motion.button
@@ -322,7 +366,7 @@ export default function Header() {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 72, opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.35, ease: transitionEase }}
-                className="fixed inset-y-0 right-[-1.7rem] z-65 hidden w-[6.9rem] items-center justify-end bg-transparent text-black lg:flex cursor-pointer"
+                className="fixed inset-y-0 right-[-1.7rem] z-65 hidden w-[6.9rem] items-center justify-end bg-transparent text-[hsl(var(--accent))] lg:flex cursor-pointer"
                 aria-label="Close menu"
               >
                 <svg
@@ -333,7 +377,7 @@ export default function Header() {
                 >
                   <path
                     d="M114 0 L114 1000 L86 1000 C48 820 40 654 40 500 C40 346 48 180 86 0 Z"
-                    fill="#fbf7ef"
+                    fill="hsl(var(--background))"
                   />
                 </svg>
                 <svg
@@ -403,15 +447,15 @@ export default function Header() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="absolute bottom-12 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
               >
-                {['Facebook', 'Instagram', 'Twitter', 'Vimeo', 'LinkedIn'].map((platform) => (
-                  <a 
-                    key={platform} 
-                    href="#" 
-                    target="_blank" 
+                {siteSettings.socialLinks.map((platform) => (
+                  <a
+                    key={platform.label}
+                    href={platform.href}
+                    target="_blank"
                     rel="noreferrer"
                     className="hover:text-white transition-colors"
                   >
-                    {platform}
+                    {platform.label}
                   </a>
                 ))}
               </motion.div>

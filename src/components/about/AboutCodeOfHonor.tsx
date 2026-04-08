@@ -9,10 +9,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import type {
-  CodeOfHonorArtKey,
+import {
   CodeOfHonorItem,
-} from "@/lib/about-catalog";
+} from "./AboutPageView";
+
+type CodeOfHonorArtKey = CodeOfHonorItem["art"];
 
 type AboutCodeOfHonorProps = {
   items: CodeOfHonorItem[];
@@ -284,28 +285,48 @@ export default function AboutCodeOfHonor({
 }: AboutCodeOfHonorProps) {
   const [openIds, setOpenIds] = useState<string[]>([]);
 
-  return (
-    <div className="grid gap-x-10 gap-y-8 md:grid-cols-2 xl:grid-cols-3">
-      {items.map((item) => {
-        const isOpen = openIds.includes(item.id);
+  const renderCard = (item: CodeOfHonorItem) => {
+    const isOpen = openIds.includes(item.id);
 
-        return (
-          <HonorItemCard
-            key={item.id}
-            item={item}
-            open={isOpen}
-            onOpenChange={(nextOpen) => {
-              setOpenIds((current) =>
-                nextOpen
-                  ? current.includes(item.id)
-                    ? current
-                    : [...current, item.id]
-                  : current.filter((id) => id !== item.id),
-              );
-            }}
-          />
-        );
-      })}
-    </div>
+    return (
+      <HonorItemCard
+        key={item.id}
+        item={item}
+        open={isOpen}
+        onOpenChange={(nextOpen) => {
+          setOpenIds((current) =>
+            nextOpen
+              ? current.includes(item.id)
+                ? current
+                : [...current, item.id]
+              : current.filter((id) => id !== item.id),
+          );
+        }}
+      />
+    );
+  };
+
+  const twoColLeft = items.filter((_, index) => index % 2 === 0);
+  const twoColRight = items.filter((_, index) => index % 2 === 1);
+
+  const threeColA = items.filter((_, index) => index % 3 === 0);
+  const threeColB = items.filter((_, index) => index % 3 === 1);
+  const threeColC = items.filter((_, index) => index % 3 === 2);
+
+  return (
+    <>
+      <div className="space-y-8 md:hidden">{items.map(renderCard)}</div>
+
+      <div className="hidden items-start gap-10 md:grid md:grid-cols-2 xl:hidden">
+        <div className="space-y-8">{twoColLeft.map(renderCard)}</div>
+        <div className="space-y-8">{twoColRight.map(renderCard)}</div>
+      </div>
+
+      <div className="hidden items-start gap-10 xl:grid xl:grid-cols-3">
+        <div className="space-y-8">{threeColA.map(renderCard)}</div>
+        <div className="space-y-8">{threeColB.map(renderCard)}</div>
+        <div className="space-y-8">{threeColC.map(renderCard)}</div>
+      </div>
+    </>
   );
 }
