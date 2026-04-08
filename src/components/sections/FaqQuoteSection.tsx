@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
@@ -20,6 +19,15 @@ type FaqItem = {
   preview: string;
   deliverables?: string[];
 };
+
+interface FaqQuoteSectionProps {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string;
+  items?: FaqItem[];
+  quoteLauncherLabel?: string;
+}
 
 const FAQ_ITEMS: FaqItem[] = [
   {
@@ -64,23 +72,31 @@ const FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
-export default function FaqQuoteSection() {
-  const [activeFaqId, setActiveFaqId] = useState<string>(FAQ_ITEMS[0]?.id ?? "");
-  const [openFaq, setOpenFaq] = useState<string | undefined>(FAQ_ITEMS[0]?.id);
+export default function FaqQuoteSection({
+  id = "faq",
+  eyebrow = "Common Inquiries",
+  heading = "Curated for the curious.",
+  subheading = "Answered for the committed.",
+  items = FAQ_ITEMS,
+  quoteLauncherLabel = "Start your discovery sprint",
+}: FaqQuoteSectionProps) {
+  const faqItems = items.length > 0 ? items : FAQ_ITEMS;
+  const [activeFaqId, setActiveFaqId] = useState<string>(faqItems[0]?.id ?? "");
+  const [openFaq, setOpenFaq] = useState<string | undefined>(faqItems[0]?.id);
 
   const activeFaq = useMemo(
-    () => FAQ_ITEMS.find((item) => item.id === activeFaqId) ?? FAQ_ITEMS[0],
-    [activeFaqId]
+    () => faqItems.find((item) => item.id === activeFaqId) ?? faqItems[0],
+    [activeFaqId, faqItems]
   );
 
   return (
-    <section id="faq" className="site-section px-5 lg:px-20 pb-32">
+    <section id={id} className="site-section px-5 lg:px-20 pb-32">
       <div className="site-shell max-w-[1400px] px-0">
         <div className="mb-20 space-y-6">
-          <p className="eyebrow text-secondary">Common Inquiries</p>
+          <p className="eyebrow text-secondary">{eyebrow}</p>
           <h2 className="max-w-4xl text-5xl leading-[1.05] text-accent md:text-6xl lg:text-7xl">
-            Curated for the curious. <br />
-            <span className="text-muted-foreground/40 italic">Answered for the committed.</span>
+            {heading} <br />
+            <span className="text-muted-foreground/40 italic">{subheading}</span>
           </h2>
         </div>
 
@@ -103,7 +119,7 @@ export default function FaqQuoteSection() {
               }}
               className="space-y-4"
             >
-              {FAQ_ITEMS.map((item, index) => {
+              {faqItems.map((item, index) => {
                 const isActive = activeFaqId === item.id;
 
                 return (
@@ -193,7 +209,7 @@ export default function FaqQuoteSection() {
                     "We value clarity and outcomes over billable hours."
                   </p>
                   <QuoteBriefDialog
-                    triggerLabel="Start your discovery sprint"
+                    triggerLabel={quoteLauncherLabel}
                     triggerClassName="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-bold uppercase tracking-widest hover:scale-105 transition-transform"
                   />
                 </div>

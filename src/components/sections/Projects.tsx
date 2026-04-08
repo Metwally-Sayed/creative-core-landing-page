@@ -5,7 +5,7 @@ import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, 
 import { ArrowUpRight } from 'lucide-react';
 import LiquidCard from '@/components/LiquidCard';
 import Link from 'next/link';
-import { projects, type ProjectSummary } from '@/lib/project-catalog';
+import type { ProjectSummary, WorkFilter } from '@/lib/cms-projects';
 
 // Liquid blob card component
 function LiquidProjectCard({ project, index }: { project: ProjectSummary; index: number }) {
@@ -65,7 +65,7 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
     >
-      <Link href={`/projects/${project.id}`} className="block">
+      <Link href={`/projects/${project.slug}`} className="block">
         <LiquidCard
           aspectRatio={aspectRatioClass}
           className="mb-4 border border-white/70 bg-white/78 shadow-[0_18px_44px_rgba(30,52,86,0.1)]"
@@ -134,31 +134,78 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
   );
 }
 
-const categories = ["All", "Design", "Strategy", "Experience", "Digital"] as const;
-type Category = (typeof categories)[number];
+function getProjectHeightWeight(project: ProjectSummary) {
+  switch (project.aspectRatio) {
+    case "portrait":
+      return 1.45;
+    case "square":
+      return 1.1;
+    case "landscape":
+    default:
+      return 0.92;
+  }
+}
 
-export default function Projects() {
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+function assignProjectsToColumns(projects: ProjectSummary[], columnCount: number) {
+  const columns = Array.from({ length: columnCount }, () => 0);
+  const placements = new Map<string, number>();
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
+  projects.forEach((project) => {
+    let targetColumn = 0;
+
+    for (let index = 1; index < columns.length; index += 1) {
+      if (columns[index] < columns[targetColumn]) {
+        targetColumn = index;
+      }
+    }
+
+    placements.set(project.id, targetColumn);
+    columns[targetColumn] += getProjectHeightWeight(project);
   });
 
+  return placements;
+}
+
+type ProjectsProps = {
+  projects: ProjectSummary[];
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  filterLabels?: string[];
+  emptyStateText?: string;
+};
+
+export default function Projects({
+  projects,
+  eyebrow = "Selected Work",
+  heading = "Same motion system, now wrapped in the Creative visual language.",
+  body = "The layout stays editorial and kinetic, but the surfaces, color temperature, and typography now follow the softer premium theme from the reference site.",
+  filterLabels,
+  emptyStateText = "No projects match this filter yet.",
+}: ProjectsProps) {
+  const categories = Array.from(
+    new Set(["All", ...(filterLabels?.filter(Boolean) ?? ["Products", "Experiences", "Branding"])])
+  );
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
   const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 120, mass: 0.5 });
   const yUp = useTransform(smoothProgress, [0, 1], [0, -150]);
   const yDown = useTransform(smoothProgress, [0, 1], [0, 150]);
-  
   const yUpPx = useMotionTemplate`${yUp}px`;
   const yDownPx = useMotionTemplate`${yDown}px`;
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
-    : projects.filter(p => p.tags.includes(activeCategory));
-
-  const headingText = "Same motion system, now wrapped in the Creative visual language.";
+    : projects.filter((project) =>
+        project.workFilters.includes(activeCategory as WorkFilter),
+      );
+  const mdColumnPlacement = assignProjectsToColumns(filteredProjects, 2);
+  const lgColumnPlacement = assignProjectsToColumns(filteredProjects, 3);
 
   return (
     <motion.section 
@@ -167,22 +214,22 @@ export default function Projects() {
         "--y-up": yUpPx,
         "--y-down": yDownPx,
       } as React.CSSProperties}
-      className="relative -mt-16 overflow-hidden px-5 pb-16 pt-28 md:pb-24 lg:-mt-24 lg:px-20 lg:pb-28 lg:pt-36" 
+      className="relative -mt-10 overflow-x-clip overflow-y-visible px-5 pb-12 pt-20 md:-mt-14 md:pb-20 md:pt-24 lg:-mt-24 lg:px-20 lg:pb-28 lg:pt-36" 
       id="work"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.96)_34%,rgba(255,255,255,0.7)_68%,rgba(255,255,255,0)_100%)] lg:h-40" />
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
-        <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mb-14 flex flex-col gap-8 md:mb-20 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-6">
             <motion.p 
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               className="eyebrow"
             >
-              Selected Work
+              {eyebrow}
             </motion.p>
-            <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
-              {headingText.split(" ").map((word, i) => (
+            <h2 className="max-w-2xl text-[clamp(2.4rem,9vw,4.5rem)] leading-[1.03] text-accent">
+              {heading.split(" ").map((word, i) => (
                 <span key={i} className="inline-block overflow-hidden mr-[0.2em] py-1">
                   <motion.span
                     initial={{ y: "100%" }}
@@ -208,19 +255,18 @@ export default function Projects() {
               transition={{ delay: 0.4 }}
               className="text-balance text-sm leading-relaxed text-muted-foreground md:text-base"
             >
-              The layout stays editorial and kinetic, but the surfaces, color temperature,
-              and typography now follow the softer premium theme from the reference site.
+              {body}
             </motion.p>
           </div>
         </div>
 
         {/* Category Filters */}
-        <div className="mb-16 flex flex-wrap gap-4 lg:mb-20">
+        <div className="mb-12 flex flex-wrap gap-3 md:mb-16 lg:mb-20">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className="group relative px-6 py-2 text-xs font-semibold uppercase tracking-widest"
+              className="group relative px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] md:px-6 md:text-xs md:tracking-widest"
             >
               <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
                 {cat}
@@ -240,60 +286,64 @@ export default function Projects() {
         </div>
 
         {/* Masonry Grid with AnimatePresence */}
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-8 min-h-[600px]">
-          <AnimatePresence mode="popLayout" initial={false}>
+        {filteredProjects.length > 0 ? (
+          <div className="columns-1 gap-6 min-h-[520px] md:columns-2 md:gap-7 lg:columns-3 lg:gap-8">
+            <AnimatePresence mode="popLayout" initial={false}>
             {filteredProjects.map((project, index) => {
-              const total = filteredProjects.length;
-              const lg1 = Math.ceil(total / 3);
-              const lg2 = lg1 + Math.ceil((total - lg1) / 2);
-              const md1 = Math.ceil(total / 2);
+                let parallaxClass = "will-change-transform break-inside-avoid mb-6 md:mb-7 lg:mb-8 ";
+                const mdColumn = mdColumnPlacement.get(project.id) ?? 0;
+                const lgColumn = lgColumnPlacement.get(project.id) ?? 0;
 
-              let parallaxClass = "will-change-transform break-inside-avoid mb-8 ";
-              if (index < md1) {
-                parallaxClass += "md:![transform:translateY(var(--y-up))] ";
-              } else {
-                parallaxClass += "md:![transform:translateY(var(--y-down))] ";
-              }
+                if (mdColumn === 0) {
+                  parallaxClass += "md:![transform:translateY(var(--y-up))] ";
+                } else {
+                  parallaxClass += "md:![transform:translateY(var(--y-down))] ";
+                }
 
-              if (index < lg1) {
-                parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-              } else if (index < lg2) {
-                parallaxClass += "lg:![transform:translateY(var(--y-down))]";
-              } else {
-                parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-              }
+                if (lgColumn === 0) {
+                  parallaxClass += "lg:![transform:translateY(var(--y-up))]";
+                } else if (lgColumn === 1) {
+                  parallaxClass += "lg:![transform:translateY(var(--y-down))]";
+                } else {
+                  parallaxClass += "lg:![transform:translateY(var(--y-up))]";
+                }
 
-              return (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className={parallaxClass}
-                >
-                  <LiquidProjectCard project={project} index={index} />
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
+                return (
+                  <motion.div
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className={parallaxClass}
+                  >
+                    <LiquidProjectCard project={project} index={index} />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-[hsl(var(--border))]/70 bg-white/70 p-10 text-center text-muted-foreground">
+            {emptyStateText}
+          </div>
+        )}
 
         {/* View All Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-24 flex justify-center pb-32"
+          className="mt-16 flex justify-center pb-16 md:mt-20 md:pb-24 lg:mt-24 lg:pb-32"
         >
           <Link
             href="/projects"
             className="group relative flex flex-col items-center gap-6"
           >
-            <div className="flex h-32 w-32 items-center justify-center rounded-full border border-accent/20 transition-all duration-500 group-hover:scale-110 group-hover:border-secondary">
-              <div className="h-16 w-16 rounded-full bg-accent transition-all duration-500 group-hover:scale-125 group-hover:bg-secondary flex items-center justify-center">
-                <ArrowUpRight className="h-6 w-6 text-white" />
+            <div className="flex h-24 w-24 items-center justify-center rounded-full border border-accent/20 transition-all duration-500 group-hover:scale-110 group-hover:border-secondary md:h-28 md:w-28 lg:h-32 lg:w-32">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent transition-all duration-500 group-hover:scale-125 group-hover:bg-secondary md:h-14 md:w-14 lg:h-16 lg:w-16">
+                <ArrowUpRight className="h-5 w-5 text-white md:h-6 md:w-6" />
               </div>
             </div>
             <div className="text-center">
@@ -301,7 +351,7 @@ export default function Projects() {
                 Explore All
               </span>
               <p className="mt-1 text-sm text-muted-foreground">
-                23 dynamic case studies
+                {projects.length} dynamic case studies
               </p>
             </div>
           </Link>

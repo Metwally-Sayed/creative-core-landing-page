@@ -1,24 +1,30 @@
 import AboutPageView from "@/components/about/AboutPageView";
-import {
-  aboutHero,
-  aboutJumpLinks,
-  aboutLocations,
-  codeOfHonorIntro,
-  codeOfHonorItems,
-  mondayteers,
-  mondayteersIntro,
-} from "@/lib/about-catalog";
+import type { getAboutPageData } from "@/lib/cms-about";
 
-export default function AboutPageContainer() {
+type AboutPageContainerProps = {
+  data: Awaited<ReturnType<typeof getAboutPageData>>;
+};
+
+export default function AboutPageContainer({ data }: AboutPageContainerProps) {
+  const {
+    hero,
+    jumpLinks,
+    locations,
+    codeOfHonor,
+    codeOfHonorItems,
+    mondayteersIntro,
+    team,
+  } = data;
+
   return (
     <AboutPageView
-      codeOfHonor={codeOfHonorIntro}
+      codeOfHonor={codeOfHonor}
       codeOfHonorItems={codeOfHonorItems}
-      hero={aboutHero}
-      jumpLinks={aboutJumpLinks}
-      locations={aboutLocations}
+      hero={hero}
+      jumpLinks={jumpLinks}
+      locations={locations}
       mondayteers={mondayteersIntro}
-      team={mondayteers}
+      team={team}
     />
   );
 }

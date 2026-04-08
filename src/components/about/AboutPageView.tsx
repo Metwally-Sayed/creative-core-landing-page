@@ -4,12 +4,41 @@ import {
   EditorialReveal,
   EditorialWordReveal,
 } from "@/components/editorial/EditorialMotion";
-import type {
-  AboutJumpLink,
-  CodeOfHonorItem,
-  Mondayteer,
-} from "@/lib/about-catalog";
-import type { StudioLocation } from "@/lib/studio-locations";
+export type AboutJumpLink = {
+  label: string;
+  href: string;
+};
+
+export type CodeOfHonorItem = {
+  id: string;
+  index: string;
+  title: string;
+  body: string;
+  art:
+  | "be-nice"
+  | "powers-for-good"
+  | "try-the-truth"
+  | "enjoy-the-ride"
+  | "speak-up-and-listen"
+  | "solve-the-problem"
+  | "help-each-other"
+  | "team-up";
+};
+
+export type Mondayteer = {
+  name: string;
+  city: string;
+  role: string;
+  art: string;
+  accentLabel: string;
+};
+
+export type AboutLocation = {
+  city: string;
+  address: string[];
+  email: string;
+  href: string;
+};
 
 type AboutPageViewProps = {
   hero: {
@@ -17,7 +46,7 @@ type AboutPageViewProps = {
     body: string;
   };
   jumpLinks: AboutJumpLink[];
-  locations: StudioLocation[];
+  locations: AboutLocation[];
   codeOfHonor: {
     eyebrow: string;
     title: string;
@@ -84,7 +113,7 @@ function ContactIllustration() {
   );
 }
 
-function LocationBlock({ location }: { location: StudioLocation }) {
+function LocationBlock({ location }: { location: AboutLocation }) {
   return (
     <EditorialReveal className="space-y-4 border-t border-border/65 pt-5" y={20}>
       <div className="space-y-2">
@@ -236,24 +265,28 @@ function AboutHero({
   title: string;
 }) {
   return (
-    <section className="border-b border-border/55">
-      <div className="mx-auto max-w-[1450px] px-6 pb-20 pt-[8.6rem] md:px-10 md:pb-28 md:pt-40 lg:px-16 lg:pt-[10.5rem]">
-        <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_13rem_15rem] lg:gap-x-12">
+    <section className="relative border-b border-border/55">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--secondary)/0.18),transparent_38%),radial-gradient(circle_at_top_right,hsl(var(--primary)/0.16),transparent_42%),radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.78),transparent_50%)]"
+      />
+      <div className="relative mx-auto max-w-[1450px] px-5 pb-16 pt-[7.5rem] sm:px-6 md:px-10 md:pb-24 md:pt-30 lg:px-16 lg:pb-28 lg:pt-42 ">
+        <div className="hidden gap-16 lg:grid lg:grid-cols-[minmax(0,1fr)_13rem_15rem] lg:gap-x-12">
           <div className="hidden lg:block" />
-          <EditorialReveal delay={0.08} x={24} y={0}>
+          {jumpLinks.length > 0 && <EditorialReveal delay={0.08} x={24} y={0}>
             <JumpAhead links={jumpLinks} />
-          </EditorialReveal>
+          </EditorialReveal>}
           <div />
         </div>
 
-        <div className="mt-20 grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.95fr)] lg:items-start lg:gap-x-16">
+        <div className="mt-10 grid gap-6 md:mt-14 md:gap-8 lg:mt-20 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.95fr)] lg:items-start lg:gap-x-16">
           <EditorialWordReveal
             as="h1"
             text={title}
-            className="font-serif text-[clamp(4.8rem,9vw,8.2rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+            className="font-serif text-[clamp(2.8rem,13vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-accent"
           />
           <EditorialReveal delay={0.16} x={30} y={18}>
-            <p className="max-w-[38rem] pb-2 text-[clamp(1.35rem,2.2vw,2.05rem)] leading-[1.28] tracking-[-0.03em] text-foreground/80">
+            <p className="max-w-[38rem] pb-1 text-[clamp(1.05rem,4.8vw,2.15rem)] leading-[1.28] tracking-[-0.02em] text-foreground/80 md:pb-2">
               {body}
             </p>
           </EditorialReveal>
@@ -263,11 +296,11 @@ function AboutHero({
   );
 }
 
-function ContactSection({ locations }: { locations: StudioLocation[] }) {
+function ContactSection({ locations }: { locations: AboutLocation[] }) {
   return (
     <section
       id="contact"
-      className="scroll-mt-20 border-b border-border/20 py-16 md:py-24"
+      className="scroll-mt-20 border-b border-border/20 py-14 md:py-20 lg:py-24"
     >
       <div className="mx-auto grid max-w-[1450px] gap-y-12 px-6 md:px-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16 lg:px-16">
         <EditorialReveal
@@ -313,11 +346,11 @@ function CodeOfHonorSection({
             <EditorialWordReveal
               as="h2"
               text={intro.title}
-              className="font-serif text-[clamp(4rem,7vw,6rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+              className="font-serif text-[clamp(2.3rem,10vw,6.25rem)] leading-[0.92] tracking-[-0.06em] text-accent"
               delayChildren={0.05}
             />
             <EditorialReveal delay={0.12} y={22}>
-              <p className="max-w-[54rem] text-[1.05rem] leading-[1.72] text-muted-foreground md:text-[1.1rem]">
+              <p className="max-w-[54rem] text-[0.98rem] leading-[1.68] text-muted-foreground md:text-[1.08rem] md:leading-[1.72]">
                 {intro.body}
               </p>
             </EditorialReveal>
@@ -340,7 +373,7 @@ function MondayteersSection({
   team: Mondayteer[];
 }) {
   return (
-    <section id="mondayteers" className="scroll-mt-20 py-16 md:py-24">
+    <section id="mondayteers" className="scroll-mt-20 py-14 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1450px] px-6 md:px-10 lg:grid lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16 lg:px-16">
         <div />
 
@@ -354,11 +387,11 @@ function MondayteersSection({
             <EditorialWordReveal
               as="h2"
               text={intro.title}
-              className="font-serif text-[clamp(4rem,7vw,6rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+              className="font-serif text-[clamp(2.3rem,10vw,6.25rem)] leading-[0.92] tracking-[-0.06em] text-accent"
               delayChildren={0.05}
             />
             <EditorialReveal delay={0.12} y={22}>
-              <p className="max-w-[52rem] text-[1.05rem] leading-[1.72] text-muted-foreground md:text-[1.1rem]">
+              <p className="max-w-[52rem] text-[0.98rem] leading-[1.68] text-muted-foreground md:text-[1.08rem] md:leading-[1.72]">
                 {intro.body}
               </p>
             </EditorialReveal>
@@ -391,19 +424,15 @@ export default function AboutPageView({
   team,
 }: AboutPageViewProps) {
   return (
-    <div className="relative overflow-hidden text-foreground">
+    <div className="relative overflow-x-clip overflow-y-visible text-foreground">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,hsl(var(--background)/0.72)_0%,hsl(var(--background)/0.84)_22%,hsl(var(--background)/0.94)_54%,hsl(var(--background)/0.98)_100%)] backdrop-blur-[2px]"
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[26rem] bg-[radial-gradient(circle_at_top_left,hsl(var(--secondary)/0.18),transparent_38%),radial-gradient(circle_at_top_right,hsl(var(--primary)/0.16),transparent_42%),radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.78),transparent_50%)]"
-      />
 
       <div className="relative">
         <AboutHero body={hero.body} jumpLinks={jumpLinks} title={hero.title} />
-        <ContactSection locations={locations} />
+        {/* <ContactSection locations={locations} /> */}
         <CodeOfHonorSection intro={codeOfHonor} items={codeOfHonorItems} />
         <MondayteersSection intro={mondayteers} team={team} />
       </div>
