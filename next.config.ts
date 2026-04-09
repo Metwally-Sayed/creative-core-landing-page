@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  outputFileTracingIncludes: {
+    // Payload serves the checked-in media collection from the local filesystem.
+    // Vercel needs these files explicitly traced into the server bundle.
+    "**/*": ["./media/**/*"],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

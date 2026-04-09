@@ -25,6 +25,15 @@ All commands run from the `nextjs-app/` directory.
 
 **Running a single test**: No test framework is currently configured. Add Vitest or Jest if tests are needed.
 
+## Payload helper scripts
+
+Run these from `nextjs-app/` when you need finer control than the npm scripts above.
+
+- `npx tsx scripts/push-schema.ts` pushes the latest collections/globals schema directly to the PostgreSQL adapter (Payload `adapter.push()`), which is handy after adding fields without spinning up the full server.
+- `npx tsx scripts/sync-schema.ts` calls `payload.types.generate()` against the local config so `src/payload-types.ts` stays in sync even when you prefer not to use the Payload CLI.
+- `npx tsx scripts/force-seed.mts` reruns `scripts/seed-globals.mts` while automatically sending ENTER whenever Payload prompts about overwriting existing globals, which keeps CI or repeated seeds from stalling.
+- `npx tsx scripts/debug-config.mts` (and the pared-down `npx tsx scripts/debug-config-simple.mts`) load `payload.seed-config.mts` and log each collection/global plus its `fields` array so you can catch missing exports before hitting the database.
+
 ## Code Style Guidelines
 
 ### General Principles
