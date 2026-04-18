@@ -228,6 +228,35 @@ export const ServicesPage: GlobalConfig = {
           ],
         },
         {
+          label: "Service Categories",
+          description: "A full list of service categories (used to display all offerings).",
+          fields: [
+            {
+              name: "serviceCategories",
+              type: "array",
+              label: "Service Categories",
+              minRows: 1,
+              admin: {
+                initCollapsed: true,
+              },
+              fields: [
+                {
+                  name: "title",
+                  type: "text",
+                  required: true,
+                  label: "Title",
+                },
+                {
+                  name: "body",
+                  type: "textarea",
+                  required: true,
+                  label: "Body",
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: "Service Sections",
           description: "Three service sections shown on the page with two showcase cards each.",
           fields: [

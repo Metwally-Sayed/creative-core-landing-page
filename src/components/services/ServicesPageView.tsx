@@ -16,6 +16,10 @@ import type {
 
 type ServicesPageViewProps = {
   hero: HeroConfig;
+  categories: Array<{
+    title: string;
+    body: string;
+  }>;
   sections: ServiceSection[];
   shinyThings: {
     eyebrow: string;
@@ -25,10 +29,21 @@ type ServicesPageViewProps = {
   awardColumns: AwardStat[][];
 };
 
-function JumpAhead({ sections }: { sections: ServiceSection[] }) {
+function JumpAhead({
+  categories,
+  sections,
+}: {
+  categories: ServicesPageViewProps["categories"];
+  sections: ServiceSection[];
+}) {
   return (
     <div className="flex flex-col gap-1 text-[0.84rem] leading-[1.2] text-accent">
       <p className="pr-6 text-secondary/80">Jump ahead:</p>
+      {categories.length > 0 ? (
+        <a href="#service-categories" className="transition-colors hover:text-secondary">
+          All Services
+        </a>
+      ) : null}
       {sections.map((section) => (
         <a
           key={section.id}
@@ -329,10 +344,12 @@ function ServiceShowcaseCard({
 
 function ServicesHero({
   body,
+  categories,
   sections,
   title,
 }: {
   body: string;
+  categories: ServicesPageViewProps["categories"];
   sections: ServiceSection[];
   title: string;
 }) {
@@ -342,7 +359,7 @@ function ServicesHero({
         <div className="hidden gap-16 lg:grid lg:grid-cols-[minmax(0,1fr)_13rem_15rem] lg:gap-x-12">
           <div className="hidden lg:block" />
           <EditorialReveal delay={0.08} x={24} y={0}>
-            <JumpAhead sections={sections} />
+            <JumpAhead categories={categories} sections={sections} />
           </EditorialReveal>
           <div />
         </div>
@@ -495,8 +512,66 @@ function ShinyThingsSection({
   );
 }
 
+function ServiceCategoriesSection({
+  categories,
+}: {
+  categories: ServicesPageViewProps["categories"];
+}) {
+  if (categories.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      id="service-categories"
+      className="scroll-mt-20 border-b border-border/20 py-14 md:py-20 lg:py-24"
+    >
+      <div className="mx-auto max-w-[1450px] px-6 md:px-10 lg:px-16">
+        <div className="grid gap-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16">
+          <div />
+
+          <div className="space-y-10">
+            <EditorialReveal y={18}>
+              <div className="space-y-5">
+                <p className="text-[0.78rem] leading-none text-secondary/75">
+                  Our Services
+                </p>
+                <EditorialWordReveal
+                  as="h2"
+                  text="Everything we offer."
+                  className="font-serif text-[clamp(2.3rem,10vw,6.25rem)] leading-[0.92] tracking-[-0.06em] text-accent"
+                  delayChildren={0.05}
+                />
+              </div>
+            </EditorialReveal>
+
+            <div className="grid gap-10 md:grid-cols-2">
+              {categories.map((category, index) => (
+                <EditorialReveal
+                  key={category.title}
+                  delay={0.06 + index * 0.04}
+                  y={22}
+                  className="space-y-3 border-t border-border/60 pt-5"
+                >
+                  <h3 className="font-serif text-[1.9rem] leading-[1.05] tracking-[-0.03em] text-accent md:text-[2.2rem]">
+                    {category.title}
+                  </h3>
+                  <p className="text-[0.98rem] leading-[1.68] text-muted-foreground md:text-[1.05rem] md:leading-[1.72]">
+                    {category.body}
+                  </p>
+                </EditorialReveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function ServicesPageView({
   awardColumns,
+  categories,
   hero,
   sections,
   shinyThings,
@@ -518,11 +593,13 @@ export default function ServicesPageView({
           ) : (
             <ServicesHero
               body={hero.current?.body ?? ""}
+              categories={categories}
               sections={sections}
               title={hero.current?.title ?? ""}
             />
           )
         ) : null}
+        <ServiceCategoriesSection categories={categories} />
         {sections.map((section) => (
           <ServicesSection key={section.id} section={section} />
         ))}

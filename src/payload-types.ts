@@ -1290,6 +1290,13 @@ export interface ServicesPage {
         | null;
     };
   };
+  serviceCategories?:
+    | {
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
   serviceSections?:
     | {
         /**
@@ -2102,6 +2109,13 @@ export interface ServicesPageSelect<T extends boolean = true> {
                     id?: T;
                   };
             };
+      };
+  serviceCategories?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
       };
   serviceSections?:
     | T

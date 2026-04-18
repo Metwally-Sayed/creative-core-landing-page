@@ -26,6 +26,11 @@ type ServicesSection = {
   cards?: ServicesSectionCard[] | null;
 };
 
+type ServiceCategory = {
+  title?: string | null;
+  body?: string | null;
+};
+
 type ServicesDoc = {
   heroTitle?: string | null;
   heroBody?: string | null;
@@ -54,6 +59,7 @@ type ServicesDoc = {
       }> | null;
     } | null;
   } | null;
+  serviceCategories?: ServiceCategory[] | null;
   serviceSections?: ServicesSection[] | null;
   shinyThings?: {
     eyebrow?: string | null;
@@ -74,6 +80,10 @@ type ServicesDoc = {
 
 export type ServicesPageData = {
   hero: HeroConfig;
+  categories: Array<{
+    title: string;
+    body: string;
+  }>;
   sections: Array<{
     id: string;
     eyebrow: string;
@@ -115,6 +125,13 @@ export const getServicesPageData = cache(async (): Promise<ServicesPageData> => 
     depth: 2,
     draft: preview,
   })) as ServicesDoc | null;
+
+  const categories = (result?.serviceCategories ?? [])
+    .map((category) => ({
+      title: cleanText(category.title),
+      body: cleanText(category.body),
+    }))
+    .filter((category) => category.title && category.body);
 
   const sections = (result?.serviceSections ?? [])
     .map((section) => {
@@ -215,6 +232,7 @@ export const getServicesPageData = cache(async (): Promise<ServicesPageData> => 
           }
         : undefined,
     },
+    categories,
     sections,
     shinyThings: {
       eyebrow: cleanText(result?.shinyThings?.eyebrow),

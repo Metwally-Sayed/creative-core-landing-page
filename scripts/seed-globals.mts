@@ -50,31 +50,31 @@ async function seedGlobals() {
         },
         contactCards: [
           {
-            label: "Want to collaborate?",
+            label: "Ready to start your project?",
             sublabel: "Work with us",
-            value: "newbusiness@hellomonday.com",
-            href: "mailto:newbusiness@hellomonday.com",
+            value: "hello@creativecore.studio",
+            href: "mailto:hello@creativecore.studio",
             copyToClipboard: true,
           },
           {
-            label: "Want to say hi?",
+            label: "General inquiries",
             sublabel: "General inquiries",
-            value: "hello@hellomonday.com",
-            href: "mailto:hello@hellomonday.com",
+            value: "hello@creativecore.studio",
+            href: "mailto:hello@creativecore.studio",
             copyToClipboard: true,
           },
           {
-            label: "Want to join us?",
-            sublabel: "Become a Mondayteer",
-            value: "Apply here",
-            href: "#careers",
+            label: "Prefer WhatsApp?",
+            sublabel: "Message us",
+            value: "WhatsApp",
+            href: "#contact",
             copyToClipboard: false,
           },
           {
-            label: "Want to learn?",
-            sublabel: "Become an intern",
-            value: "Apply here",
-            href: "#careers",
+            label: "Want a quick call?",
+            sublabel: "Book a meeting",
+            value: "Book a call",
+            href: "#contact",
             copyToClipboard: false,
           },
         ],
@@ -406,37 +406,79 @@ async function seedGlobals() {
       slug: "homepage",
       data: {
         internalName: "Homepage",
-        metaTitle: "Hello Monday / Dept.",
+        metaTitle: "Creative Core",
         metaDescription:
-          "Reference-driven motion study of the Hello Monday homepage.",
+          "Brand strategy, identity, content, and marketing that bring your vision to life.",
         blocks: [
           {
             blockType: "hero",
             blockName: "Hero",
             anchorId: "home",
             isVisible: true,
-            eyebrow: "We make digital (and magical)...",
-            headlineRotator: [
-              { value: "Products" },
-              { value: "Branding" },
-              { value: "Products" },
-              { value: "Branding" },
-              { value: "Experiences" },
-              { value: "Branding" },
-            ],
-            scrollCueLabel: "Scroll to explore",
-            minHeightVariant: "tall",
-            overlayStyle: "light",
+            variant: "creative",
+            creative: {
+              kicker: "Creative Core",
+              headline: "Every brand has a vision",
+              highlight: "at its center.",
+              body:
+                "Our role is to shape that vision into something people can see, feel, and remember.",
+              subcopy:
+                "We help brands grow with thoughtful branding, strong visuals, and marketing that connects with people in the real world and online.",
+              primaryCtaLabel: "Start Your Project",
+              primaryCtaHref: "#quote",
+              secondaryCtaLabel: "See Our Work",
+              secondaryCtaHref: "/work",
+              layoutVariant: "split",
+              mediaSide: "right",
+              textAlign: "left",
+              backgroundStyle: "soft",
+              mediaItems: [],
+            },
+          },
+          {
+            blockType: "richTextContent",
+            blockName: "Who We Are",
+            anchorId: "who-we-are",
+            isVisible: true,
+            eyebrow: "Who we are",
+            heading: "We build brands from the inside out.",
+            richText:
+              "We believe every successful brand starts with a strong core: a clear vision, a distinct personality, and a system that works across every touchpoint. We combine creative thinking with practical execution to help businesses launch, grow, rebrand, and stand out in competitive markets.",
+            layoutVariant: "split",
+            primaryCtaLabel: "Explore Services",
+            primaryCtaHref: "/services",
+          },
+          {
+            blockType: "richTextContent",
+            blockName: "What We Do",
+            anchorId: "what-we-do",
+            isVisible: true,
+            eyebrow: "What we do",
+            heading: "Strategy, design, and storytelling.",
+            richText:
+              "We help businesses define who they are, how they look, and how they connect with their audience through branding, design, content, and marketing.",
+            layoutVariant: "centered",
+          },
+          {
+            blockType: "richTextContent",
+            blockName: "Why Us",
+            anchorId: "why-us",
+            isVisible: true,
+            eyebrow: "Why Creative Core",
+            heading: "Tailored, thoughtful, hands-on.",
+            richText:
+              "We do not believe in one-size-fits-all branding. Every business has a different story, different audience, and different goals. Our process is always tailored, thoughtful, and hands-on, bringing branding, design, and marketing under one creative direction for real-world impact.",
+            layoutVariant: "centered",
           },
           {
             blockType: "curatedProjects",
-            blockName: "Selected Work",
+            blockName: "Featured Work",
             anchorId: "work",
             isVisible: true,
-            eyebrow: "Selected Work",
-            heading: "Same motion system, now wrapped in the Creative visual language.",
+            eyebrow: "Featured work",
+            heading: "Selected work, built to last.",
             body:
-              "The layout stays editorial and kinetic, but the surfaces, color temperature, and typography now follow the softer premium theme from the reference site.",
+              "Every project starts with a vision and ends with a stronger brand presence.",
             filterMode: "manual",
             filterLabels: [
               { label: "All" },
@@ -448,97 +490,29 @@ async function seedGlobals() {
             emptyStateText: "Projects will appear here once editors curate the homepage selection.",
           },
           {
-            blockType: "featureMedia",
-            blockName: "Product Acceleration",
-            anchorId: "product",
+            blockType: "logoStrip",
+            blockName: "Clients",
+            anchorId: "clients",
             isVisible: true,
-            eyebrow: "Product Acceleration",
-            heading: "A booster rocket for digital product teams",
+            eyebrow: "Clients",
+            heading: "Built with brands ready to grow.",
             body:
-              "We collaborate with startups and product departments around the world to invent and reinvent the products of tomorrow.",
-            backgroundMediaType: "image",
-            overlayStyle: "dark",
-            stats: [
-              {
-                label: "Global Reach",
-                value: "120M+",
-                supportingText: "Users affected by our work",
-              },
-              {
-                label: "Proven Impact",
-                value: "23+",
-                supportingText: "Dynamic case studies",
-              },
-              {
-                label: "Client Success",
-                value: "94%",
-                supportingText: "Repeat business rate",
-              },
-            ],
-            primaryCtaLabel: "Discover our methodology",
-            primaryCtaHref: "/product",
+              "We collaborate with businesses that value creativity, growth, and strong brand presence. Add client logos in the CMS to showcase partnerships.",
+            logos: [],
           },
           {
-            blockType: "faqSpotlight",
-            blockName: "FAQ",
-            anchorId: "faq",
+            blockType: "ctaBanner",
+            blockName: "Contact CTA",
+            anchorId: "contact",
             isVisible: true,
-            eyebrow: "Common Inquiries",
-            heading: "Curated for the curious.",
-            subheading: "Answered for the committed.",
-            items: [
-              {
-                id: "engagement",
-                question: "What does a typical engagement look like?",
-                answer:
-                  "Most projects begin with a focused discovery sprint, then move into strategy, design, and implementation. We align around checkpoints early so the handoff is clear and launch-ready.",
-                preview:
-                  "A short discovery sprint, then production with clear review cadence.",
-                deliverables: [
-                  { label: "Discovery Notes" },
-                  { label: "Roadmap" },
-                  { label: "Weekly Review Rhythm" },
-                ],
-              },
-              {
-                id: "product-teams",
-                question: "Do you work with product teams as well as brands?",
-                answer:
-                  "Yes. We support product organizations, marketing teams, and brand leads. The shape of the project changes, but the core collaboration model stays the same.",
-                preview:
-                  "The process adapts to both product organizations and brand teams.",
-                deliverables: [
-                  { label: "UX Direction" },
-                  { label: "Launch System" },
-                ],
-              },
-              {
-                id: "single-scope",
-                question: "Can you take on a focused scope instead of a full redesign?",
-                answer:
-                  "Absolutely. We can quote single-scope projects like a launch page, design system work, or a campaign experience while keeping room to expand later.",
-                preview:
-                  "Focused scopes are fine as long as the output is clearly defined.",
-                deliverables: [
-                  { label: "Scope Plan" },
-                  { label: "Execution Milestones" },
-                ],
-              },
-              {
-                id: "pricing",
-                question: "How do you price projects?",
-                answer:
-                  "We quote by scope and outcomes, not hourly tracking. Once we understand goals, timeline, and deliverables, we can put together a tighter project estimate.",
-                preview:
-                  "Outcome-based pricing with a clearer estimate after discovery.",
-                deliverables: [
-                  { label: "Proposal" },
-                  { label: "Milestone Estimate" },
-                ],
-              },
-            ],
-            quoteLauncherVariant: "standard",
-            quoteLauncherLabel: "Start your discovery sprint",
+            eyebrow: "Contact Us",
+            heading: "Ready to start your project?",
+            body: "Get in touch and let’s bring your vision to life.",
+            primaryCtaLabel: "Start Your Project",
+            primaryCtaHref: "#quote",
+            secondaryCtaLabel: "View Services",
+            secondaryCtaHref: "/services",
+            themeVariant: "inverted",
           },
         ],
       },
@@ -553,96 +527,125 @@ async function seedGlobals() {
     await payload.updateGlobal({
       slug: "servicesPage",
       data: {
-        heroTitle: "What we do",
+        heroTitle: "Our Services",
         heroBody:
-          "We build better businesses by creating joyful digital ideas, products and experiences that connect the hearts of brands to the hearts of humans.",
+          "We offer creative solutions designed to help brands grow with clarity, consistency, and impact.",
+        serviceCategories: [
+          {
+            title: "Brand Identity",
+            body: "We create brand identities that define how your business looks, feels, and communicates. This includes logo development, color systems, typography, visual direction, and brand guidelines.",
+          },
+          {
+            title: "Packaging & Print Design",
+            body: "We design packaging and printed materials that strengthen the brand presence and elevate the customer experience across every detail.",
+          },
+          {
+            title: "Social Media Strategy",
+            body: "We build social media strategies that align with your brand and speak to your audience. From content pillars to campaign ideas, we create a roadmap for consistent and engaging communication.",
+          },
+          {
+            title: "Content Creation",
+            body: "We develop visual and written content that helps brands show up professionally and creatively across digital platforms. This can include photoshoots, reels concepts, captions, and campaign messaging.",
+          },
+          {
+            title: "Marketing & Campaign Direction",
+            body: "We shape creative campaigns that build awareness, support launches, and keep brands relevant. Our goal is to create ideas that connect emotionally and perform strategically.",
+          },
+          {
+            title: "Website & Digital Presence",
+            body: "We help brands translate their identity into the digital space through website direction, content structure, and user-focused creative presentation.",
+          },
+          {
+            title: "3D & Interior Design",
+            body: "We design spaces that reflect the brand and elevate the customer experience. From concept development and moodboards to 3D visualizations and interior direction, we help transform ideas into immersive environments that feel cohesive, functional, and visually impactful.",
+          },
+        ],
         serviceSections: [
           {
-            sectionId: "products",
-            eyebrow: "We make (digital)",
-            title: "Products",
-            body: "We make better products and make products better. From design and innovation sprints to UX design sprints and marathons, we create things that work for users and brands. Our approach was agile before they called it agile, finding innovation through structured ideation, prototyping and user-testing. Over the past couple of years, we've dived deep into machine learning and AI, but always with one question in mind: how does it make life better for humans?",
-            linkLabel: "View Digital Products",
-            illustration: "products",
+            sectionId: "branding",
+            eyebrow: "Branding",
+            title: "Identity & Packaging",
+            body: "We create brand identities and packaging systems that stay consistent across every touchpoint, from logo and typography to printed materials and in-store presence.",
+            linkLabel: "See branding work",
+            illustration: "branding",
             cards: [
               {
-                title: "Playful interfaces for everyday tools",
-                subtitle: "Product concept",
+                title: "Brand Identity",
+                subtitle: "Visual direction",
+                art: "split-rings",
+              },
+              {
+                title: "Packaging & Print",
+                subtitle: "Physical presence",
+                art: "residenta-pack",
+              },
+            ],
+          },
+          {
+            sectionId: "marketing",
+            eyebrow: "Marketing",
+            title: "Content & Social",
+            body: "We plan, create, and direct content that speaks to your audience across channels, backed by social strategy and campaigns built to perform.",
+            linkLabel: "See marketing work",
+            illustration: "experiences",
+            cards: [
+              {
+                title: "Social Strategy",
+                subtitle: "Content roadmap",
                 art: "confetti-watch",
               },
               {
-                title: "A bold platform made instantly recognizable",
-                subtitle: "Product launch",
+                title: "Content Creation",
+                subtitle: "Visual + written",
                 art: "youtube-play",
               },
             ],
           },
           {
-            sectionId: "experiences",
-            eyebrow: "We make (digital)",
-            title: "Experiences",
-            body: "We tell stories with images, film, 360, virtual reality, augmented reality, 3D graphics and that magical technology called language. We don't see a dividing line between 'digital' and 'real' - do it right and digital is real. Immersive, emotional, joyful, memorable, magical. We love coming up with new, meaningful ways to make a human connection.",
-            linkLabel: "View Digital Experiences",
-            illustration: "experiences",
+            sectionId: "digital",
+            eyebrow: "Digital",
+            title: "Websites & Spaces",
+            body: "We translate brand identity into digital experiences and physical environments, shaping structure, presentation, and visuals that feel cohesive and intentional.",
+            linkLabel: "See digital work",
+            illustration: "products",
             cards: [
               {
-                title: "Editorial art direction with tactile framing",
-                subtitle: "Immersive storytelling",
+                title: "Website Presence",
+                subtitle: "Structure + UX",
                 art: "bear-frame",
               },
               {
-                title: "A cinematic launch world for fans",
-                subtitle: "Digital experience",
+                title: "3D & Interior",
+                subtitle: "Immersive spaces",
                 art: "vr-fans",
-              },
-            ],
-          },
-          {
-            sectionId: "branding",
-            eyebrow: "We make",
-            title: "Branding",
-            body: "Brands are ideas that keep growing. We think of them like machine learning. When you build a brand, you build in the power to adapt and evolve. We create the building blocks: the strategy, symbol, logotype, typography, color scheme, iconography, illustration style, visuals, animations, motion design, photography style, sound design, messaging, and tone of voice. But ultimately the brand creates itself - in the minds and hearts of the audience.",
-            linkLabel: "View Branding",
-            illustration: "branding",
-            cards: [
-              {
-                title: "A visual identity built from one memorable mark",
-                subtitle: "Brand system",
-                art: "split-rings",
-              },
-              {
-                title: "Packaging that feels bold and gallery-like",
-                subtitle: "Brand campaign",
-                art: "residenta-pack",
               },
             ],
           },
         ],
         shinyThings: {
-          eyebrow: "We Got",
-          title: "Shiny Things",
-          body: "We're supposed to say we're humbled, but we're actually proud when we win awards. They're not a perfect measure of creativity (it's about happy users, not happy judges) but they're a sign we're doing something right.",
+          eyebrow: "Contact Us",
+          title: "Ready to elevate your brand?",
+          body: "Get in touch and let’s bring your vision to life.",
         },
         awardColumns: [
           {
             awards: [
-              { label: "Cannes Lion", value: "8" },
-              { label: "D&AD", value: "5" },
-              { label: "Eurobest awards", value: "2" },
-              { label: "FWA SOTD\nFWA Hall of Fame", value: "121" },
+              { label: "Let’s bring your brand to life.", value: "01" },
+              { label: "Let’s create a brand that stands out.", value: "02" },
+              { label: "Ready to elevate your brand?", value: "03" },
             ],
           },
           {
             awards: [
-              { label: "Webby Awards", value: "14" },
-              { label: "Creative Circle Awards", value: "48" },
-              { label: "Awwwards", value: "58" },
+              { label: "Your next big move starts here.", value: "04" },
+              { label: "Built for brands ready to grow.", value: "05" },
+              { label: "Start Your Project", value: "06" },
             ],
           },
         ],
-        metaTitle: "Services | Hello Monday / Dept.",
+        metaTitle: "Services | Creative Core",
         metaDescription:
-          "We build better businesses by creating joyful digital ideas, products and experiences.",
+          "Brand identity, packaging, content, marketing, websites, and 3D environments designed to help brands grow.",
       },
     });
     console.log("✓ ServicesPage seeded");
@@ -784,10 +787,10 @@ async function seedGlobals() {
     await payload.updateGlobal({
       slug: "workPage",
       data: {
-        heroTitle: "Work",
-        heroBody: "An editorial grid of selected Hello Monday projects curated from Payload CMS.",
-        metaTitle: "Work | Hello Monday / Dept.",
-        metaDescription: "An editorial grid of selected Hello Monday projects.",
+        heroTitle: "Our Work",
+        heroBody: "Every project we take on starts with a vision and ends with a stronger brand presence. Our portfolio reflects a mix of strategy, creativity, and real-world execution, tailored to each client’s goals and audience.",
+        metaTitle: "Work | Creative Core",
+        metaDescription: "Selected work across branding, content, campaigns, websites, and spaces.",
         filterLabels: [
           { label: "Products", value: "Products" },
           { label: "Experiences", value: "Experiences" },
