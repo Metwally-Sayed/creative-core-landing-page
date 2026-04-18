@@ -5,19 +5,18 @@ import { useState } from "react";
 import WorkPageView from "@/components/work/WorkPageView";
 import type { ProjectSummary } from "@/lib/cms-projects";
 import type { WorkPageFilter } from "@/lib/cms-work";
+import type { HeroConfig } from "@/lib/hero-types";
 
 type WorkPageContainerProps = {
   filters: WorkPageFilter[];
   projects: ProjectSummary[];
-  heroTitle?: string;
-  heroBody?: string;
+  hero: HeroConfig;
 };
 
 export default function WorkPageContainer({
   filters,
   projects,
-  heroTitle,
-  heroBody,
+  hero,
 }: WorkPageContainerProps) {
   const [activeFilter, setActiveFilter] = useState<ProjectSummary["workFilters"][number] | null>(null);
 
@@ -30,8 +29,7 @@ export default function WorkPageContainer({
       activeFilter={activeFilter}
       filters={filters}
       projects={filteredProjects}
-      heroTitle={heroTitle}
-      heroBody={heroBody}
+      hero={hero}
       onFilterChange={(filter) => {
         setActiveFilter((currentFilter) =>
           currentFilter === filter.value ? null : filter.value,

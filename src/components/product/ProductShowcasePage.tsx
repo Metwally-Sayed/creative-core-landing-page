@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import type { ProductPageData } from "@/lib/cms-product";
+import CreativeHero from "@/components/sections/CreativeHero";
 import { cn } from "@/lib/utils";
 
 type Collaboration = {
@@ -74,8 +75,12 @@ export default function ProductShowcasePage({ cmsData }: ProductShowcasePageProp
   const prefersReducedMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
 
-  const heroVideoUrl = cmsData.hero.videoUrl;
-  const heroTitleLines = cmsData.hero.titleLines;
+  const heroConfig = cmsData.hero;
+  const isCreativeHero =
+    heroConfig.isVisible && heroConfig.variant === "creative" && Boolean(heroConfig.creative);
+
+  const heroVideoUrl = heroConfig.current?.videoUrl ?? "";
+  const heroTitleLines = heroConfig.current?.titleLines ?? [];
   const introEyebrow = cmsData.intro.eyebrow;
   const introParagraphs = cmsData.intro.paragraphs;
   const collaborations = cmsData.collaborations;
@@ -123,49 +128,63 @@ export default function ProductShowcasePage({ cmsData }: ProductShowcasePageProp
 
   return (
     <div className="relative overflow-x-clip overflow-y-visible bg-[#161514] text-[#f5efe6]">
-      <section ref={heroRef} className="relative isolate overflow-x-clip overflow-y-visible px-5 pt-[7rem] sm:px-6 md:pt-[7.8rem] lg:px-20 lg:pt-[9.5rem]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(255,186,124,0.14),transparent_24%),linear-gradient(180deg,#181716_0%,#161514_100%)]"
-        />
-
-        <div className="site-shell relative max-w-[1220px] px-0">
-          <div className="relative overflow-hidden rounded-[2.1rem] border border-white/8 bg-[#0f0f0f] shadow-[0_40px_90px_rgba(0,0,0,0.42)]">
-            <motion.div style={{ y: mediaY, scale: mediaScale }} className="absolute inset-0">
-              {heroVideoUrl ? (
-                <video
-                  className="h-full w-full object-cover"
-                  src={heroVideoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                />
-              ) : null}
-            </motion.div>
-            <div className="pointer-events-none relative aspect-[16/9] bg-[linear-gradient(180deg,rgba(8,8,8,0.16)_0%,rgba(8,8,8,0.4)_72%,rgba(8,8,8,0.68)_100%)]" />
+      {heroConfig.isVisible ? (
+        isCreativeHero && heroConfig.creative ? (
+          <div ref={heroRef as any} className="dark">
+            <CreativeHero id="product" config={heroConfig.creative} />
           </div>
+        ) : (
+          <section
+            ref={heroRef}
+            className="relative isolate overflow-x-clip overflow-y-visible px-5 pt-[7rem] sm:px-6 md:pt-[7.8rem] lg:px-20 lg:pt-[9.5rem]"
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(255,186,124,0.14),transparent_24%),linear-gradient(180deg,#181716_0%,#161514_100%)]"
+            />
 
-          <motion.div style={{ y: titleY }} className="relative z-10 mx-auto -mt-10 max-w-[16rem] pb-8 text-center sm:-mt-[4.5rem] sm:max-w-[22rem] md:-mt-18 md:max-w-[34rem] lg:-mt-24 lg:max-w-[43rem] lg:pb-2">
-            {heroTitleLines.map((line, index) => (
-              <motion.span
-                key={`${line}-${index}`}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.18 + index * 0.08,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="block font-serif text-[clamp(2.35rem,12.5vw,6.6rem)] leading-[0.9] tracking-[-0.06em] text-[#f3eee6]"
+            <div className="site-shell relative max-w-[1220px] px-0">
+              <div className="relative overflow-hidden rounded-[2.1rem] border border-white/8 bg-[#0f0f0f] shadow-[0_40px_90px_rgba(0,0,0,0.42)]">
+                <motion.div style={{ y: mediaY, scale: mediaScale }} className="absolute inset-0">
+                  {heroVideoUrl ? (
+                    <video
+                      className="h-full w-full object-cover"
+                      src={heroVideoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                    />
+                  ) : null}
+                </motion.div>
+                <div className="pointer-events-none relative aspect-[16/9] bg-[linear-gradient(180deg,rgba(8,8,8,0.16)_0%,rgba(8,8,8,0.4)_72%,rgba(8,8,8,0.68)_100%)]" />
+              </div>
+
+              <motion.div
+                style={{ y: titleY }}
+                className="relative z-10 mx-auto -mt-10 max-w-[16rem] pb-8 text-center sm:-mt-[4.5rem] sm:max-w-[22rem] md:-mt-18 md:max-w-[34rem] lg:-mt-24 lg:max-w-[43rem] lg:pb-2"
               >
-                {line}
-              </motion.span>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+                {heroTitleLines.map((line, index) => (
+                  <motion.span
+                    key={`${line}-${index}`}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.18 + index * 0.08,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="block font-serif text-[clamp(2.35rem,12.5vw,6.6rem)] leading-[0.9] tracking-[-0.06em] text-[#f3eee6]"
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+        )
+      ) : null}
 
       <motion.section
         style={{ opacity: introOpacity }}

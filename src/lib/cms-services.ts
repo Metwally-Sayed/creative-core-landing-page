@@ -4,6 +4,7 @@ import { cache } from "react";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { asUploadURL, cleanText, type PayloadUploadDoc } from "./cms-mappers";
+import type { HeroConfig } from "./hero-types";
 
 const getPayloadClient = cache(async () => getPayload({ config }));
 
@@ -28,6 +29,31 @@ type ServicesSection = {
 type ServicesDoc = {
   heroTitle?: string | null;
   heroBody?: string | null;
+  hero?: {
+    isVisible?: boolean | null;
+    variant?: string | null;
+    creative?: {
+      kicker?: string | null;
+      headline?: string | null;
+      highlight?: string | null;
+      body?: string | null;
+      subcopy?: string | null;
+      primaryCtaLabel?: string | null;
+      primaryCtaHref?: string | null;
+      secondaryCtaLabel?: string | null;
+      secondaryCtaHref?: string | null;
+      layoutVariant?: string | null;
+      mediaSide?: string | null;
+      textAlign?: string | null;
+      backgroundStyle?: string | null;
+      mediaItems?: Array<{
+        media?: UploadValue;
+        externalUrl?: string | null;
+        alt?: string | null;
+        href?: string | null;
+      }> | null;
+    } | null;
+  } | null;
   serviceSections?: ServicesSection[] | null;
   shinyThings?: {
     eyebrow?: string | null;
@@ -47,10 +73,7 @@ type ServicesDoc = {
 };
 
 export type ServicesPageData = {
-  hero: {
-    title: string;
-    body: string;
-  };
+  hero: HeroConfig;
   sections: Array<{
     id: string;
     eyebrow: string;
@@ -143,10 +166,54 @@ export const getServicesPageData = cache(async (): Promise<ServicesPageData> => 
 
   const ogImageUrl = asUploadURL(result?.ogImage);
 
+  const heroVariantRaw = cleanText(result?.hero?.variant) || "current";
+  const heroVariant = heroVariantRaw === "creative" ? "creative" : "current";
+  const heroVisible = result?.hero?.isVisible !== false;
+  const creative = result?.hero?.creative ?? null;
+  const creativePrimary =
+    cleanText(creative?.primaryCtaLabel) && cleanText(creative?.primaryCtaHref)
+      ? { label: cleanText(creative?.primaryCtaLabel), href: cleanText(creative?.primaryCtaHref) }
+      : undefined;
+  const creativeSecondary =
+    cleanText(creative?.secondaryCtaLabel) && cleanText(creative?.secondaryCtaHref)
+      ? { label: cleanText(creative?.secondaryCtaLabel), href: cleanText(creative?.secondaryCtaHref) }
+      : undefined;
+  const creativeItems = (creative?.mediaItems ?? [])
+    .map((item) => ({
+      url: asUploadURL(item.media) || cleanText(item.externalUrl),
+      alt: cleanText(item.alt),
+      href: cleanText(item.href) || undefined,
+    }))
+    .filter((item) => item.url && item.alt);
+
   return {
     hero: {
-      title: cleanText(result?.heroTitle),
-      body: cleanText(result?.heroBody),
+      isVisible: heroVisible,
+      variant: heroVariant,
+      current: {
+        title: cleanText(result?.heroTitle),
+        body: cleanText(result?.heroBody),
+      },
+      creative: creative
+        ? {
+            kicker: cleanText(creative.kicker) || undefined,
+            headline: cleanText(creative.headline),
+            highlight: cleanText(creative.highlight) || undefined,
+            body: cleanText(creative.body) || undefined,
+            subcopy: cleanText(creative.subcopy) || undefined,
+            primaryCta: creativePrimary,
+            secondaryCta: creativeSecondary,
+            media: { items: creativeItems },
+            layout: {
+              variant: (cleanText(creative.layoutVariant) as "split" | "stacked") || "split",
+              mediaSide: (cleanText(creative.mediaSide) as "left" | "right") || "right",
+            },
+            style: {
+              textAlign: (cleanText(creative.textAlign) as "left" | "center") || "left",
+              background: (cleanText(creative.backgroundStyle) as "soft" | "none") || "soft",
+            },
+          }
+        : undefined,
     },
     sections,
     shinyThings: {

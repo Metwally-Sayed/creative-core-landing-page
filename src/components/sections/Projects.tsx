@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from 'react';
-import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import LiquidCard from '@/components/LiquidCard';
 import Link from 'next/link';
@@ -134,36 +134,47 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
   );
 }
 
-function getProjectHeightWeight(project: ProjectSummary) {
-  switch (project.aspectRatio) {
-    case "portrait":
-      return 1.45;
-    case "square":
-      return 1.1;
-    case "landscape":
-    default:
-      return 0.92;
-  }
-}
+function distributeProjectsIntoColumns(projects: ProjectSummary[], columnCount: number) {
+  const safeColumnCount = Math.max(1, Math.min(3, columnCount));
+  const columns: ProjectSummary[][] = Array.from({ length: safeColumnCount }, () => []);
 
-function assignProjectsToColumns(projects: ProjectSummary[], columnCount: number) {
-  const columns = Array.from({ length: columnCount }, () => 0);
-  const placements = new Map<string, number>();
-
-  projects.forEach((project) => {
-    let targetColumn = 0;
-
-    for (let index = 1; index < columns.length; index += 1) {
-      if (columns[index] < columns[targetColumn]) {
-        targetColumn = index;
-      }
-    }
-
-    placements.set(project.id, targetColumn);
-    columns[targetColumn] += getProjectHeightWeight(project);
+  projects.forEach((project, index) => {
+    columns[index % safeColumnCount]?.push(project);
   });
 
-  return placements;
+  return columns;
+}
+
+function useResponsiveColumnCount() {
+  const [columnCount, setColumnCount] = useState(1);
+
+  useEffect(() => {
+    const mdQuery = window.matchMedia('(min-width: 768px)');
+    const lgQuery = window.matchMedia('(min-width: 1024px)');
+
+    const compute = () => {
+      if (lgQuery.matches) {
+        setColumnCount(3);
+        return;
+      }
+      if (mdQuery.matches) {
+        setColumnCount(2);
+        return;
+      }
+      setColumnCount(1);
+    };
+
+    compute();
+    mdQuery.addEventListener('change', compute);
+    lgQuery.addEventListener('change', compute);
+
+    return () => {
+      mdQuery.removeEventListener('change', compute);
+      lgQuery.removeEventListener('change', compute);
+    };
+  }, []);
+
+  return columnCount;
 }
 
 type ProjectsProps = {
@@ -173,6 +184,7 @@ type ProjectsProps = {
   body?: string;
   filterLabels?: string[];
   emptyStateText?: string;
+  mergeTopBackground?: boolean;
 };
 
 export default function Projects({
@@ -182,11 +194,13 @@ export default function Projects({
   body = "The layout stays editorial and kinetic, but the surfaces, color temperature, and typography now follow the softer premium theme from the reference site.",
   filterLabels,
   emptyStateText = "No projects match this filter yet.",
+  mergeTopBackground = false,
 }: ProjectsProps) {
   const categories = Array.from(
     new Set(["All", ...(filterLabels?.filter(Boolean) ?? ["Products", "Experiences", "Branding"])])
   );
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const columnCount = useResponsiveColumnCount();
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
   const { scrollYProgress } = useScroll({
@@ -196,28 +210,42 @@ export default function Projects({
   const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 120, mass: 0.5 });
   const yUp = useTransform(smoothProgress, [0, 1], [0, -150]);
   const yDown = useTransform(smoothProgress, [0, 1], [0, 150]);
-  const yUpPx = useMotionTemplate`${yUp}px`;
-  const yDownPx = useMotionTemplate`${yDown}px`;
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
     : projects.filter((project) =>
         project.workFilters.includes(activeCategory as WorkFilter),
       );
-  const mdColumnPlacement = assignProjectsToColumns(filteredProjects, 2);
-  const lgColumnPlacement = assignProjectsToColumns(filteredProjects, 3);
+  const projectIndexById = useMemo(() => {
+    return new Map(filteredProjects.map((project, index) => [project.id, index]));
+  }, [filteredProjects]);
+
+  const columns = useMemo(() => {
+    return distributeProjectsIntoColumns(filteredProjects, columnCount);
+  }, [filteredProjects, columnCount]);
+
+  const containerClassName = useMemo(() => {
+    const base = 'min-h-[520px] gap-6 md:gap-7 lg:gap-8';
+    if (columnCount === 1) return `flex flex-col ${base}`;
+    if (columnCount === 2) return `grid grid-cols-2 ${base} pb-40`;
+    return `grid grid-cols-3 ${base} pb-44`;
+  }, [columnCount]);
+
+  const getColumnParallax = (index: number) => {
+    if (columnCount === 1) return undefined;
+    if (columnCount === 2) return index === 0 ? yUp : yDown;
+    return index === 1 ? yDown : yUp;
+  };
 
   return (
     <motion.section 
       ref={sectionRef} 
-      style={{
-        "--y-up": yUpPx,
-        "--y-down": yDownPx,
-      } as React.CSSProperties}
       className="relative -mt-10 overflow-x-clip overflow-y-visible px-5 pb-12 pt-20 md:-mt-14 md:pb-20 md:pt-24 lg:-mt-24 lg:px-20 lg:pb-28 lg:pt-36" 
       id="work"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.96)_34%,rgba(255,255,255,0.7)_68%,rgba(255,255,255,0)_100%)] lg:h-40" />
+      {mergeTopBackground ? null : (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.96)_34%,rgba(255,255,255,0.7)_68%,rgba(255,255,255,0)_100%)] lg:h-40" />
+      )}
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
         <div className="mb-14 flex flex-col gap-8 md:mb-20 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-6">
@@ -285,44 +313,34 @@ export default function Projects({
           ))}
         </div>
 
-        {/* Masonry Grid with AnimatePresence */}
         {filteredProjects.length > 0 ? (
-          <div className="columns-1 gap-6 min-h-[520px] md:columns-2 md:gap-7 lg:columns-3 lg:gap-8">
-            <AnimatePresence mode="popLayout" initial={false}>
-            {filteredProjects.map((project, index) => {
-                let parallaxClass = "will-change-transform break-inside-avoid mb-6 md:mb-7 lg:mb-8 ";
-                const mdColumn = mdColumnPlacement.get(project.id) ?? 0;
-                const lgColumn = lgColumnPlacement.get(project.id) ?? 0;
-
-                if (mdColumn === 0) {
-                  parallaxClass += "md:![transform:translateY(var(--y-up))] ";
-                } else {
-                  parallaxClass += "md:![transform:translateY(var(--y-down))] ";
-                }
-
-                if (lgColumn === 0) {
-                  parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-                } else if (lgColumn === 1) {
-                  parallaxClass += "lg:![transform:translateY(var(--y-down))]";
-                } else {
-                  parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-                }
-
-                return (
-                  <motion.div
-                    key={project.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className={parallaxClass}
-                  >
-                    <LiquidProjectCard project={project} index={index} />
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+          <div className={containerClassName}>
+            {columns.map((columnProjects, columnIndex) => (
+              <motion.div
+                key={`projects-col-${columnIndex}`}
+                layout="position"
+                style={columnCount === 1 ? undefined : { y: getColumnParallax(columnIndex) }}
+                className="flex flex-col gap-6 md:gap-7 lg:gap-8 will-change-transform"
+              >
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {columnProjects.map((project) => {
+                    const projectIndex = projectIndexById.get(project.id) ?? 0;
+                    return (
+                      <motion.div
+                        key={project.id}
+                        layout="position"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <LiquidProjectCard project={project} index={projectIndex} />
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </motion.div>
+            ))}
           </div>
         ) : (
           <div className="rounded-[2rem] border border-[hsl(var(--border))]/70 bg-white/70 p-10 text-center text-muted-foreground">

@@ -4,6 +4,8 @@ import {
   EditorialReveal,
   EditorialWordReveal,
 } from "@/components/editorial/EditorialMotion";
+import CreativeHero from "@/components/sections/CreativeHero";
+import type { HeroConfig } from "@/lib/hero-types";
 export type AboutJumpLink = {
   label: string;
   href: string;
@@ -41,10 +43,7 @@ export type AboutLocation = {
 };
 
 type AboutPageViewProps = {
-  hero: {
-    title: string;
-    body: string;
-  };
+  hero: HeroConfig;
   jumpLinks: AboutJumpLink[];
   locations: AboutLocation[];
   codeOfHonor: {
@@ -431,7 +430,26 @@ export default function AboutPageView({
       />
 
       <div className="relative">
-        <AboutHero body={hero.body} jumpLinks={jumpLinks} title={hero.title} />
+        {hero.isVisible ? (
+          hero.variant === "creative" && hero.creative ? (
+            <>
+              <CreativeHero id="about" config={hero.creative} />
+              {jumpLinks.length > 0 ? (
+                <div className="border-b border-border/20">
+                  <div className="mx-auto max-w-[1450px] px-5 py-8 sm:px-6 md:px-10 lg:px-16">
+                    <JumpAhead links={jumpLinks} />
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <AboutHero
+              body={hero.current?.body ?? ""}
+              jumpLinks={jumpLinks}
+              title={hero.current?.title ?? ""}
+            />
+          )
+        ) : null}
         {/* <ContactSection locations={locations} /> */}
         <CodeOfHonorSection intro={codeOfHonor} items={codeOfHonorItems} />
         <MondayteersSection intro={mondayteers} team={team} />

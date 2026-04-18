@@ -4,9 +4,10 @@ import Projects from "@/components/sections/Projects";
 
 interface CuratedProjectsRendererProps {
   block: HomepageBlock;
+  mergeTopBackground?: boolean;
 }
 
-export default async function CuratedProjectsRenderer({ block }: CuratedProjectsRendererProps) {
+export default async function CuratedProjectsRenderer({ block, mergeTopBackground }: CuratedProjectsRendererProps) {
   const projects = await getHomepageProjects(block.projectIds, block.maxItems);
   return (
     <Projects
@@ -16,6 +17,7 @@ export default async function CuratedProjectsRenderer({ block }: CuratedProjects
       body={block.body}
       filterLabels={block.filterLabels}
       emptyStateText={block.emptyStateText}
+      mergeTopBackground={mergeTopBackground}
     />
   );
 }

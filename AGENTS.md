@@ -16,7 +16,7 @@ All commands run from the `nextjs-app/` directory.
 | `npm run dev` | Start Next.js 16 dev server with webpack (no Turbopack) |
 | `npm run build` | Run `next build` for production |
 | `npm run start` | Serve production build |
-| `npm run lint` | Run ESLint with next/core-web-vitals and TypeScript rules |
+| `npm run lint` | Run ESLint across the app |
 | `npm run payload` | Start Payload CMS server (PostgreSQL) |
 | `npm run payload:generate:importmap` | Regenerate admin importMap |
 | `npm run payload:generate:types` | Export TypeScript bindings for Payload |
@@ -33,6 +33,14 @@ Run these from `nextjs-app/` when you need finer control than the npm scripts ab
 - `npx tsx scripts/sync-schema.ts` calls `payload.types.generate()` against the local config so `src/payload-types.ts` stays in sync even when you prefer not to use the Payload CLI.
 - `npx tsx scripts/force-seed.mts` reruns `scripts/seed-globals.mts` while automatically sending ENTER whenever Payload prompts about overwriting existing globals, which keeps CI or repeated seeds from stalling.
 - `npx tsx scripts/debug-config.mts` (and the pared-down `npx tsx scripts/debug-config-simple.mts`) load `payload.seed-config.mts` and log each collection/global plus its `fields` array so you can catch missing exports before hitting the database.
+
+## Dev helper routes
+
+Use these while `npm run dev` is running in `nextjs-app/`.
+
+- `curl "http://localhost:3000/api/sync"` pushes the current Payload schema through the Next.js server context, which is useful when you want the app/runtime environment to perform the database sync instead of invoking `scripts/push-schema.ts` directly.
+- `curl "http://localhost:3000/api/preview?secret=$PREVIEW_SECRET&slug=/"` enables draft mode for the requested route. If `PREVIEW_SECRET` is unset locally, the code falls back to `hello-monday-payload-dev-secret`.
+- `curl "http://localhost:3000/api/exit-preview"` disables draft mode and redirects back to `/`.
 
 ## Code Style Guidelines
 

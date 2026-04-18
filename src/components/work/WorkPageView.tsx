@@ -6,15 +6,16 @@ import Link from "next/link";
 import LiquidCard from "@/components/LiquidCard";
 import type { ProjectSummary } from "@/lib/cms-projects";
 import type { WorkPageFilter } from "@/lib/cms-work";
+import type { HeroConfig } from "@/lib/hero-types";
 import { cn } from "@/lib/utils";
+import CreativeHero from "@/components/sections/CreativeHero";
 
 type WorkPageViewProps = {
   activeFilter: ProjectSummary["workFilters"][number] | null;
   filters: WorkPageFilter[];
   projects: ProjectSummary[];
   onFilterChange: (filter: WorkPageFilter) => void;
-  heroTitle?: string;
-  heroBody?: string;
+  hero: HeroConfig;
 };
 
 const aspectRatioClassMap = {
@@ -159,12 +160,14 @@ export default function WorkPageView({
   filters,
   projects,
   onFilterChange,
-  heroTitle = "",
-  heroBody = "",
+  hero,
 }: WorkPageViewProps) {
   const canUseFeaturedLayout = projects.length >= 5;
   const featuredProjects = canUseFeaturedLayout ? projects.slice(0, 5) : [];
   const remainingProjects = canUseFeaturedLayout ? projects.slice(5) : projects;
+
+  const currentTitle = hero.current?.title ?? "";
+  const currentBody = hero.current?.body ?? "";
 
   return (
     <section className="relative overflow-x-clip overflow-y-visible bg-background text-foreground">
@@ -173,16 +176,23 @@ export default function WorkPageView({
         className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,hsl(var(--secondary)/0.16),rgba(255,255,255,0))]"
       />
 
+      {hero.isVisible ? (
+        hero.variant === "creative" && hero.creative ? (
+          <CreativeHero id="work" config={hero.creative} />
+        ) : null
+      ) : null}
+
       <div className="mx-auto max-w-[1450px] px-5 pb-16 pt-[7.4rem] sm:px-6 md:px-10 md:pb-24 md:pt-30 lg:px-16 lg:pb-36 lg:pt-[10.5rem]">
-        {/* Header Section */}
-        <div className="mb-14 grid gap-8 md:mb-16 md:gap-10 lg:mb-20 lg:grid-cols-[1fr_minmax(24rem,0.95fr)] lg:items-end lg:gap-x-16">
-          <h1 className="font-serif text-[clamp(2.8rem,13vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-[hsl(var(--accent))]">
-            {heroTitle}
-          </h1>
-          <p className="max-w-[36rem] pb-1 text-[clamp(1.05rem,4.8vw,2.15rem)] leading-[1.28] tracking-[-0.02em] text-[hsl(var(--foreground)/0.78)] md:pb-2">
-            {heroBody}
-          </p>
-        </div>
+        {hero.isVisible && hero.variant !== "creative" ? (
+          <div className="mb-14 grid gap-8 md:mb-16 md:gap-10 lg:mb-20 lg:grid-cols-[1fr_minmax(24rem,0.95fr)] lg:items-end lg:gap-x-16">
+            <h1 className="font-serif text-[clamp(2.8rem,13vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-[hsl(var(--accent))]">
+              {currentTitle}
+            </h1>
+            <p className="max-w-[36rem] pb-1 text-[clamp(1.05rem,4.8vw,2.15rem)] leading-[1.28] tracking-[-0.02em] text-[hsl(var(--foreground)/0.78)] md:pb-2">
+              {currentBody}
+            </p>
+          </div>
+        ) : null}
 
         <div className="mb-10 grid gap-4 md:mb-[4.5rem] md:grid-cols-[6rem_1fr] md:items-start lg:grid-cols-[minmax(0,1fr)_6rem_15rem]">
           <div className="hidden lg:block" />

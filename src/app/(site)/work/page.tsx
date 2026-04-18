@@ -46,8 +46,7 @@ export default async function WorkPage() {
       <WorkPageContainer 
         filters={cmsData.filterLabels}
         projects={orderedProjects}
-        heroTitle={cmsData.hero.title}
-        heroBody={cmsData.hero.body}
+        hero={cmsData.hero}
       />
     </div>
   );

@@ -820,6 +820,10 @@ export interface Homepage {
             blockName?: string | null;
             anchorId?: string | null;
             isVisible?: boolean | null;
+            /**
+             * Select which hero layout to render. Current uses the video fields below. Creative uses the Creative Hero settings.
+             */
+            variant?: ('current' | 'creative') | null;
             eyebrow?: string | null;
             headlineRotator?:
               | {
@@ -827,12 +831,53 @@ export interface Homepage {
                   id?: string | null;
                 }[]
               | null;
-            desktopVideo: number | Media;
+            desktopVideo?: (number | null) | Media;
             mobileVideo?: (number | null) | Media;
             posterImage?: (number | null) | Media;
             scrollCueLabel?: string | null;
             minHeightVariant?: ('standard' | 'tall') | null;
             overlayStyle?: ('none' | 'light' | 'dark') | null;
+            /**
+             * CMS-driven content for the Creative hero variant.
+             */
+            creative?: {
+              kicker?: string | null;
+              headline?: string | null;
+              highlight?: string | null;
+              body?: string | null;
+              subcopy?: string | null;
+              primaryCtaLabel?: string | null;
+              primaryCtaHref?: string | null;
+              secondaryCtaLabel?: string | null;
+              secondaryCtaHref?: string | null;
+              layoutVariant?: ('split' | 'stacked') | null;
+              mediaSide?: ('right' | 'left') | null;
+              textAlign?: ('left' | 'center') | null;
+              backgroundStyle?: ('soft' | 'none') | null;
+              /**
+               * Images shown in the hero media sphere. Add at least 1 for best results.
+               */
+              mediaItems?:
+                | {
+                    /**
+                     * Images show as-is. Videos show a poster/thumbnail in the sphere and play in a modal.
+                     */
+                    type?: ('image' | 'video') | null;
+                    media?: (number | null) | Media;
+                    externalUrl?: string | null;
+                    videoMedia?: (number | null) | Media;
+                    videoUrl?: string | null;
+                    /**
+                     * Used for the sphere preview. If omitted, the sphere shows a generic video tile.
+                     */
+                    posterMedia?: (number | null) | Media;
+                    posterUrl?: string | null;
+                    alt: string;
+                    href?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+            };
             id?: string | null;
             blockType: 'hero';
           }
@@ -1206,8 +1251,45 @@ export interface ServicesPage {
   metaDescription?: string | null;
   ogImage?: (number | null) | Media;
   canonicalUrl?: string | null;
-  heroTitle: string;
-  heroBody: string;
+  /**
+   * Legacy: used by the Current hero variant.
+   */
+  heroTitle?: string | null;
+  /**
+   * Legacy: used by the Current hero variant.
+   */
+  heroBody?: string | null;
+  /**
+   * Select a hero variant. Current uses the legacy fields above. Creative uses the Creative Hero settings.
+   */
+  hero?: {
+    isVisible?: boolean | null;
+    variant?: ('current' | 'creative') | null;
+    creative?: {
+      kicker?: string | null;
+      headline?: string | null;
+      highlight?: string | null;
+      body?: string | null;
+      subcopy?: string | null;
+      primaryCtaLabel?: string | null;
+      primaryCtaHref?: string | null;
+      secondaryCtaLabel?: string | null;
+      secondaryCtaHref?: string | null;
+      layoutVariant?: ('split' | 'stacked') | null;
+      mediaSide?: ('right' | 'left') | null;
+      textAlign?: ('left' | 'center') | null;
+      backgroundStyle?: ('soft' | 'none') | null;
+      mediaItems?:
+        | {
+            media?: (number | null) | Media;
+            externalUrl?: string | null;
+            alt: string;
+            href?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+  };
   serviceSections?:
     | {
         /**
@@ -1267,8 +1349,45 @@ export interface AboutPage {
   metaDescription?: string | null;
   ogImage?: (number | null) | Media;
   canonicalUrl?: string | null;
-  heroTitle: string;
-  heroBody: string;
+  /**
+   * Legacy: used by the Current hero variant.
+   */
+  heroTitle?: string | null;
+  /**
+   * Legacy: used by the Current hero variant.
+   */
+  heroBody?: string | null;
+  /**
+   * Select a hero variant. Current uses the legacy hero fields above. Creative uses the Creative Hero settings.
+   */
+  hero?: {
+    isVisible?: boolean | null;
+    variant?: ('current' | 'creative') | null;
+    creative?: {
+      kicker?: string | null;
+      headline?: string | null;
+      highlight?: string | null;
+      body?: string | null;
+      subcopy?: string | null;
+      primaryCtaLabel?: string | null;
+      primaryCtaHref?: string | null;
+      secondaryCtaLabel?: string | null;
+      secondaryCtaHref?: string | null;
+      layoutVariant?: ('split' | 'stacked') | null;
+      mediaSide?: ('right' | 'left') | null;
+      textAlign?: ('left' | 'center') | null;
+      backgroundStyle?: ('soft' | 'none') | null;
+      mediaItems?:
+        | {
+            media?: (number | null) | Media;
+            externalUrl?: string | null;
+            alt: string;
+            href?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+  };
   jumpLinks?:
     | {
         label: string;
@@ -1383,7 +1502,44 @@ export interface WorkPage {
   metaDescription?: string | null;
   ogImage?: (number | null) | Media;
   canonicalUrl?: string | null;
+  /**
+   * Select a hero variant. Current uses the legacy fields below. Creative uses the Creative Hero settings.
+   */
+  hero?: {
+    isVisible?: boolean | null;
+    variant?: ('current' | 'creative') | null;
+    creative?: {
+      kicker?: string | null;
+      headline?: string | null;
+      highlight?: string | null;
+      body?: string | null;
+      subcopy?: string | null;
+      primaryCtaLabel?: string | null;
+      primaryCtaHref?: string | null;
+      secondaryCtaLabel?: string | null;
+      secondaryCtaHref?: string | null;
+      layoutVariant?: ('split' | 'stacked') | null;
+      mediaSide?: ('right' | 'left') | null;
+      textAlign?: ('left' | 'center') | null;
+      backgroundStyle?: ('soft' | 'none') | null;
+      mediaItems?:
+        | {
+            media?: (number | null) | Media;
+            externalUrl?: string | null;
+            alt: string;
+            href?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+  };
+  /**
+   * Legacy: used by the Current hero variant.
+   */
   heroTitle?: string | null;
+  /**
+   * Legacy: used by the Current hero variant.
+   */
   heroBody?: string | null;
   /**
    * Each filter needs a display label and a value. Value should match one of: Products, Experiences, Branding.
@@ -1416,13 +1572,44 @@ export interface ProductPage {
   /**
    * Direct video URL for the hero background media.
    */
-  heroVideoUrl: string;
+  heroVideoUrl?: string | null;
   heroTitleLines?:
     | {
-        line: string;
+        line?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Select a hero variant. Current uses the legacy video + title lines above. Creative uses the Creative Hero settings.
+   */
+  hero?: {
+    isVisible?: boolean | null;
+    variant?: ('current' | 'creative') | null;
+    creative?: {
+      kicker?: string | null;
+      headline?: string | null;
+      highlight?: string | null;
+      body?: string | null;
+      subcopy?: string | null;
+      primaryCtaLabel?: string | null;
+      primaryCtaHref?: string | null;
+      secondaryCtaLabel?: string | null;
+      secondaryCtaHref?: string | null;
+      layoutVariant?: ('split' | 'stacked') | null;
+      mediaSide?: ('right' | 'left') | null;
+      textAlign?: ('left' | 'center') | null;
+      backgroundStyle?: ('soft' | 'none') | null;
+      mediaItems?:
+        | {
+            media?: (number | null) | Media;
+            externalUrl?: string | null;
+            alt: string;
+            href?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+  };
   introEyebrow: string;
   introParagraphs?:
     | {
@@ -1488,6 +1675,7 @@ export interface HomepageSelect<T extends boolean = true> {
               blockName?: T;
               anchorId?: T;
               isVisible?: T;
+              variant?: T;
               eyebrow?: T;
               headlineRotator?:
                 | T
@@ -1501,6 +1689,37 @@ export interface HomepageSelect<T extends boolean = true> {
               scrollCueLabel?: T;
               minHeightVariant?: T;
               overlayStyle?: T;
+              creative?:
+                | T
+                | {
+                    kicker?: T;
+                    headline?: T;
+                    highlight?: T;
+                    body?: T;
+                    subcopy?: T;
+                    primaryCtaLabel?: T;
+                    primaryCtaHref?: T;
+                    secondaryCtaLabel?: T;
+                    secondaryCtaHref?: T;
+                    layoutVariant?: T;
+                    mediaSide?: T;
+                    textAlign?: T;
+                    backgroundStyle?: T;
+                    mediaItems?:
+                      | T
+                      | {
+                          type?: T;
+                          media?: T;
+                          externalUrl?: T;
+                          videoMedia?: T;
+                          videoUrl?: T;
+                          posterMedia?: T;
+                          posterUrl?: T;
+                          alt?: T;
+                          href?: T;
+                          id?: T;
+                        };
+                  };
               id?: T;
             };
         curatedProjects?:
@@ -1852,6 +2071,38 @@ export interface ServicesPageSelect<T extends boolean = true> {
   canonicalUrl?: T;
   heroTitle?: T;
   heroBody?: T;
+  hero?:
+    | T
+    | {
+        isVisible?: T;
+        variant?: T;
+        creative?:
+          | T
+          | {
+              kicker?: T;
+              headline?: T;
+              highlight?: T;
+              body?: T;
+              subcopy?: T;
+              primaryCtaLabel?: T;
+              primaryCtaHref?: T;
+              secondaryCtaLabel?: T;
+              secondaryCtaHref?: T;
+              layoutVariant?: T;
+              mediaSide?: T;
+              textAlign?: T;
+              backgroundStyle?: T;
+              mediaItems?:
+                | T
+                | {
+                    media?: T;
+                    externalUrl?: T;
+                    alt?: T;
+                    href?: T;
+                    id?: T;
+                  };
+            };
+      };
   serviceSections?:
     | T
     | {
@@ -1906,6 +2157,38 @@ export interface AboutPageSelect<T extends boolean = true> {
   canonicalUrl?: T;
   heroTitle?: T;
   heroBody?: T;
+  hero?:
+    | T
+    | {
+        isVisible?: T;
+        variant?: T;
+        creative?:
+          | T
+          | {
+              kicker?: T;
+              headline?: T;
+              highlight?: T;
+              body?: T;
+              subcopy?: T;
+              primaryCtaLabel?: T;
+              primaryCtaHref?: T;
+              secondaryCtaLabel?: T;
+              secondaryCtaHref?: T;
+              layoutVariant?: T;
+              mediaSide?: T;
+              textAlign?: T;
+              backgroundStyle?: T;
+              mediaItems?:
+                | T
+                | {
+                    media?: T;
+                    externalUrl?: T;
+                    alt?: T;
+                    href?: T;
+                    id?: T;
+                  };
+            };
+      };
   jumpLinks?:
     | T
     | {
@@ -1971,6 +2254,38 @@ export interface WorkPageSelect<T extends boolean = true> {
   metaDescription?: T;
   ogImage?: T;
   canonicalUrl?: T;
+  hero?:
+    | T
+    | {
+        isVisible?: T;
+        variant?: T;
+        creative?:
+          | T
+          | {
+              kicker?: T;
+              headline?: T;
+              highlight?: T;
+              body?: T;
+              subcopy?: T;
+              primaryCtaLabel?: T;
+              primaryCtaHref?: T;
+              secondaryCtaLabel?: T;
+              secondaryCtaHref?: T;
+              layoutVariant?: T;
+              mediaSide?: T;
+              textAlign?: T;
+              backgroundStyle?: T;
+              mediaItems?:
+                | T
+                | {
+                    media?: T;
+                    externalUrl?: T;
+                    alt?: T;
+                    href?: T;
+                    id?: T;
+                  };
+            };
+      };
   heroTitle?: T;
   heroBody?: T;
   filterLabels?:
@@ -2001,6 +2316,38 @@ export interface ProductPageSelect<T extends boolean = true> {
     | {
         line?: T;
         id?: T;
+      };
+  hero?:
+    | T
+    | {
+        isVisible?: T;
+        variant?: T;
+        creative?:
+          | T
+          | {
+              kicker?: T;
+              headline?: T;
+              highlight?: T;
+              body?: T;
+              subcopy?: T;
+              primaryCtaLabel?: T;
+              primaryCtaHref?: T;
+              secondaryCtaLabel?: T;
+              secondaryCtaHref?: T;
+              layoutVariant?: T;
+              mediaSide?: T;
+              textAlign?: T;
+              backgroundStyle?: T;
+              mediaItems?:
+                | T
+                | {
+                    media?: T;
+                    externalUrl?: T;
+                    alt?: T;
+                    href?: T;
+                    id?: T;
+                  };
+            };
       };
   introEyebrow?: T;
   introParagraphs?:

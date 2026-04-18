@@ -6,6 +6,8 @@ import {
   EditorialReveal,
   EditorialWordReveal,
 } from "@/components/editorial/EditorialMotion";
+import CreativeHero from "@/components/sections/CreativeHero";
+import type { HeroConfig } from "@/lib/hero-types";
 import type {
   AwardStat,
   ServiceArtKey,
@@ -13,10 +15,7 @@ import type {
 } from "@/lib/services-catalog";
 
 type ServicesPageViewProps = {
-  hero: {
-    title: string;
-    body: string;
-  };
+  hero: HeroConfig;
   sections: ServiceSection[];
   shinyThings: {
     eyebrow: string;
@@ -513,7 +512,17 @@ export default function ServicesPageView({
         className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top_left,hsl(var(--secondary)/0.18),transparent_38%),radial-gradient(circle_at_top_right,hsl(var(--primary)/0.14),transparent_42%)]"
       />
       <div className="relative">
-        <ServicesHero body={hero.body} sections={sections} title={hero.title} />
+        {hero.isVisible ? (
+          hero.variant === "creative" && hero.creative ? (
+            <CreativeHero id="services" config={hero.creative} />
+          ) : (
+            <ServicesHero
+              body={hero.current?.body ?? ""}
+              sections={sections}
+              title={hero.current?.title ?? ""}
+            />
+          )
+        ) : null}
         {sections.map((section) => (
           <ServicesSection key={section.id} section={section} />
         ))}

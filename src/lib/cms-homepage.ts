@@ -7,6 +7,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 
 import { cleanText, asUploadURL as asUploadURLMapper, asStringArray } from "./cms-mappers";
+import type { CreativeHeroConfig } from "./hero-types";
 
 type UploadDoc = {
   id: number | string;
@@ -86,6 +87,8 @@ export type HomepageBlock = {
   scrollCueLabel?: string;
   minHeightVariant?: "standard" | "tall";
   overlayStyle?: "none" | "light" | "dark";
+  heroVariant?: "current" | "creative";
+  creativeHero?: CreativeHeroConfig;
   filterMode?: "manual" | "tagBased";
   filterLabels?: string[];
   projectIds?: string[];
@@ -219,6 +222,76 @@ function normalizeBlock(block: Record<string, unknown> & { blockType?: string; i
     return null;
   }
 
+  const heroVariant =
+    blockType === "hero"
+      ? ((cleanText(block.variant as string | undefined) as "current" | "creative") === "creative"
+          ? "creative"
+          : "current")
+      : undefined;
+
+  const creativeHero: CreativeHeroConfig | undefined =
+    blockType === "hero" && heroVariant === "creative"
+      ? (() => {
+          const creative = (block.creative as Record<string, unknown> | undefined) ?? {};
+          const primaryLabel = cleanText(creative.primaryCtaLabel as string | undefined);
+          const primaryHref = cleanText(creative.primaryCtaHref as string | undefined);
+          const secondaryLabel = cleanText(creative.secondaryCtaLabel as string | undefined);
+          const secondaryHref = cleanText(creative.secondaryCtaHref as string | undefined);
+          const items = ((creative.mediaItems as Array<Record<string, unknown>> | undefined) ?? [])
+            .map((item) => {
+              const rawType = cleanText(item.type as string | undefined);
+              const type: "image" | "video" = rawType === "video" ? "video" : "image";
+
+              const imageUrl =
+                asUploadURLMapper(item.media as UploadValue) ||
+                cleanText(item.externalUrl as string | undefined);
+
+              const videoUrl =
+                asUploadURLMapper(item.videoMedia as UploadValue) ||
+                cleanText(item.videoUrl as string | undefined) ||
+                cleanText(item.externalUrl as string | undefined);
+
+              const posterUrl =
+                asUploadURLMapper(item.posterMedia as UploadValue) ||
+                cleanText(item.posterUrl as string | undefined) ||
+                undefined;
+
+              const url = type === "video" ? videoUrl : imageUrl;
+              const alt = cleanText(item.alt as string | undefined);
+              const href = cleanText(item.href as string | undefined) || undefined;
+
+              return {
+                type,
+                url,
+                alt,
+                posterUrl,
+                href,
+              };
+            })
+            .filter((item) => item.url && item.alt);
+
+          return {
+            kicker: cleanText(creative.kicker as string | undefined) || undefined,
+            headline: cleanText(creative.headline as string | undefined),
+            highlight: cleanText(creative.highlight as string | undefined) || undefined,
+            body: cleanText(creative.body as string | undefined) || undefined,
+            subcopy: cleanText(creative.subcopy as string | undefined) || undefined,
+            primaryCta: primaryLabel && primaryHref ? { label: primaryLabel, href: primaryHref } : undefined,
+            secondaryCta:
+              secondaryLabel && secondaryHref ? { label: secondaryLabel, href: secondaryHref } : undefined,
+            media: { items },
+            layout: {
+              variant: (cleanText(creative.layoutVariant as string | undefined) as "split" | "stacked") || "split",
+              mediaSide: (cleanText(creative.mediaSide as string | undefined) as "left" | "right") || "right",
+            },
+            style: {
+              textAlign: (cleanText(creative.textAlign as string | undefined) as "left" | "center") || "left",
+              background: (cleanText(creative.backgroundStyle as string | undefined) as "soft" | "none") || "soft",
+            },
+          };
+        })()
+      : undefined;
+
   return {
     blockType,
     blockName: cleanText(block.blockName as string | undefined),
@@ -248,6 +321,8 @@ function normalizeBlock(block: Record<string, unknown> & { blockType?: string; i
     scrollCueLabel: cleanText(block.scrollCueLabel as string | undefined),
     minHeightVariant: (cleanText(block.minHeightVariant as string | undefined) as "standard" | "tall") || undefined,
     overlayStyle: (cleanText(block.overlayStyle as string | undefined) as "none" | "light" | "dark") || undefined,
+    heroVariant,
+    creativeHero,
     filterMode: (cleanText(block.filterMode as string | undefined) as "manual" | "tagBased") || undefined,
     filterLabels: asStringArray(
       (block.filterLabels as Array<{ label?: string | null }> | undefined) ?? [],

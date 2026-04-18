@@ -1,4 +1,5 @@
 import Hero from "@/components/sections/Hero";
+import CreativeHero from "@/components/sections/CreativeHero";
 import type { HomepageBlock } from "@/lib/cms-homepage";
 
 interface HeroRendererProps {
@@ -6,6 +7,10 @@ interface HeroRendererProps {
 }
 
 export default function HeroRenderer({ block }: HeroRendererProps) {
+  if (block.heroVariant === "creative" && block.creativeHero) {
+    return <CreativeHero id={block.anchorId || "home"} config={block.creativeHero} />;
+  }
+
   return (
     <Hero
       id={block.anchorId || "home"}
