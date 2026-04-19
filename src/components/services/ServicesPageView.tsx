@@ -8,11 +8,9 @@ import {
 } from "@/components/editorial/EditorialMotion";
 import CreativeHero from "@/components/sections/CreativeHero";
 import type { HeroConfig } from "@/lib/hero-types";
-import type {
-  AwardStat,
-  ServiceArtKey,
-  ServiceSection,
-} from "@/lib/services-catalog";
+import { AwardStat, ServiceArtKey, ServiceSection } from "@/lib/services-catalog";
+
+
 
 type ServicesPageViewProps = {
   hero: HeroConfig;
@@ -603,7 +601,6 @@ export default function ServicesPageView({
         {sections.map((section) => (
           <ServicesSection key={section.id} section={section} />
         ))}
-        <ShinyThingsSection awardColumns={awardColumns} shinyThings={shinyThings} />
       </div>
     </div>
   );
