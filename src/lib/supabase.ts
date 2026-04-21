@@ -1,3 +1,5 @@
+/** Server-only: importing this file in a Client Component will expose the service-role key. */
+
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
@@ -10,7 +12,7 @@ const envSchema = z.object({
 const envParsed = envSchema.safeParse({
   SUPABASE_URL: process.env.SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  SUPABASE_STORAGE_BUCKET: process.env.SUPABASE_STORAGE_BUCKET ?? "media",
+  SUPABASE_STORAGE_BUCKET: process.env.SUPABASE_STORAGE_BUCKET,
 });
 
 if (!envParsed.success) {
