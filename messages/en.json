@@ -21,5 +21,26 @@
   },
   "locale": {
     "switchAria": "Switch language"
+  },
+  "header": {
+    "homeAriaLabel": "Hello Monday home",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuLabel": "Menu"
+  },
+  "footer": {
+    "collaborateLabel": "Want to collaborate?",
+    "collaborateSublabel": "Work with us",
+    "generalLabel": "Want to say hi?",
+    "generalSublabel": "General inquiries",
+    "careersLabel": "Want to join us?",
+    "careersSublabel": "Become a Mondayteer",
+    "internshipsLabel": "Want to learn?",
+    "internshipsSublabel": "Become an intern",
+    "applyHere": "Apply here",
+    "ourWorlds": "Our Worlds",
+    "globalPrivacy": "Global Privacy Statement",
+    "backToTop": "Back to top",
+    "copied": "Copied!"
   }
 }

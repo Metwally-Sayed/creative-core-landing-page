@@ -21,5 +21,26 @@
   },
   "locale": {
     "switchAria": "تبديل اللغة"
+  },
+  "header": {
+    "homeAriaLabel": "[AR] Hello Monday home",
+    "openMenu": "[AR] Open menu",
+    "closeMenu": "[AR] Close menu",
+    "menuLabel": "[AR] Menu"
+  },
+  "footer": {
+    "collaborateLabel": "[AR] Want to collaborate?",
+    "collaborateSublabel": "[AR] Work with us",
+    "generalLabel": "[AR] Want to say hi?",
+    "generalSublabel": "[AR] General inquiries",
+    "careersLabel": "[AR] Want to join us?",
+    "careersSublabel": "[AR] Become a Mondayteer",
+    "internshipsLabel": "[AR] Want to learn?",
+    "internshipsSublabel": "[AR] Become an intern",
+    "applyHere": "[AR] Apply here",
+    "ourWorlds": "[AR] Our Worlds",
+    "globalPrivacy": "[AR] Global Privacy Statement",
+    "backToTop": "[AR] Back to top",
+    "copied": "[AR] Copied!"
   }
 }

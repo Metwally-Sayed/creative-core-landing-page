@@ -5,7 +5,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ArrowUp } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { studioLocations, type StudioLocation } from '@/lib/studio-locations';
+import LocaleSwitch from '@/components/LocaleSwitch';
 
 interface ContactItem {
   label: string;
@@ -13,33 +15,6 @@ interface ContactItem {
   value: string;
   href?: string;
 }
-
-const contactItems: ContactItem[] = [
-  {
-    label: 'Want to collaborate?',
-    sublabel: 'Work with us',
-    value: 'newbusiness@hellomonday.com',
-    href: 'mailto:newbusiness@hellomonday.com',
-  },
-  {
-    label: 'Want to say hi?',
-    sublabel: 'General inquiries',
-    value: 'hello@hellomonday.com',
-    href: 'mailto:hello@hellomonday.com',
-  },
-  {
-    label: 'Want to join us?',
-    sublabel: 'Become a Mondayteer',
-    value: 'Apply here',
-    href: '#careers',
-  },
-  {
-    label: 'Want to learn?',
-    sublabel: 'Become an intern',
-    value: 'Apply here',
-    href: '#careers',
-  },
-];
 
 function AnimatedLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -103,6 +78,7 @@ function LocationCard({ location }: { location: StudioLocation }) {
 }
 
 function ContactCard({ item }: { item: ContactItem }) {
+  const tFooter = useTranslations("footer");
   const [copied, setCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -143,10 +119,10 @@ function ContactCard({ item }: { item: ContactItem }) {
             <motion.span
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-1 text-xs text-[hsl(var(--secondary))] ml-2"
+              className="flex items-center gap-1 text-xs text-[hsl(var(--secondary))] ms-2"
             >
               <Check className="w-3 h-3" />
-              Copied!
+              {tFooter("copied")}
             </motion.span>
           )}
         </div>
@@ -156,8 +132,36 @@ function ContactCard({ item }: { item: ContactItem }) {
 }
 
 export default function Footer() {
+  const tFooter = useTranslations("footer");
   const pathname = usePathname() || '';
   const isProductPage = pathname.startsWith('/product');
+
+  const contactItems: ContactItem[] = [
+    {
+      label: tFooter("collaborateLabel"),
+      sublabel: tFooter("collaborateSublabel"),
+      value: 'newbusiness@hellomonday.com',
+      href: 'mailto:newbusiness@hellomonday.com',
+    },
+    {
+      label: tFooter("generalLabel"),
+      sublabel: tFooter("generalSublabel"),
+      value: 'hello@hellomonday.com',
+      href: 'mailto:hello@hellomonday.com',
+    },
+    {
+      label: tFooter("careersLabel"),
+      sublabel: tFooter("careersSublabel"),
+      value: tFooter("applyHere"),
+      href: '#careers',
+    },
+    {
+      label: tFooter("internshipsLabel"),
+      sublabel: tFooter("internshipsSublabel"),
+      value: tFooter("applyHere"),
+      href: '#careers',
+    },
+  ];
 
   const footerThemeStyles = {
     '--footer-bg': isProductPage ? '#f3efe6' : 'hsl(var(--accent))',
@@ -263,7 +267,7 @@ export default function Footer() {
                   }
               }}
               >
-                <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase tracking-[0.2em]">Our Worlds</p>
+                <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase tracking-[0.2em]">{tFooter("ourWorlds")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 lg:gap-x-24">
                   {studioLocations.map((location) => (
                     <motion.div
@@ -291,12 +295,15 @@ export default function Footer() {
                     </a>
                   ))}
                 </div>
-                <AnimatedLink
-                  href="https://www.deptagency.com/en-nl/privacy-policy/"
-                  className="text-xs text-[color:var(--footer-link)] hover:text-[color:var(--footer-fg)]"
-                >
-                  Global Privacy Statement
-                </AnimatedLink>
+                <div className="flex items-center gap-6">
+                  <LocaleSwitch />
+                  <AnimatedLink
+                    href="https://www.deptagency.com/en-nl/privacy-policy/"
+                    className="text-xs text-[color:var(--footer-link)] hover:text-[color:var(--footer-fg)]"
+                  >
+                    {tFooter("globalPrivacy")}
+                  </AnimatedLink>
+                </div>
               </div>
             </div>
           </div>
@@ -318,7 +325,7 @@ export default function Footer() {
               </g>
             </svg>
             <span className="relative z-10 text-white text-[10px] md:text-xs tracking-[0.15em] font-medium flex items-center gap-2 mt-1 md:mt-2 transition-transform group-hover:-translate-y-0.5">
-              Back to top
+              {tFooter("backToTop")}
               <ArrowUp className="w-3 h-3" strokeWidth={3} />
             </span>
           </motion.button>

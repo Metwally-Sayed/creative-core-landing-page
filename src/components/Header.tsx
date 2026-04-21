@@ -1,18 +1,20 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
+import LocaleSwitch from "@/components/LocaleSwitch";
 
-const menuItems = [
-  { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Stories", href: "/work" },
-  { label: "Product", href: "/product" },
+const menuItemDefs = [
+  { key: "work" as const, href: "/work" },
+  { key: "services" as const, href: "/services" },
+  { key: "about" as const, href: "/about" },
+  { key: "stories" as const, href: "/work" },
+  { key: "product" as const, href: "/product" },
 ];
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
@@ -63,6 +65,15 @@ function LogoMark({
 }
 
 export default function Header() {
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
+  const tHeader = useTranslations("header");
+
+  const menuItems = menuItemDefs.map((item) => ({
+    label: tNav(item.key),
+    href: item.href,
+  }));
+
   const pathname = usePathname() || "";
   const isProjectPage = pathname.startsWith("/projects");
   const isProductPage = pathname.startsWith("/product");
@@ -156,15 +167,16 @@ export default function Header() {
             className="pointer-events-none fixed inset-x-0 top-0 z-50"
           >
             <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-start justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
-              <Link href="/" aria-label="Hello Monday home">
+              <Link href="/" aria-label={tHeader("homeAriaLabel")}>
                 <LogoMark inverted={forceInvert} neutral={useNeutralHeader} />
               </Link>
 
               <div className="flex items-center gap-3">
+                <LocaleSwitch />
                 {!hideQuoteCta ? (
                   <>
                     <QuoteBriefDialog
-                      triggerLabel="Get Quote"
+                      triggerLabel={tCommon("getQuote")}
                       triggerClassName={`hidden h-10 rounded-full px-4 text-[0.78rem] font-semibold lg:inline-flex transition-colors duration-300 ${
                         forceInvert
                           ? "bg-white text-black hover:bg-white/90 shadow-md"
@@ -192,7 +204,7 @@ export default function Header() {
                   aria-expanded={isMenuOpen}
                   aria-controls="site-menu"
                 >
-                  Menu
+                  {tHeader("menuLabel")}
                 </button>
               </div>
             </div>
@@ -209,16 +221,16 @@ export default function Header() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 72, opacity: 0 }}
               transition={{ duration: 0.42, ease: transitionEase }}
-              className="fixed inset-y-0 right-0 z-55 hidden w-[6.9rem] items-center justify-end bg-transparent text-white lg:flex"
-              aria-label="Open menu"
+              className="fixed inset-y-0 end-0 z-55 hidden w-[6.9rem] items-center justify-end bg-transparent text-white lg:flex"
+              aria-label={tHeader("openMenu")}
             >
-              <div 
-                className="absolute inset-y-0 right-0 w-[8rem] pointer-events-auto"
+              <div
+                className="absolute inset-y-0 end-0 w-[8rem] pointer-events-auto"
                 onMouseEnter={() => setIsHoveringTrigger(true)}
                 onMouseLeave={() => setIsHoveringTrigger(false)}
               />
             <motion.div
-              className="absolute right-0 w-full"
+              className="absolute end-0 w-full"
               style={{
                 height: "50vh",
                 top: "-25vh",
@@ -309,8 +321,8 @@ export default function Header() {
             >
               <Link
                 href="/"
-                className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
-                aria-label="Hello Monday home"
+                className="absolute start-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
+                aria-label={tHeader("homeAriaLabel")}
               >
                 <LogoMark inverted className="opacity-92" />
               </Link>
@@ -322,8 +334,8 @@ export default function Header() {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 72, opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.35, ease: transitionEase }}
-                className="fixed inset-y-0 right-[-1.7rem] z-65 hidden w-[6.9rem] items-center justify-end bg-transparent text-black lg:flex cursor-pointer"
-                aria-label="Close menu"
+                className="fixed inset-y-0 end-[-1.7rem] z-65 hidden w-[6.9rem] items-center justify-end bg-transparent text-black lg:flex cursor-pointer"
+                aria-label={tHeader("closeMenu")}
               >
                 <svg
                   viewBox="0 0 114 1000"
@@ -351,17 +363,17 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setIsMenuOpen(false)}
-                className="absolute right-6 top-6 rounded-full border border-white/18 px-4 py-2 text-[0.7rem] tracking-[0.22em] text-white uppercase lg:hidden"
-                aria-label="Close menu"
+                className="absolute end-6 top-6 rounded-full border border-white/18 px-4 py-2 text-[0.7rem] tracking-[0.22em] text-white uppercase lg:hidden"
+                aria-label={tHeader("closeMenu")}
               >
-                Close
+                {tHeader("closeMenu")}
               </button>
 
               <nav
                 id="site-menu"
                 className="absolute left-1/2 top-1/2 w-full max-w-[1600px] -translate-x-1/2 -translate-y-1/2"
               >
-                <div className="ml-auto mr-[13vw] w-fit space-y-4 pr-8 lg:mr-[16vw] lg:pr-0">
+                <div className="ms-auto me-[13vw] w-fit space-y-4 pe-8 lg:me-[16vw] lg:pe-0">
                   {menuItems.map((item, index) => (
                     <motion.div
                       key={item.label}
@@ -401,19 +413,20 @@ export default function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="absolute bottom-12 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
+                className="absolute bottom-12 start-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
               >
                 {['Facebook', 'Instagram', 'Twitter', 'Vimeo', 'LinkedIn'].map((platform) => (
-                  <a 
-                    key={platform} 
-                    href="#" 
-                    target="_blank" 
+                  <a
+                    key={platform}
+                    href="#"
+                    target="_blank"
                     rel="noreferrer"
                     className="hover:text-white transition-colors"
                   >
                     {platform}
                   </a>
                 ))}
+                <LocaleSwitch />
               </motion.div>
             </motion.div>
           </div>
