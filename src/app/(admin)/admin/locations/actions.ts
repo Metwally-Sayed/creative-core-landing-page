@@ -89,9 +89,13 @@ export async function reorderLocations(orderedIds: string[]): Promise<void> {
   if (!session) throw new Error("UNAUTHORIZED");
 
   await Promise.all(
-    orderedIds.map((id, index) =>
-      supabase.from("locations").update({ sort_order: index }).eq("id", id)
-    )
+    orderedIds.map(async (id, index) => {
+      const { error } = await supabase
+        .from("locations")
+        .update({ sort_order: index })
+        .eq("id", id);
+      if (error) throw error;
+    })
   );
   revalidateTag("locations", "max");
 }

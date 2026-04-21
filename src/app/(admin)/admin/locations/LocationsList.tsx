@@ -1,8 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Trash2, Plus, GripVertical, Loader2, X, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useTransition } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   createLocation,
   updateLocation,
@@ -12,353 +50,297 @@ import {
   type LocationInput,
 } from "./actions";
 
+function SortableRow({
+  location,
+  onEdit,
+  onDelete,
+}: {
+  location: Location;
+  onEdit: (location: Location) => void;
+  onDelete: (location: Location) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: location.id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+      }}
+      className="flex items-center gap-3 rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-4 py-3"
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab touch-none text-[hsl(var(--admin-text-muted))] hover:text-[hsl(var(--admin-text))]"
+        aria-label="Drag to reorder"
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+      <div className="flex-1">
+        <span className="text-sm font-medium text-[hsl(var(--admin-text))]">
+          {location.name}
+        </span>
+        <span className="ml-2 text-sm text-[hsl(var(--admin-text-muted))]">
+          · {location.country}
+        </span>
+      </div>
+      <button
+        onClick={() => onEdit(location)}
+        className="rounded p-1 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-[hsl(var(--admin-text))]"
+        aria-label="Edit location"
+      >
+        <Pencil className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => onDelete(location)}
+        className="rounded p-1 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-red-500"
+        aria-label="Delete location"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+function LocationModal({
+  location,
+  onClose,
+  onSaved,
+}: {
+  location: Location | null;
+  onClose: () => void;
+  onSaved: (location: Location) => void;
+}) {
+  const isEdit = location !== null;
+  const [name, setName] = useState(location?.name ?? "");
+  const [country, setCountry] = useState(location?.country ?? "");
+  const [addressLines, setAddressLines] = useState(
+    location?.address_lines.join("\n") ?? ""
+  );
+  const [email, setEmail] = useState(location?.email ?? "");
+  const [mapUrl, setMapUrl] = useState(location?.map_url ?? "");
+  const [error, setError] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  function handleSave() {
+    if (!name.trim() || !country.trim()) {
+      setError("Name and Country are required.");
+      return;
+    }
+    setError("");
+    const input: LocationInput = {
+      name: name.trim(),
+      country: country.trim(),
+      address_lines: addressLines
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+      email: email.trim(),
+      map_url: mapUrl.trim(),
+    };
+    startTransition(async () => {
+      try {
+        const saved = isEdit
+          ? await updateLocation(location.id, input)
+          : await createLocation(input);
+        onSaved(saved);
+        onClose();
+      } catch {
+        setError("Failed to save. Please try again.");
+      }
+    });
+  }
+
+  return (
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Edit location" : "Add location"}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {isEdit ? "Edit the studio location details." : "Add a new studio location."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="space-y-1">
+            <Label htmlFor="loc-name">Name *</Label>
+            <Input
+              id="loc-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="New York"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="loc-country">Country *</Label>
+            <Input
+              id="loc-country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="United States"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="loc-address">Address lines (one per line)</Label>
+            <Textarea
+              id="loc-address"
+              value={addressLines}
+              onChange={(e) => setAddressLines(e.target.value)}
+              placeholder={"36 East 20th St, 6th Floor\nNew York, NY 10003\nTel: +1 917 818-4282"}
+              rows={3}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="loc-email">Email</Label>
+            <Input
+              id="loc-email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="hello@example.com"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="loc-map">Google Maps URL</Label>
+            <Input
+              id="loc-map"
+              value={mapUrl}
+              onChange={(e) => setMapUrl(e.target.value)}
+              placeholder="https://www.google.com/maps/..."
+            />
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={isPending}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={isPending}>
+            {isPending ? "Saving…" : "Save"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 interface Props {
   initialLocations: Location[];
 }
 
-const EMPTY_INPUT: LocationInput = {
-  name: "",
-  country: "",
-  address_lines: [""],
-  email: "",
-  map_url: "",
-};
-
-function LocationForm({
-  initial,
-  onSave,
-  onCancel,
-  saving,
-}: {
-  initial: LocationInput;
-  onSave: (input: LocationInput) => Promise<void>;
-  onCancel: () => void;
-  saving: boolean;
-}) {
-  const [form, setForm] = useState<LocationInput>(initial);
-
-  function setField<K extends keyof LocationInput>(key: K, value: LocationInput[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  }
-
-  function setAddressLine(index: number, value: string) {
-    const lines = [...form.address_lines];
-    lines[index] = value;
-    setField("address_lines", lines);
-  }
-
-  function addAddressLine() {
-    setField("address_lines", [...form.address_lines, ""]);
-  }
-
-  function removeAddressLine(index: number) {
-    setField(
-      "address_lines",
-      form.address_lines.filter((_, i) => i !== index)
-    );
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const cleaned: LocationInput = {
-      ...form,
-      address_lines: form.address_lines.filter((l) => l.trim() !== ""),
-    };
-    await onSave(cleaned);
-  }
-
-  const inputCls =
-    "w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-[hsl(var(--admin-accent))]";
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-[hsl(var(--admin-text-muted))]">Name *</span>
-          <input
-            required
-            className={inputCls}
-            value={form.name}
-            onChange={(e) => setField("name", e.target.value)}
-            placeholder="e.g. Copenhagen"
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-[hsl(var(--admin-text-muted))]">Country *</span>
-          <input
-            required
-            className={inputCls}
-            value={form.country}
-            onChange={(e) => setField("country", e.target.value)}
-            placeholder="e.g. Denmark"
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-[hsl(var(--admin-text-muted))]">Email</span>
-          <input
-            type="email"
-            className={inputCls}
-            value={form.email}
-            onChange={(e) => setField("email", e.target.value)}
-            placeholder="office@example.com"
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-[hsl(var(--admin-text-muted))]">Map URL</span>
-          <input
-            type="url"
-            className={inputCls}
-            value={form.map_url}
-            onChange={(e) => setField("map_url", e.target.value)}
-            placeholder="https://maps.google.com/..."
-          />
-        </label>
-      </div>
-
-      {/* Address lines */}
-      <div className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-[hsl(var(--admin-text-muted))]">Address lines</span>
-        {form.address_lines.map((line, i) => (
-          <div key={i} className="flex gap-2">
-            <input
-              className={cn(inputCls, "flex-1")}
-              value={line}
-              onChange={(e) => setAddressLine(i, e.target.value)}
-              placeholder={`Line ${i + 1}`}
-            />
-            {form.address_lines.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeAddressLine(i)}
-                className="rounded p-1 text-[hsl(var(--admin-text-muted))] hover:text-red-500"
-                aria-label="Remove line"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addAddressLine}
-          className="mt-1 self-start text-xs text-[hsl(var(--admin-accent))] hover:underline"
-        >
-          + Add line
-        </button>
-      </div>
-
-      <div className="flex items-center gap-2 pt-2">
-        <button
-          type="submit"
-          disabled={saving}
-          className="flex items-center gap-1.5 rounded-md bg-[hsl(var(--admin-accent))] px-4 py-1.5 text-sm font-medium text-white disabled:opacity-60"
-        >
-          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-          Save
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={saving}
-          className="rounded-md px-4 py-1.5 text-sm font-medium text-[hsl(var(--admin-text-muted))] hover:text-[hsl(var(--admin-text))]"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
-}
-
 export default function LocationsList({ initialLocations }: Props) {
   const [locations, setLocations] = useState<Location[]>(initialLocations);
-  const [showCreate, setShowCreate] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [editingLocation, setEditingLocation] = useState<Location | "new" | null>(null);
+  const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
+  const [, startTransition] = useTransition();
 
-  async function handleCreate(input: LocationInput) {
-    setSaving(true);
-    try {
-      const created = await createLocation(input);
-      setLocations((prev) => [...prev, created]);
-      setShowCreate(false);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to create location.");
-    } finally {
-      setSaving(false);
-    }
-  }
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-  async function handleUpdate(id: string, input: LocationInput) {
-    setSaving(true);
-    try {
-      const updated = await updateLocation(id, input);
-      setLocations((prev) => prev.map((l) => (l.id === id ? updated : l)));
-      setEditingId(null);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to update location.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleDelete(id: string, name: string) {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-    try {
-      await deleteLocation(id);
-      setLocations((prev) => prev.filter((l) => l.id !== id));
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to delete location.");
-    }
-  }
-
-  // Drag-to-reorder helpers
-  function handleDragStart(id: string) {
-    setDraggingId(id);
-  }
-
-  function handleDragEnter(id: string) {
-    if (id !== draggingId) setDragOverId(id);
-  }
-
-  async function handleDrop(targetId: string) {
-    if (!draggingId || draggingId === targetId) {
-      setDraggingId(null);
-      setDragOverId(null);
-      return;
-    }
-    const reordered = [...locations];
-    const fromIdx = reordered.findIndex((l) => l.id === draggingId);
-    const toIdx = reordered.findIndex((l) => l.id === targetId);
-    const [moved] = reordered.splice(fromIdx, 1);
-    reordered.splice(toIdx, 0, moved);
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = locations.findIndex((l) => l.id === active.id);
+    const newIndex = locations.findIndex((l) => l.id === over.id);
+    const reordered = arrayMove(locations, oldIndex, newIndex);
     setLocations(reordered);
-    setDraggingId(null);
-    setDragOverId(null);
+    startTransition(() => reorderLocations(reordered.map((l) => l.id)));
+  }
+
+  function handleSaved(location: Location) {
+    setLocations((prev) => {
+      const exists = prev.find((l) => l.id === location.id);
+      return exists
+        ? prev.map((l) => (l.id === location.id ? location : l))
+        : [...prev, location];
+    });
+  }
+
+  async function confirmDelete(location: Location) {
     try {
-      await reorderLocations(reordered.map((l) => l.id));
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to reorder locations.");
+      await deleteLocation(location.id);
+      setLocations((prev) => prev.filter((l) => l.id !== location.id));
+    } catch {
+      alert("Delete failed. Please try again.");
+    } finally {
+      setDeletingLocation(null);
     }
   }
 
   return (
     <div>
-      {/* Page header */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Locations</h1>
-        {!showCreate && (
-          <button
-            onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 rounded-md bg-[hsl(var(--admin-accent))] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
-          >
-            <Plus className="h-4 w-4" />
-            Add location
-          </button>
-        )}
+        <Button onClick={() => setEditingLocation("new")}>+ Add</Button>
       </div>
 
-      {/* Create form */}
-      {showCreate && (
-        <div className="mb-6 rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-4">
-          <h2 className="mb-4 text-sm font-semibold">New location</h2>
-          <LocationForm
-            initial={EMPTY_INPUT}
-            onSave={handleCreate}
-            onCancel={() => setShowCreate(false)}
-            saving={saving}
-          />
-        </div>
-      )}
-
-      {/* Locations list */}
       {locations.length === 0 ? (
         <p className="py-16 text-center text-sm text-[hsl(var(--admin-text-muted))]">
-          No locations yet. Add one to get started.
+          No locations yet. Click + Add to create the first one.
         </p>
       ) : (
-        <ul className="space-y-3">
-          {locations.map((loc) => (
-            <li
-              key={loc.id}
-              draggable
-              onDragStart={() => handleDragStart(loc.id)}
-              onDragEnter={() => handleDragEnter(loc.id)}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => handleDrop(loc.id)}
-              onDragEnd={() => {
-                setDraggingId(null);
-                setDragOverId(null);
-              }}
-              className={cn(
-                "rounded-lg border bg-[hsl(var(--admin-surface))] transition-colors",
-                draggingId === loc.id
-                  ? "opacity-40"
-                  : dragOverId === loc.id
-                  ? "border-[hsl(var(--admin-accent))]"
-                  : "border-[hsl(var(--admin-border))]"
-              )}
-            >
-              {editingId === loc.id ? (
-                <div className="p-4">
-                  <h2 className="mb-4 text-sm font-semibold">Edit location</h2>
-                  <LocationForm
-                    initial={{
-                      name: loc.name,
-                      country: loc.country,
-                      address_lines: loc.address_lines.length > 0 ? loc.address_lines : [""],
-                      email: loc.email,
-                      map_url: loc.map_url,
-                    }}
-                    onSave={(input) => handleUpdate(loc.id, input)}
-                    onCancel={() => setEditingId(null)}
-                    saving={saving}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-start gap-3 p-4">
-                  {/* Drag handle */}
-                  <GripVertical className="mt-0.5 h-4 w-4 shrink-0 cursor-grab text-[hsl(var(--admin-text-muted))]" />
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={locations.map((l) => l.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-2">
+              {locations.map((location) => (
+                <SortableRow
+                  key={location.id}
+                  location={location}
+                  onEdit={setEditingLocation}
+                  onDelete={setDeletingLocation}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
 
-                  {/* Content */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="font-medium">{loc.name}</span>
-                      <span className="text-sm text-[hsl(var(--admin-text-muted))]">{loc.country}</span>
-                    </div>
-                    {loc.address_lines.length > 0 && (
-                      <p className="mt-0.5 text-sm text-[hsl(var(--admin-text-muted))]">
-                        {loc.address_lines.join(", ")}
-                      </p>
-                    )}
-                    {loc.email && (
-                      <p className="mt-0.5 text-xs text-[hsl(var(--admin-text-muted))]">{loc.email}</p>
-                    )}
-                  </div>
+      {editingLocation !== null && (
+        <LocationModal
+          key={editingLocation === "new" ? "new" : editingLocation.id}
+          location={editingLocation === "new" ? null : editingLocation}
+          onClose={() => setEditingLocation(null)}
+          onSaved={handleSaved}
+        />
+      )}
 
-                  {/* Actions */}
-                  <div className="flex shrink-0 items-center gap-1">
-                    <button
-                      onClick={() => setEditingId(loc.id)}
-                      className="rounded p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-[hsl(var(--admin-text))]"
-                      aria-label="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(loc.id, loc.name)}
-                      className="rounded p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-red-500"
-                      aria-label="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+      {deletingLocation && (
+        <AlertDialog open onOpenChange={() => setDeletingLocation(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete location?</AlertDialogTitle>
+              <AlertDialogDescription>
+                "{deletingLocation.name}" will be permanently removed. This
+                cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => confirmDelete(deletingLocation)}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
