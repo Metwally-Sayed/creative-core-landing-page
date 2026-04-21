@@ -530,6 +530,9 @@ export default function QuoteBriefDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  const t = useTranslations("quote");
+  const STEP_ITEMS = useStepItems(t);
+
   const activeIndex = STEP_ORDER.indexOf(activeStep);
   const activeItem = STEP_ITEMS.find((item) => item.id === activeStep) ?? STEP_ITEMS[0];
 
