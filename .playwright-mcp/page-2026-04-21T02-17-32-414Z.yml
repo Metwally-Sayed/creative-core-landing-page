@@ -1,0 +1,402 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner:
+      - generic [ref=e4]:
+        - link "Hello Monday home" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]:
+            - generic [ref=e7]: Hello Monday
+            - generic [ref=e8]: / Dept.
+        - button "Get Quote" [ref=e10]
+    - button "Open menu" [ref=e11]:
+      - generic [ref=e13]:
+        - img [ref=e14]
+        - img
+    - main [ref=e16]:
+      - main [ref=e19]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - heading "Ideas That Orbit Your Core." [level=1] [ref=e23]:
+              - generic [ref=e24]: Ideas That
+              - generic [ref=e25]: Orbit Your
+              - generic [ref=e26]: Core.
+            - paragraph [ref=e27]: Brand strategy, identity, content, and 3D visuals that convert.
+            - generic [ref=e28]:
+              - link "Start Your Project" [ref=e30] [cursor=pointer]:
+                - /url: "#quote"
+              - link "See Our Work" [ref=e32] [cursor=pointer]:
+                - /url: /work
+          - application "Media sphere" [ref=e36]:
+            - button "Abstract art 1" [ref=e37]:
+              - generic [ref=e38]: Abstract art 1
+              - img "Abstract art 1" [ref=e40]
+            - button "Abstract art 2" [ref=e41]:
+              - generic [ref=e42]: Abstract art 2
+              - img "Abstract art 2" [ref=e44]
+            - button "Brand design 1" [ref=e45]:
+              - generic [ref=e46]: Brand design 1
+              - img "Brand design 1" [ref=e48]
+            - button "Creative work 1" [ref=e49]:
+              - generic [ref=e50]: Creative work 1
+              - img "Creative work 1" [ref=e52]
+            - button "Creative work 2" [ref=e53]:
+              - generic [ref=e54]: Creative work 2
+              - img "Creative work 2" [ref=e56]
+            - button "Portfolio piece 2" [ref=e57]:
+              - generic [ref=e58]: Portfolio piece 2
+              - img "Portfolio piece 2" [ref=e60]
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e64]:
+              - paragraph [ref=e65]: Selected Work
+              - heading "Same motion system, now wrapped in the Creative visual language." [level=2] [ref=e66]:
+                - generic [ref=e68]: Same
+                - generic [ref=e70]: motion
+                - generic [ref=e72]: system,
+                - generic [ref=e74]: now
+                - generic [ref=e76]: wrapped
+                - generic [ref=e78]: in
+                - generic [ref=e80]: the
+                - generic [ref=e82]: Creative
+                - generic [ref=e84]: visual
+                - generic [ref=e86]: language.
+            - paragraph [ref=e88]: The layout stays editorial and kinetic, but the surfaces, color temperature, and typography now follow the softer premium theme from the reference site.
+          - generic [ref=e89]:
+            - button "All" [ref=e90]: All
+            - button "Design" [ref=e92]: Design
+            - button "Strategy" [ref=e94]: Strategy
+            - button "Experience" [ref=e96]: Experience
+            - button "Digital" [ref=e98]: Digital
+          - generic [ref=e100]:
+            - article [ref=e102] [cursor=pointer]:
+              - link "Google - Gemini Developer Competition Google - Gemini Developer Competition Experiences" [ref=e103]:
+                - /url: /projects/1
+                - img "Google - Gemini Developer Competition" [ref=e106]
+                - generic [ref=e107]:
+                  - heading "Google - Gemini Developer Competition" [level=3] [ref=e108]
+                  - generic [ref=e110]: Experiences
+            - article [ref=e112] [cursor=pointer]:
+              - link "Bang & Olufsen - See yourself in Sound Bang & Olufsen - See yourself in Sound Experiences" [ref=e113]:
+                - /url: /projects/2
+                - img "Bang & Olufsen - See yourself in Sound" [ref=e116]
+                - generic [ref=e117]:
+                  - heading "Bang & Olufsen - See yourself in Sound" [level=3] [ref=e118]
+                  - generic [ref=e120]: Experiences
+            - article [ref=e122] [cursor=pointer]:
+              - link "Gemini - AI for Every Developer Gemini - AI for Every Developer Experiences Branding Platform" [ref=e123]:
+                - /url: /projects/3
+                - img "Gemini - AI for Every Developer" [ref=e126]
+                - generic [ref=e127]:
+                  - heading "Gemini - AI for Every Developer" [level=3] [ref=e128]
+                  - generic [ref=e129]:
+                    - generic [ref=e130]: Experiences
+                    - generic [ref=e131]: Branding
+                    - generic [ref=e132]: Platform
+            - article [ref=e134] [cursor=pointer]:
+              - link "Zipline - The best delivery experience not on earth Zipline - The best delivery experience not on earth Platform Experiences" [ref=e135]:
+                - /url: /projects/4
+                - img "Zipline - The best delivery experience not on earth" [ref=e138]
+                - generic [ref=e139]:
+                  - heading "Zipline - The best delivery experience not on earth" [level=3] [ref=e140]
+                  - generic [ref=e141]:
+                    - generic [ref=e142]: Platform
+                    - generic [ref=e143]: Experiences
+            - article [ref=e145] [cursor=pointer]:
+              - link "Netflix Kids and Family - A delightful, welcoming, and adventurous identity Netflix Kids and Family - A delightful, welcoming, and adventurous identity Branding" [ref=e146]:
+                - /url: /projects/5
+                - img "Netflix Kids and Family - A delightful, welcoming, and adventurous identity" [ref=e149]
+                - generic [ref=e150]:
+                  - heading "Netflix Kids and Family - A delightful, welcoming, and adventurous identity" [level=3] [ref=e151]
+                  - generic [ref=e153]: Branding
+            - article [ref=e155] [cursor=pointer]:
+              - link "Ramasjang Krea App Ramasjang Krea App Products" [ref=e156]:
+                - /url: /projects/6
+                - img "Ramasjang Krea App" [ref=e159]
+                - generic [ref=e160]:
+                  - heading "Ramasjang Krea App" [level=3] [ref=e161]
+                  - generic [ref=e163]: Products
+            - article [ref=e165] [cursor=pointer]:
+              - link "Universal Music for Creators Universal Music for Creators Experiences Products" [ref=e166]:
+                - /url: /projects/7
+                - img "Universal Music for Creators" [ref=e169]
+                - generic [ref=e170]:
+                  - heading "Universal Music for Creators" [level=3] [ref=e171]
+                  - generic [ref=e172]:
+                    - generic [ref=e173]: Experiences
+                    - generic [ref=e174]: Products
+            - article [ref=e176] [cursor=pointer]:
+              - link "Strava - Year In Sport Strava - Year In Sport Platform Products Experiences" [ref=e177]:
+                - /url: /projects/8
+                - img "Strava - Year In Sport" [ref=e180]
+                - generic [ref=e181]:
+                  - heading "Strava - Year In Sport" [level=3] [ref=e182]
+                  - generic [ref=e183]:
+                    - generic [ref=e184]: Platform
+                    - generic [ref=e185]: Products
+                    - generic [ref=e186]: Experiences
+            - article [ref=e188] [cursor=pointer]:
+              - link "Google Gemini - Generative AI Apps Google Gemini - Generative AI Apps Experiences" [ref=e189]:
+                - /url: /projects/9
+                - img "Google Gemini - Generative AI Apps" [ref=e192]
+                - generic [ref=e193]:
+                  - heading "Google Gemini - Generative AI Apps" [level=3] [ref=e194]
+                  - generic [ref=e196]: Experiences
+            - article [ref=e198] [cursor=pointer]:
+              - link "The Web Can Do What?! with Google The Web Can Do What?! with Google Experiences" [ref=e199]:
+                - /url: /projects/10
+                - img "The Web Can Do What?! with Google" [ref=e202]
+                - generic [ref=e203]:
+                  - heading "The Web Can Do What?! with Google" [level=3] [ref=e204]
+                  - generic [ref=e206]: Experiences
+            - article [ref=e208] [cursor=pointer]:
+              - link "Fingerspelling with Machine Learning Fingerspelling with Machine Learning Experiences Products" [ref=e209]:
+                - /url: /projects/11
+                - img "Fingerspelling with Machine Learning" [ref=e212]
+                - generic [ref=e213]:
+                  - heading "Fingerspelling with Machine Learning" [level=3] [ref=e214]
+                  - generic [ref=e215]:
+                    - generic [ref=e216]: Experiences
+                    - generic [ref=e217]: Products
+            - article [ref=e219] [cursor=pointer]:
+              - link "The best things are the Simple Things The best things are the Simple Things Branding E-commerce Platform" [ref=e220]:
+                - /url: /projects/12
+                - img "The best things are the Simple Things" [ref=e223]
+                - generic [ref=e224]:
+                  - heading "The best things are the Simple Things" [level=3] [ref=e225]
+                  - generic [ref=e226]:
+                    - generic [ref=e227]: Branding
+                    - generic [ref=e228]: E-commerce
+                    - generic [ref=e229]: Platform
+            - article [ref=e231] [cursor=pointer]:
+              - link "Undo the Firewall - Bring Independent News to Russians Undo the Firewall - Bring Independent News to Russians Experiences" [ref=e232]:
+                - /url: /projects/13
+                - img "Undo the Firewall - Bring Independent News to Russians" [ref=e235]
+                - generic [ref=e236]:
+                  - heading "Undo the Firewall - Bring Independent News to Russians" [level=3] [ref=e237]
+                  - generic [ref=e239]: Experiences
+            - article [ref=e241] [cursor=pointer]:
+              - 'link "DIG: Cloud Castles DIG: Cloud Castles Experiences" [ref=e242]':
+                - /url: /projects/14
+                - 'img "DIG: Cloud Castles" [ref=e245]'
+                - generic [ref=e246]:
+                  - 'heading "DIG: Cloud Castles" [level=3] [ref=e247]'
+                  - generic [ref=e249]: Experiences
+            - article [ref=e251] [cursor=pointer]:
+              - link "Google - Celebrating the Most Searched in History Google - Celebrating the Most Searched in History Experiences" [ref=e252]:
+                - /url: /projects/15
+                - img "Google - Celebrating the Most Searched in History" [ref=e255]
+                - generic [ref=e256]:
+                  - heading "Google - Celebrating the Most Searched in History" [level=3] [ref=e257]
+                  - generic [ref=e259]: Experiences
+            - article [ref=e261] [cursor=pointer]:
+              - link "Aurora Solar - Hitting fast-forward on the solar future Aurora Solar - Hitting fast-forward on the solar future Branding" [ref=e262]:
+                - /url: /projects/16
+                - img "Aurora Solar - Hitting fast-forward on the solar future" [ref=e265]
+                - generic [ref=e266]:
+                  - heading "Aurora Solar - Hitting fast-forward on the solar future" [level=3] [ref=e267]
+                  - generic [ref=e269]: Branding
+            - article [ref=e271] [cursor=pointer]:
+              - link "Designing the Kids Space Universe Designing the Kids Space Universe Branding Products" [ref=e272]:
+                - /url: /projects/17
+                - img "Designing the Kids Space Universe" [ref=e275]
+                - generic [ref=e276]:
+                  - heading "Designing the Kids Space Universe" [level=3] [ref=e277]
+                  - generic [ref=e278]:
+                    - generic [ref=e279]: Branding
+                    - generic [ref=e280]: Products
+            - article [ref=e282] [cursor=pointer]:
+              - link "OPPO - A unified design system for a truly global brand OPPO - A unified design system for a truly global brand Platform Branding" [ref=e283]:
+                - /url: /projects/18
+                - img "OPPO - A unified design system for a truly global brand" [ref=e286]
+                - generic [ref=e287]:
+                  - heading "OPPO - A unified design system for a truly global brand" [level=3] [ref=e288]
+                  - generic [ref=e289]:
+                    - generic [ref=e290]: Platform
+                    - generic [ref=e291]: Branding
+            - article [ref=e293] [cursor=pointer]:
+              - link "YouTube creates a new generation YouTube creates a new generation Branding" [ref=e294]:
+                - /url: /projects/19
+                - img "YouTube creates a new generation" [ref=e297]
+                - generic [ref=e298]:
+                  - heading "YouTube creates a new generation" [level=3] [ref=e299]
+                  - generic [ref=e301]: Branding
+            - article [ref=e303] [cursor=pointer]:
+              - link "Google's Search On - A series of inspiring stories Google's Search On - A series of inspiring stories Branding Platform E-commerce" [ref=e304]:
+                - /url: /projects/20
+                - img "Google's Search On - A series of inspiring stories" [ref=e307]
+                - generic [ref=e308]:
+                  - heading "Google's Search On - A series of inspiring stories" [level=3] [ref=e309]
+                  - generic [ref=e310]:
+                    - generic [ref=e311]: Branding
+                    - generic [ref=e312]: Platform
+                    - generic [ref=e313]: E-commerce
+            - article [ref=e315] [cursor=pointer]:
+              - link "Lyft - America is an idea. Not a geography. Lyft - America is an idea. Not a geography. Experiences" [ref=e316]:
+                - /url: /projects/21
+                - img "Lyft - America is an idea. Not a geography." [ref=e319]
+                - generic [ref=e320]:
+                  - heading "Lyft - America is an idea. Not a geography." [level=3] [ref=e321]
+                  - generic [ref=e323]: Experiences
+            - article [ref=e325] [cursor=pointer]:
+              - link "T-Mobile's little device that sets you free T-Mobile's little device that sets you free Experiences" [ref=e326]:
+                - /url: /projects/22
+                - img "T-Mobile's little device that sets you free" [ref=e329]
+                - generic [ref=e330]:
+                  - heading "T-Mobile's little device that sets you free" [level=3] [ref=e331]
+                  - generic [ref=e333]: Experiences
+            - article [ref=e335] [cursor=pointer]:
+              - link "Bearaby - Weighted bedding reinvented Bearaby - Weighted bedding reinvented Branding" [ref=e336]:
+                - /url: /projects/23
+                - img "Bearaby - Weighted bedding reinvented" [ref=e339]
+                - generic [ref=e340]:
+                  - heading "Bearaby - Weighted bedding reinvented" [level=3] [ref=e341]
+                  - generic [ref=e343]: Branding
+          - link "Explore All 23 dynamic case studies" [ref=e345] [cursor=pointer]:
+            - /url: /projects
+            - img [ref=e348]
+            - generic [ref=e351]:
+              - text: Explore All
+              - paragraph [ref=e352]: 23 dynamic case studies
+        - generic [ref=e355]:
+          - img "Product team working" [ref=e359]
+          - generic [ref=e362]:
+            - paragraph [ref=e363]: Product Acceleration
+            - heading "A booster rocket for digital product teams" [level=2] [ref=e364]
+            - paragraph [ref=e365]: We collaborate with startups and product departments around the world to invent and reinvent the products of tomorrow.
+            - generic [ref=e366]:
+              - generic [ref=e367]:
+                - paragraph [ref=e368]: 120M+
+                - paragraph [ref=e369]: Global Reach
+                - paragraph [ref=e370]: Users affected by our work
+              - generic [ref=e371]:
+                - paragraph [ref=e372]: 23+
+                - paragraph [ref=e373]: Proven Impact
+                - paragraph [ref=e374]: Dynamic case studies
+              - generic [ref=e375]:
+                - paragraph [ref=e376]: 94%
+                - paragraph [ref=e377]: Client Success
+                - paragraph [ref=e378]: Repeat business rate
+            - link "Discover our methodology" [ref=e380] [cursor=pointer]:
+              - /url: /product
+        - generic [ref=e382]:
+          - generic [ref=e383]:
+            - paragraph [ref=e384]: Common Inquiries
+            - heading "Curated for the curious. Answered for the committed." [level=2] [ref=e385]:
+              - text: Curated for the curious.
+              - text: Answered for the committed.
+          - generic [ref=e386]:
+            - generic [ref=e388]:
+              - generic [ref=e390]:
+                - heading "What does a typical engagement look like?" [level=3] [ref=e391]:
+                  - button "What does a typical engagement look like?" [expanded] [ref=e392]:
+                    - text: What does a typical engagement look like?
+                    - img
+                - region "What does a typical engagement look like?" [ref=e393]:
+                  - generic [ref=e394]: Most projects begin with a focused discovery sprint, then move into strategy, design, and implementation. We align around checkpoints early so the handoff is clear and launch-ready.
+              - heading "Do you work with product teams as well as brands?" [level=3] [ref=e397]:
+                - button "Do you work with product teams as well as brands?" [ref=e398]:
+                  - text: Do you work with product teams as well as brands?
+                  - img
+              - heading "Can you take on a focused scope instead of a full redesign?" [level=3] [ref=e401]:
+                - button "Can you take on a focused scope instead of a full redesign?" [ref=e402]:
+                  - text: Can you take on a focused scope instead of a full redesign?
+                  - img
+              - heading "How do you price projects?" [level=3] [ref=e405]:
+                - button "How do you price projects?" [ref=e406]:
+                  - text: How do you price projects?
+                  - img
+              - heading "How quickly can a project start?" [level=3] [ref=e409]:
+                - button "How quickly can a project start?" [ref=e410]:
+                  - text: How quickly can a project start?
+                  - img
+            - complementary [ref=e411]:
+              - generic [ref=e412]:
+                - generic [ref=e413]:
+                  - paragraph [ref=e414]: Insight Spotlight
+                  - heading "What does a typical engagement look like?" [level=3] [ref=e415]
+                - paragraph [ref=e416]: A short discovery sprint, then production with clear review cadence.
+                - generic [ref=e417]:
+                  - paragraph [ref=e418]: Standard Deliverables
+                  - list [ref=e419]:
+                    - listitem [ref=e420]: Discovery Notes
+                    - listitem [ref=e421]: Roadmap
+                    - listitem [ref=e422]: Weekly Review Rhythm
+                - generic [ref=e423]:
+                  - paragraph [ref=e424]: "\"We value clarity and outcomes over billable hours.\""
+                  - button "Start your discovery sprint" [ref=e425]
+    - contentinfo [ref=e426]:
+      - generic [ref=e428]:
+        - img [ref=e431]
+        - generic [ref=e442]:
+          - generic [ref=e443]:
+            - generic [ref=e445]:
+              - paragraph [ref=e446]: Want to collaborate?
+              - link "Work with us newbusiness@hellomonday.com" [ref=e447] [cursor=pointer]:
+                - /url: mailto:newbusiness@hellomonday.com
+                - paragraph [ref=e448]: Work with us
+                - generic [ref=e450]: newbusiness@hellomonday.com
+            - generic [ref=e452]:
+              - paragraph [ref=e453]: Want to say hi?
+              - link "General inquiries hello@hellomonday.com" [ref=e454] [cursor=pointer]:
+                - /url: mailto:hello@hellomonday.com
+                - paragraph [ref=e455]: General inquiries
+                - generic [ref=e457]: hello@hellomonday.com
+            - generic [ref=e459]:
+              - paragraph [ref=e460]: Want to join us?
+              - link "Become a Mondayteer Apply here" [ref=e461] [cursor=pointer]:
+                - /url: "#careers"
+                - paragraph [ref=e462]: Become a Mondayteer
+                - generic [ref=e464]: Apply here
+            - generic [ref=e466]:
+              - paragraph [ref=e467]: Want to learn?
+              - link "Become an intern Apply here" [ref=e468] [cursor=pointer]:
+                - /url: "#careers"
+                - paragraph [ref=e469]: Become an intern
+                - generic [ref=e471]: Apply here
+          - generic [ref=e472]:
+            - paragraph [ref=e473]: Our Worlds
+            - generic [ref=e474]:
+              - 'link "New York 36 East 20th St, 6th Floor New York, NY 10003 Tel: +1 917 818-4282" [ref=e476] [cursor=pointer]':
+                - /url: https://www.google.com/maps/place/Hello+Monday/@40.7385487,-73.9908801,17z
+                - heading "New York" [level=4] [ref=e478]
+                - paragraph [ref=e479]: 36 East 20th St, 6th Floor
+                - paragraph [ref=e480]: New York, NY 10003
+                - paragraph [ref=e481]: "Tel: +1 917 818-4282"
+              - 'link "Copenhagen Langebrogade 6E, 2nd floor 1411 Copenhagen Tel: +45 3145 6035" [ref=e483] [cursor=pointer]':
+                - /url: https://www.google.com/maps/place/Hello+Monday/@55.6658995,12.5783361,17z
+                - heading "Copenhagen" [level=4] [ref=e485]
+                - paragraph [ref=e486]: Langebrogade 6E, 2nd floor
+                - paragraph [ref=e487]: 1411 Copenhagen
+                - paragraph [ref=e488]: "Tel: +45 3145 6035"
+              - 'link "Aarhus Banegardspladsen 20A, 1.TV 8000 Aarhus C Tel: +45 6015 4515" [ref=e490] [cursor=pointer]':
+                - /url: https://www.google.com/maps/place/Hello+Monday/@56.1500968,10.2030539,17z
+                - heading "Aarhus" [level=4] [ref=e492]
+                - paragraph [ref=e493]: Banegardspladsen 20A, 1.TV
+                - paragraph [ref=e494]: 8000 Aarhus C
+                - paragraph [ref=e495]: "Tel: +45 6015 4515"
+              - link "Amsterdam Generaal Vetterstraat 66 1059 BW Amsterdam Netherlands" [ref=e497] [cursor=pointer]:
+                - /url: https://www.google.com/maps/place/Generaal+Vetterstraat+66,+1059+BW+Amsterdam,+Netherlands
+                - heading "Amsterdam" [level=4] [ref=e499]
+                - paragraph [ref=e500]: Generaal Vetterstraat 66
+                - paragraph [ref=e501]: 1059 BW Amsterdam
+                - paragraph [ref=e502]: Netherlands
+          - generic [ref=e503]:
+            - generic [ref=e504]:
+              - link "LinkedIn" [ref=e505] [cursor=pointer]:
+                - /url: "#"
+              - link "Instagram" [ref=e506] [cursor=pointer]:
+                - /url: "#"
+              - link "Twitter" [ref=e507] [cursor=pointer]:
+                - /url: "#"
+              - link "Vimeo" [ref=e508] [cursor=pointer]:
+                - /url: "#"
+            - link "Global Privacy Statement" [ref=e509] [cursor=pointer]:
+              - /url: https://www.deptagency.com/en-nl/privacy-policy/
+              - generic [ref=e510]: Global Privacy Statement
+      - button "Back to top" [ref=e512] [cursor=pointer]:
+        - img [ref=e513]
+        - generic [ref=e516]:
+          - text: Back to top
+          - img [ref=e517]
+  - button "Open Next.js Dev Tools" [ref=e524] [cursor=pointer]:
+    - img [ref=e525]

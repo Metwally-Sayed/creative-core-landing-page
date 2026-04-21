@@ -170,7 +170,7 @@ export default function Projects() {
       className="relative -mt-16 overflow-hidden px-5 pb-16 pt-28 md:pb-24 lg:-mt-24 lg:px-20 lg:pb-28 lg:pt-36" 
       id="work"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.96)_34%,rgba(255,255,255,0.7)_68%,rgba(255,255,255,0)_100%)] lg:h-40" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background)/0.96)_34%,hsl(var(--background)/0.7)_68%,transparent_100%)] lg:h-40" />
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
         <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-6">

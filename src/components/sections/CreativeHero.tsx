@@ -52,6 +52,7 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
 
   return (
     <section id={id} className="relative overflow-hidden pt-20 pb-16 md:pt-30 md:pb-24">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,hsl(var(--background))_0%,hsl(var(--background)/0.85)_45%,transparent_100%)]" />
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-5 md:grid-cols-2 md:px-20">
         <div>
           <h1 className="mb-6 text-[42px] font-bold leading-[1.15] text-primary md:text-[72px] md:leading-[1.1]">
