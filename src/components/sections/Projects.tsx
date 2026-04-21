@@ -7,10 +7,10 @@ import { useTranslations } from 'next-intl';
 import LiquidCard from '@/components/LiquidCard';
 import { Link } from '@/i18n/navigation';
 import { useDirection } from '@/hooks/useDirection';
-import { projects, type ProjectSummary } from '@/lib/project-catalog';
+import type { ProjectSummaryDb } from '@/lib/project-data';
 
 // Liquid blob card component
-function LiquidProjectCard({ project, index }: { project: ProjectSummary; index: number }) {
+function LiquidProjectCard({ project, index }: { project: ProjectSummaryDb; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -50,7 +50,7 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
     portrait: 'aspect-[3/4]',
     landscape: 'aspect-[4/3]',
     square: 'aspect-square',
-  }[project.aspectRatio];
+  }[project.aspect_ratio];
 
   return (
     <motion.article
@@ -67,14 +67,14 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
     >
-      <Link href={`/projects/${project.id}`} className="block">
+      <Link href={`/projects/${project.slug}`} className="block">
         <LiquidCard
           aspectRatio={aspectRatioClass}
           className="mb-4 border border-white/70 bg-white/78 shadow-[0_18px_44px_rgba(30,52,86,0.1)]"
         >
           <div ref={cardRef} className="absolute inset-0 overflow-hidden bg-white/70">
             <motion.img
-              src={project.image}
+              src={project.cover_image_url}
               alt={project.title}
               className="w-full h-full object-cover"
               animate={{
@@ -147,7 +147,7 @@ const categoryTranslationKeys: Record<Category, string> = {
   Digital: "projectsFilterDigital",
 };
 
-export default function Projects() {
+export default function Projects({ projects }: { projects: ProjectSummaryDb[] }) {
   const t = useTranslations("home");
   const dir = useDirection();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
