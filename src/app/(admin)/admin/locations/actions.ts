@@ -19,9 +19,9 @@ export interface Location {
 export interface LocationInput {
   name: string;
   country: string;
-  address_lines: string[];
-  email: string;
-  map_url: string;
+  address_lines?: string[];
+  email?: string;
+  map_url?: string;
 }
 
 export async function listLocations(): Promise<Location[]> {

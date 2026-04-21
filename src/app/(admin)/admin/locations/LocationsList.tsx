@@ -240,6 +240,7 @@ export default function LocationsList({ initialLocations }: Props) {
   const [locations, setLocations] = useState<Location[]>(initialLocations);
   const [editingLocation, setEditingLocation] = useState<Location | "new" | null>(null);
   const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
+  const [deleteError, setDeleteError] = useState("");
   const [, startTransition] = useTransition();
 
   const sensors = useSensors(
@@ -269,13 +270,13 @@ export default function LocationsList({ initialLocations }: Props) {
   }
 
   async function confirmDelete(location: Location) {
+    setDeleteError("");
     try {
       await deleteLocation(location.id);
       setLocations((prev) => prev.filter((l) => l.id !== location.id));
-    } catch {
-      alert("Delete failed. Please try again.");
-    } finally {
       setDeletingLocation(null);
+    } catch {
+      setDeleteError("Delete failed. Please try again.");
     }
   }
 
@@ -324,7 +325,7 @@ export default function LocationsList({ initialLocations }: Props) {
       )}
 
       {deletingLocation && (
-        <AlertDialog open onOpenChange={() => setDeletingLocation(null)}>
+        <AlertDialog open onOpenChange={() => { setDeletingLocation(null); setDeleteError(""); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete location?</AlertDialogTitle>
@@ -333,6 +334,7 @@ export default function LocationsList({ initialLocations }: Props) {
                 cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
+            {deleteError && <p className="px-1 text-sm text-red-600">{deleteError}</p>}
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={() => confirmDelete(deletingLocation)}>
