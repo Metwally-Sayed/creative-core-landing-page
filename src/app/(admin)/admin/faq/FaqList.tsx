@@ -229,7 +229,8 @@ export default function FaqList({ initialItems }: Props) {
   const [editingItem, setEditingItem] = useState<FaqItem | "new" | null>(null);
   const [deletingItem, setDeletingItem] = useState<FaqItem | null>(null);
   const [deleteError, setDeleteError] = useState("");
-  const [isDeleting, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
+  const [, startReorderTransition] = useTransition();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -245,7 +246,7 @@ export default function FaqList({ initialItems }: Props) {
     const newIndex = items.findIndex((i) => i.id === over.id);
     const reordered = arrayMove(items, oldIndex, newIndex);
     setItems(reordered);
-    startTransition(() => reorderFaqItems(reordered.map((i) => i.id)));
+    startReorderTransition(() => reorderFaqItems(reordered.map((i) => i.id)));
   }
 
   function handleSaved(item: FaqItem) {
@@ -259,7 +260,7 @@ export default function FaqList({ initialItems }: Props) {
 
   function confirmDelete(item: FaqItem) {
     setDeleteError("");
-    startTransition(async () => {
+    startDeleteTransition(async () => {
       try {
         await deleteFaqItem(item.id);
         setItems((prev) => prev.filter((i) => i.id !== item.id));

@@ -241,7 +241,8 @@ export default function LocationsList({ initialLocations }: Props) {
   const [editingLocation, setEditingLocation] = useState<Location | "new" | null>(null);
   const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
   const [deleteError, setDeleteError] = useState("");
-  const [isDeleting, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
+  const [, startReorderTransition] = useTransition();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -257,7 +258,7 @@ export default function LocationsList({ initialLocations }: Props) {
     const newIndex = locations.findIndex((l) => l.id === over.id);
     const reordered = arrayMove(locations, oldIndex, newIndex);
     setLocations(reordered);
-    startTransition(() => reorderLocations(reordered.map((l) => l.id)));
+    startReorderTransition(() => reorderLocations(reordered.map((l) => l.id)));
   }
 
   function handleSaved(location: Location) {
@@ -271,7 +272,7 @@ export default function LocationsList({ initialLocations }: Props) {
 
   function confirmDelete(location: Location) {
     setDeleteError("");
-    startTransition(async () => {
+    startDeleteTransition(async () => {
       try {
         await deleteLocation(location.id);
         setLocations((prev) => prev.filter((l) => l.id !== location.id));
