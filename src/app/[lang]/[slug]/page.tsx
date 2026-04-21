@@ -26,7 +26,9 @@ export async function generateMetadata({
   return {
     title: page.meta_title || page.title,
     description: page.meta_description || undefined,
-    openGraph: page.og_image_url ? { images: [page.og_image_url] } : undefined,
+    openGraph: page.og_image_url?.startsWith("http")
+      ? { images: [page.og_image_url] }
+      : undefined,
   };
 }
 
