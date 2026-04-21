@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/navigation";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import { cn } from "@/lib/utils";
 
@@ -206,6 +207,7 @@ function CollaborationPreview({
 }
 
 export default function ProductShowcasePage() {
+  const t = useTranslations("productPage");
   const [activeCollaboration, setActiveCollaboration] = useState(0);
   const [activeQuote, setActiveQuote] = useState(0);
   const prefersReducedMotion = useReducedMotion();
@@ -292,7 +294,7 @@ export default function ProductShowcasePage() {
       >
         <div className="site-shell max-w-[1220px] px-0">
           <div className="grid gap-8 lg:grid-cols-[7rem_minmax(0,1fr)] lg:gap-14">
-            <p className="pt-1 text-[0.7rem] uppercase tracking-[0.34em] text-white/30">Product</p>
+            <p className="pt-1 text-[0.7rem] uppercase tracking-[0.34em] text-white/30">{t("sectionLabel")}</p>
 
             <div className="space-y-6 text-[1.06rem] leading-[1.8] text-white/68 md:text-[1.12rem]">
               {INTRO_PARAGRAPHS.map((paragraph, index) => (
@@ -315,12 +317,12 @@ export default function ProductShowcasePage() {
       <section className="relative px-5 py-[4.5rem] lg:px-20 lg:py-24">
         <div className="site-shell max-w-[1260px] px-0">
           <div className="mb-10 grid gap-3 border-b border-white/6 pb-4 text-[0.73rem] text-white/36 md:grid-cols-[minmax(0,1fr)_auto_auto]">
-            <span>Our Work</span>
+            <span>{t("ourWorkLabel")}</span>
             <span>
-              Featured collaborations <span className="mx-2 opacity-40">/</span> Products
+              {t("featuredCollaborations")} <span className="mx-2 opacity-40">/</span> {t("products")}
             </span>
             <Link href="/work" className="inline-flex items-center gap-2 transition-colors hover:text-white">
-              View all cases <ArrowUpRight className="h-3.5 w-3.5" />
+              {t("viewAllCases")} <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
@@ -340,7 +342,7 @@ export default function ProductShowcasePage() {
                     onMouseEnter={() => setActiveCollaboration(index)}
                     onFocus={() => setActiveCollaboration(index)}
                     onClick={() => setActiveCollaboration(index)}
-                    className="group relative block w-full border-b border-white/6 px-0 py-6 text-left last:border-b-0 md:py-8"
+                    className="group relative block w-full border-b border-white/6 px-0 py-6 text-start last:border-b-0 md:py-8"
                   >
                     <div className="grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-8 xl:grid-cols-[7rem_minmax(0,1fr)_8rem]">
                       <p className="pt-2 text-[0.7rem] uppercase tracking-[0.24em] text-white/28">
@@ -395,7 +397,7 @@ export default function ProductShowcasePage() {
                             isActive ? "text-white/44" : "text-white/10"
                           )}
                         >
-                          {isActive ? "Preview live" : ""}
+                          {isActive ? t("previewLive") : ""}
                         </span>
                       </div>
                     </div>
@@ -424,7 +426,7 @@ export default function ProductShowcasePage() {
 
       <section className="border-y border-white/6 bg-[#1c1a19] px-5 py-20 lg:px-20 lg:py-24">
         <div className="site-shell max-w-[1200px] px-0">
-          <p className="mb-10 text-[0.7rem] uppercase tracking-[0.34em] text-white/28">Quotes</p>
+          <p className="mb-10 text-[0.7rem] uppercase tracking-[0.34em] text-white/28">{t("quotesLabel")}</p>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -439,7 +441,7 @@ export default function ProductShowcasePage() {
                 {activeTestimonial.body}
               </blockquote>
               <p className="mt-7 text-sm text-white/56">
-                <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-white" />
+                <span className="me-2 inline-block h-2.5 w-2.5 rounded-full bg-white" />
                 {activeTestimonial.author} — {activeTestimonial.role}
               </p>
             </motion.div>
@@ -464,7 +466,7 @@ export default function ProductShowcasePage() {
                         duration: prefersReducedMotion ? 0 : 5.4,
                         ease: "linear",
                       }}
-                      className="absolute inset-0 origin-left rounded-full bg-white"
+                      className="absolute inset-0 origin-start rounded-full bg-white"
                     />
                   ) : (
                     <span className="absolute inset-0 rounded-full bg-white/22" />
@@ -479,18 +481,16 @@ export default function ProductShowcasePage() {
       <section className="px-5 py-20 lg:px-20 lg:py-24">
         <div className="site-shell max-w-[1220px] px-0">
           <div className="mb-12 space-y-3">
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-white/28">Contact</p>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-white/28">{t("contactLabel")}</p>
             <h2 className="max-w-[28rem] font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] tracking-[-0.06em] text-white">
-              Ready to Collaborate?
+              {t("contactHeading")}
             </h2>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(21rem,0.72fr)] lg:gap-16">
             <div className="space-y-8">
               <div className="max-w-[34rem] space-y-5 text-[1.04rem] leading-[1.8] text-white/66">
-                <p>
-                  We are always up for meeting new teams. If you have a product in motion, a concept that needs shape, or a launch that needs sharper direction, let&apos;s talk.
-                </p>
+                <p>{t("contactBody")}</p>
                 <a
                   href="mailto:product@hellomonday.com"
                   className="inline-flex items-center gap-3 border-b border-white/22 pb-2 font-serif text-[1.5rem] text-white transition-colors hover:text-[#f6c38f]"
@@ -501,7 +501,7 @@ export default function ProductShowcasePage() {
               </div>
 
               <QuoteBriefDialog
-                triggerLabel="Start a product brief"
+                triggerLabel={t("startBriefButton")}
                 triggerClassName="inline-flex h-[3.25rem] rounded-full border border-white/12 bg-white/[0.04] px-6 text-[0.72rem] uppercase tracking-[0.28em] text-white transition-colors hover:bg-white/[0.08]"
               />
             </div>
@@ -525,7 +525,7 @@ export default function ProductShowcasePage() {
 
               <div className="space-y-2 p-6 text-white">
                 <p className="font-serif text-[1.45rem]">Andreas Anderskou</p>
-                <p className="text-sm text-white/56">Managing Partner and Head of Products</p>
+                <p className="text-sm text-white/56">{t("managingPartnerTitle")}</p>
                 <a
                   href="mailto:andreas@hellomonday.com"
                   className="inline-flex items-center gap-2 pt-3 text-sm text-white/78 transition-colors hover:text-[#f6c38f]"

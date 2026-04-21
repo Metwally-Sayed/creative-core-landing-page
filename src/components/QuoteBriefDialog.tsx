@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { ButtonHTMLAttributes, Dispatch, SetStateAction } from "react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -50,36 +51,38 @@ type StepItem = {
   description: string;
 };
 
-const STEP_ITEMS: StepItem[] = [
-  {
-    id: "goals",
-    index: "01",
-    label: "Goals",
-    title: "Project Goals",
-    description: "Choose the outcomes you want this quote to support.",
-  },
-  {
-    id: "scope",
-    index: "02",
-    label: "Scope",
-    title: "Scope and Deliverables",
-    description: "Define the service lanes and outputs you expect.",
-  },
-  {
-    id: "timeline",
-    index: "03",
-    label: "Timeline",
-    title: "Timeline and Budget",
-    description: "Set your expected schedule and investment range.",
-  },
-  {
-    id: "contact",
-    index: "04",
-    label: "Contact",
-    title: "Contact Details",
-    description: "Tell us where to send the quote and follow-up.",
-  },
-];
+function useStepItems(t: ReturnType<typeof useTranslations<"quote">>): StepItem[] {
+  return [
+    {
+      id: "goals",
+      index: "01",
+      label: t("step01Label"),
+      title: t("step01Title"),
+      description: t("step01Description"),
+    },
+    {
+      id: "scope",
+      index: "02",
+      label: t("step02Label"),
+      title: t("step02Title"),
+      description: t("step02Description"),
+    },
+    {
+      id: "timeline",
+      index: "03",
+      label: t("step03Label"),
+      title: t("step03Title"),
+      description: t("step03Description"),
+    },
+    {
+      id: "contact",
+      index: "04",
+      label: t("step04Label"),
+      title: t("step04Title"),
+      description: t("step04Description"),
+    },
+  ];
+}
 
 const GOAL_OPTIONS = [
   "Product Design",

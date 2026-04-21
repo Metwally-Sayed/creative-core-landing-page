@@ -5,8 +5,10 @@ import { useRef, useState, useEffect, useSyncExternalStore } from "react";
 const emptySubscribe = () => () => {};
 import { ArrowUpRight, Plus, Minus, ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
 
 import type { ProjectDetail, ProjectSummary, ProjectSection } from "@/lib/project-catalog";
 import LiquidCard from "@/components/LiquidCard";
@@ -45,6 +47,7 @@ const projectTestimonials = [
 // -------------------------------------------------------------
 
 function Preloader({ title }: { title: string }) {
+  const t = useTranslations("projectDetail");
   const [isVisible, setIsVisible] = useState(true);
 
   // The preloader lasts 2 seconds
@@ -71,7 +74,7 @@ function Preloader({ title }: { title: string }) {
             transition={{ duration: 0.8, ease: transitionEase }}
             className="text-center"
           >
-            <p className="eyebrow text-white/50 mb-6">Loading Case Study</p>
+            <p className="eyebrow text-white/50 mb-6">{t("loadingCaseStudy")}</p>
             <h1 className="font-serif text-5xl md:text-7xl overflow-hidden">
               <span className="block">{title}</span>
             </h1>
@@ -136,9 +139,9 @@ function MarqueeTicker({ words }: { words: string[] }) {
         <motion.div 
           animate={isClient ? { x: ["0%", "-50%"] } : {}} 
           transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
-          className="flex whitespace-nowrap text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight ml-4"
+          className="flex whitespace-nowrap text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight ms-4"
         >
-          <span className="mr-8">{content}{content}{content}{content}{content}{content}</span>
+          <span className="me-8">{content}{content}{content}{content}{content}{content}</span>
         </motion.div>
       </div>
     </div>
@@ -338,9 +341,9 @@ function MetricReveal({ metric, index, total }: { metric: { label: string, value
 
 function TableOfContents({ count }: { count: number }) {
   return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4 mix-blend-difference pointer-events-none">
+    <div className="fixed end-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4 mix-blend-difference pointer-events-none">
       {Array.from({ length: count }).map((_, i) => (
-        <motion.div 
+        <motion.div
           key={i}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -379,7 +382,7 @@ function StaggeredText({ text, className }: { text: string; className?: string }
       className={className}
     >
       {words.map((word, index) => (
-        <motion.span variants={child} key={index} className="inline-block mr-[0.25em]">
+        <motion.span variants={child} key={index} className="inline-block me-[0.25em]">
           {word}
         </motion.span>
       ))}
@@ -394,7 +397,7 @@ function ExpandableCard({ title, items }: { title: string, items: string[] }) {
     <div className="border border-border/60 rounded-xl overflow-hidden mt-8 transition-colors hover:border-border">
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-full flex items-center justify-between p-6 text-left"
+        className="w-full flex items-center justify-between p-6 text-start"
       >
         <span className="font-medium text-[1.1rem] tracking-tight">{title}</span>
         {isOpen ? <Minus className="size-5" /> : <Plus className="size-5" />}
@@ -432,7 +435,7 @@ function StoryChapter({ section, index }: { section: ProjectSection; index: numb
     <div className={`grid md:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-start ${isNavy ? 'p-8 md:p-16 lg:p-20' : ''}`}>
       
       {/* Sticky Label (Desktop) */}
-      <div className={`hidden lg:block absolute top-[20vh] ${isLeft ? 'right-full mr-12' : 'left-full ml-12'} whitespace-nowrap opacity-20 origin-left -rotate-90 select-none`}>
+      <div className={`hidden lg:block absolute top-[20vh] ${isLeft ? 'end-full me-12' : 'start-full ms-12'} whitespace-nowrap opacity-20 origin-left -rotate-90 select-none`}>
         <span className="font-serif text-8xl font-black">0{index + 1}</span>
       </div>
       
@@ -500,7 +503,7 @@ function RelatedProjectCard({ project, index }: { project: ProjectSummary; index
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.8, delay: index * 0.15, ease: transitionEase }}
     >
-      <Link href={`/projects/${project.id}`} className="group flex flex-col space-y-6">
+      <Link href={`/projects/${project.id}` as `/projects/${string}`} className="group flex flex-col space-y-6">
         <LiquidCard className="w-full shadow-lg border border-black/5 dark:border-white/5" aspectRatio="aspect-[1.3/1]">
           <Image 
             src={project.image} 
@@ -524,13 +527,14 @@ function RelatedProjectCard({ project, index }: { project: ProjectSummary; index
 }
 
 function ProcessTimeline() {
+  const t = useTranslations("projectDetail");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-20%" });
 
   return (
     <section className="site-shell py-24 md:py-40 px-6 md:px-12">
       <div className="mb-20">
-        <SplitText text="The Process" className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
+        <SplitText text={t("theProcess")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
       </div>
       <div ref={ref} className="relative">
         <motion.div 
@@ -549,7 +553,7 @@ function ProcessTimeline() {
               transition={{ duration: 0.8, delay: 0.3 + (idx * 0.15), ease: transitionEase }}
               className="relative pt-6"
             >
-              <div className="absolute top-0 md:-top-[24px] left-0 size-3 rounded-full bg-secondary border-4 border-background z-10 hidden md:block" />
+              <div className="absolute top-0 md:-top-[24px] start-0 size-3 rounded-full bg-secondary border-4 border-background z-10 hidden md:block" />
               <div className="space-y-4">
                 <span className="text-secondary font-bold text-sm tracking-widest">{step.phase}</span>
                 <h4 className="font-serif text-2xl text-accent">{step.label}</h4>
@@ -632,6 +636,7 @@ function TestimonialCarousel() {
 }
 
 function ColorPaletteShowcase() {
+  const t = useTranslations("projectDetail");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const [copied, setCopied] = useState<string | null>(null);
@@ -646,8 +651,8 @@ function ColorPaletteShowcase() {
     <section ref={ref} className="site-shell py-24 md:py-32 px-6 md:px-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div>
-          <SplitText text="Color Story" className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
-          <p className="text-muted-foreground text-lg mt-4 max-w-md">The carefully curated palette that brings the digital experience to life.</p>
+          <SplitText text={t("colorStory")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
+          <p className="text-muted-foreground text-lg mt-4 max-w-md">{t("colorStoryBody")}</p>
         </div>
       </div>
 
@@ -659,7 +664,7 @@ function ColorPaletteShowcase() {
             animate={inView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.6, delay: idx * 0.1, ease: transitionEase }}
             onClick={() => copyToClipboard(color.hex)}
-            className="group text-left"
+            className="group text-start"
           >
             <div 
               className="w-full aspect-square md:aspect-4/5 rounded-2xl shadow-sm mb-6 relative overflow-hidden transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-xl"
@@ -685,6 +690,7 @@ function ColorPaletteShowcase() {
 // -------------------------------------------------------------
 
 export default function ProjectDetailView({ project, relatedProjects }: ProjectDetailViewProps) {
+  const t = useTranslations("projectDetail");
   const { scrollYProgress } = useScroll();
 
   const heroRef = useRef(null);
@@ -733,7 +739,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         
         {/* Scroll Progress Bar */}
         <motion.div 
-          className="fixed top-0 left-0 right-0 h-1 md:h-1.5 bg-secondary origin-left z-50 pointer-events-none" 
+          className="fixed top-0 inset-x-0 h-1 md:h-1.5 bg-secondary origin-left z-50 pointer-events-none"
           style={{ scaleX: scrollYProgress }} 
         />
 
@@ -810,10 +816,10 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
                 </div>
               ))}
             </div>
-            <div className="shrink-0 pt-6 md:pt-0 border-t md:border-0 border-border/50 md:pl-8 w-full md:w-auto">
+            <div className="shrink-0 pt-6 md:pt-0 border-t md:border-0 border-border/50 md:ps-8 w-full md:w-auto">
               <MagneticButton href="#" className="btn-primary group w-full md:w-auto mt-2 md:mt-0 text-[1.05rem] px-8 py-4">
                 {project.introMeta.launchLabel}
-                <ArrowUpRight className="ml-3 size-4 md:size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <ArrowUpRight className="ms-3 size-4 md:size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </MagneticButton>
             </div>
           </motion.div>
@@ -822,7 +828,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* 3. Editorial Intro */}
         <section ref={introRef} className="site-shell pb-20 md:pb-32 px-6 md:px-12">
           <div className="grid gap-12 md:gap-20 lg:grid-cols-[1.1fr_1.4fr] items-start">
-            <h2 className="font-serif text-[2.75rem] leading-[1.05] tracking-[-0.04em] text-accent md:text-[4rem] lg:text-[4.75rem] md:pr-10">
+            <h2 className="font-serif text-[2.75rem] leading-[1.05] tracking-[-0.04em] text-accent md:text-[4rem] lg:text-[4.75rem] md:pe-10">
               <SplitText text={project.title} />
             </h2>
             <div className="space-y-10 mt-2">
@@ -863,7 +869,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
           {/* Sticky wrapper that holds exactly 100vh and pins during scroll */}
           <div className="sticky top-0 h-screen w-full flex flex-col justify-center">
             <div className="site-shell mb-8 md:mb-12 w-full px-6 md:px-12">
-              <SplitText text="Visual Exploration" className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
+              <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
             </div>
             {/* The horizontal track that translates based on vertical scroll */}
             <div className="w-full overflow-hidden">
@@ -911,13 +917,13 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-20 gap-6"
             >
               <div>
-                <p className="eyebrow text-[hsl(var(--secondary))] mb-5 opacity-80">Results & Impact</p>
+                <p className="eyebrow text-[hsl(var(--secondary))] mb-5 opacity-80">{t("resultsEyebrow")}</p>
                 <h3 className="font-serif text-[3rem] md:text-[5rem] tracking-tight text-white leading-[0.95]">
-                  <SplitText text="Project Impact" />
+                  <SplitText text={t("projectImpact")} />
                 </h3>
               </div>
               <p className="text-white/40 text-sm md:text-base max-w-xs font-light leading-relaxed">
-                Key outcomes that define the project&apos;s success and lasting value.
+                {t("projectImpactBody")}
               </p>
             </motion.div>
             
@@ -934,7 +940,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <section className="bg-white/40 dark:bg-black/20 pt-28 pb-40 border-t border-border/40 backdrop-blur-3xl relative z-20 overflow-hidden">
           <div className="site-shell px-6 md:px-12 lg:px-20 mb-32 md:mb-48">
             <div className="mb-14 md:mb-20">
-              <h3 className="font-serif text-[2.75rem] md:text-[4rem] tracking-[-0.03em] text-accent">Related projects</h3>
+              <h3 className="font-serif text-[2.75rem] md:text-[4rem] tracking-[-0.03em] text-accent">{t("relatedProjects")}</h3>
             </div>
             <div className="grid md:grid-cols-2 gap-12 md:gap-x-20 md:gap-y-24">
               {relatedProjects.slice(0, 2).map((relatedProject, idx) => (

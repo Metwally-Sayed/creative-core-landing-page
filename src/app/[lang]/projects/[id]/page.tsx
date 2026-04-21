@@ -1,18 +1,23 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 
 import ProjectDetailContainer from "@/components/projects/ProjectDetailContainer";
-import { getProjectDetail, projectIds } from "@/lib/project-catalog";
+import { locales } from "@/i18n/config";
+import { getProjectDetail, projects } from "@/lib/project-catalog";
 
 type ProjectPageProps = {
   params: Promise<{
+    lang: string;
     id: string;
   }>;
 };
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  return projectIds.map((id) => ({ id: String(id) }));
+export function generateStaticParams() {
+  return locales.flatMap((lang) =>
+    projects.map((p) => ({ lang, id: p.id })),
+  );
 }
 
 export async function generateMetadata({
@@ -34,7 +39,8 @@ export async function generateMetadata({
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const { id } = await params;
+  const { lang, id } = await params;
+  setRequestLocale(lang);
 
   return (
     <div className="min-h-screen bg-transparent text-foreground">

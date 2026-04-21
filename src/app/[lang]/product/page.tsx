@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 
 import ProductShowcasePage from "@/components/product/ProductShowcasePage";
 
@@ -8,6 +9,12 @@ export const metadata: Metadata = {
     "A dark editorial product page with motion-led storytelling, collaboration previews, and product contact details.",
 };
 
-export default function ProductPage() {
+type ProductPageProps = {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { lang } = await params;
+  setRequestLocale(lang);
   return <ProductShowcasePage />;
 }
