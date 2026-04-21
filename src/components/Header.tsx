@@ -1,11 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import type { CSSProperties } from "react";
-import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useDirection } from "@/hooks/useDirection";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import LocaleSwitch from "@/components/LocaleSwitch";
 
@@ -68,6 +68,7 @@ export default function Header() {
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const tHeader = useTranslations("header");
+  const dir = useDirection();
 
   const menuItems = menuItemDefs.map((item) => ({
     label: tNav(item.key),
@@ -217,9 +218,9 @@ export default function Header() {
             <motion.button
               type="button"
               onClick={() => setIsMenuOpen(true)}
-              initial={{ x: 72, opacity: 0 }}
+              initial={{ x: 72 * dir, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 72, opacity: 0 }}
+              exit={{ x: 72 * dir, opacity: 0 }}
               transition={{ duration: 0.42, ease: transitionEase }}
               className="fixed inset-y-0 end-0 z-55 hidden w-[6.9rem] items-center justify-end bg-transparent text-white lg:flex"
               aria-label={tHeader("openMenu")}
@@ -237,7 +238,7 @@ export default function Header() {
                 y: smoothY,
               }}
               animate={{
-                x: isHoveringTrigger ? -6 : 0,
+                x: isHoveringTrigger ? -6 * dir : 0,
               }}
               transition={{ duration: 0.3 }}
             >
@@ -330,9 +331,9 @@ export default function Header() {
               <motion.button
                 type="button"
                 onClick={() => setIsMenuOpen(false)}
-                initial={{ x: 72, opacity: 0 }}
+                initial={{ x: 72 * dir, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 72, opacity: 0 }}
+                exit={{ x: 72 * dir, opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.35, ease: transitionEase }}
                 className="fixed inset-y-0 end-[-1.7rem] z-65 hidden w-[6.9rem] items-center justify-end bg-transparent text-black lg:flex cursor-pointer"
                 aria-label={tHeader("closeMenu")}
@@ -371,16 +372,16 @@ export default function Header() {
 
               <nav
                 id="site-menu"
-                className="absolute left-1/2 top-1/2 w-full max-w-[1600px] -translate-x-1/2 -translate-y-1/2"
+                className="absolute start-1/2 top-1/2 w-full max-w-[1600px] -translate-x-1/2 -translate-y-1/2"
               >
                 <div className="ms-auto me-[13vw] w-fit space-y-4 pe-8 lg:me-[16vw] lg:pe-0">
                   {menuItems.map((item, index) => (
                     <motion.div
                       key={item.label}
                       onMouseEnter={() => setActiveMenuIndex(index)}
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: 20 * dir }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
+                      exit={{ opacity: 0, x: 20 * dir }}
                       transition={{
                         duration: 0.6,
                         delay: 0.2 + index * 0.08,
@@ -397,9 +398,9 @@ export default function Header() {
                             width: index === activeMenuIndex ? 40 : 0,
                             opacity: index === activeMenuIndex ? 1 : 0,
                           }}
-                          className="hidden h-2 origin-left rounded-full bg-secondary lg:block"
+                          className="hidden h-2 origin-inline-start rounded-full bg-secondary lg:block"
                         />
-                        <span className="transition-transform duration-500 group-hover:translate-x-4">
+                        <span className="transition-transform duration-500 group-hover:translate-x-4 rtl:group-hover:-translate-x-4">
                           {item.label}
                         </span>
                       </Link>
@@ -426,7 +427,7 @@ export default function Header() {
                     {platform}
                   </a>
                 ))}
-                <LocaleSwitch />
+                <LocaleSwitch className="text-white" />
               </motion.div>
             </motion.div>
           </div>

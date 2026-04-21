@@ -4,7 +4,7 @@ import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ArrowUp } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { studioLocations, type StudioLocation } from '@/lib/studio-locations';
 import LocaleSwitch from '@/components/LocaleSwitch';
