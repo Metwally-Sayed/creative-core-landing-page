@@ -7,6 +7,7 @@ import { Check, ArrowUp } from 'lucide-react';
 import { usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import type { Location } from '@/lib/locations-data';
+import type { SiteSettings } from "@/lib/page-data";
 import LocaleSwitch from '@/components/LocaleSwitch';
 
 interface ContactItem {
@@ -131,7 +132,13 @@ function ContactCard({ item }: { item: ContactItem }) {
   );
 }
 
-export default function Footer({ locations }: { locations: Location[] }) {
+export default function Footer({
+  locations,
+  settings,
+}: {
+  locations: Location[];
+  settings?: SiteSettings;
+}) {
   const tFooter = useTranslations("footer");
   const pathname = usePathname() || '';
   const isProductPage = pathname.startsWith('/product');
@@ -140,26 +147,26 @@ export default function Footer({ locations }: { locations: Location[] }) {
     {
       label: tFooter("collaborateLabel"),
       sublabel: tFooter("collaborateSublabel"),
-      value: 'newbusiness@hellomonday.com',
-      href: 'mailto:newbusiness@hellomonday.com',
+      value: settings?.business_email ?? "newbusiness@hellomonday.com",
+      href: `mailto:${settings?.business_email ?? "newbusiness@hellomonday.com"}`,
     },
     {
       label: tFooter("generalLabel"),
       sublabel: tFooter("generalSublabel"),
-      value: 'hello@hellomonday.com',
-      href: 'mailto:hello@hellomonday.com',
+      value: settings?.contact_email ?? "hello@hellomonday.com",
+      href: `mailto:${settings?.contact_email ?? "hello@hellomonday.com"}`,
     },
     {
       label: tFooter("careersLabel"),
       sublabel: tFooter("careersSublabel"),
       value: tFooter("applyHere"),
-      href: '#careers',
+      href: "#careers",
     },
     {
       label: tFooter("internshipsLabel"),
       sublabel: tFooter("internshipsSublabel"),
       value: tFooter("applyHere"),
-      href: '#careers',
+      href: "#careers",
     },
   ];
 
@@ -285,15 +292,24 @@ export default function Footer({ locations }: { locations: Location[] }) {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 border-t border-[color:var(--footer-border)] pt-12">
                 <div className="flex gap-8">
-                  {['LinkedIn', 'Instagram', 'Twitter', 'Vimeo'].map((platform) => (
-                    <a
-                      key={platform}
-                      href="#"
-                      className="text-xs font-bold uppercase tracking-widest text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
-                    >
-                      {platform}
-                    </a>
-                  ))}
+                  {[
+                    { label: "LinkedIn", url: settings?.social_linkedin },
+                    { label: "Instagram", url: settings?.social_instagram },
+                    { label: "Twitter", url: settings?.social_twitter },
+                    { label: "Vimeo", url: settings?.social_vimeo },
+                  ]
+                    .filter((s) => s.url)
+                    .map(({ label, url }) => (
+                      <a
+                        key={label}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-bold uppercase tracking-widest text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
+                      >
+                        {label}
+                      </a>
+                    ))}
                 </div>
                 <div className="flex items-center gap-6">
                   <LocaleSwitch />

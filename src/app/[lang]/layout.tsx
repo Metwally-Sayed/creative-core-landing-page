@@ -15,6 +15,7 @@ import PageLoadingBar from "@/components/ui/PageLoadingBar";
 import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import { getLocations } from "@/lib/locations-data";
+import { getSettings } from "@/lib/page-data";
 import LenisProvider from "@/components/ui/LenisProvider";
 import PageTransition from "@/components/ui/PageTransition";
 import "../globals.css";
@@ -67,7 +68,7 @@ export default async function LocaleLayout({
 
   setRequestLocale(lang);
   const messages = await getMessages();
-  const locations = await getLocations();
+  const [locations, settings] = await Promise.all([getLocations(), getSettings()]);
   const dir = localeDirection[lang];
 
   return (
@@ -92,7 +93,7 @@ export default async function LocaleLayout({
                   </PageTransition>
                 </AnimatePresence>
               </main>
-              <Footer locations={locations} />
+              <Footer locations={locations} settings={settings} />
             </div>
           </LenisProvider>
         </NextIntlClientProvider>
