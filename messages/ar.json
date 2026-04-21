@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "work": "[AR] Work",
+    "services": "[AR] Services",
+    "about": "[AR] About",
+    "product": "[AR] Product",
+    "stories": "[AR] Stories"
+  },
+  "common": {
+    "getQuote": "[AR] Get Quote",
+    "startProject": "[AR] Start Your Project",
+    "seeWork": "[AR] See Our Work",
+    "scrollToExplore": "[AR] Scroll to explore",
+    "readMore": "[AR] Read more"
+  },
+  "home": {
+    "heroHeadlineLine1": "[AR] Ideas That",
+    "heroHeadlineLine2": "[AR] Orbit Your",
+    "heroHighlight": "[AR] Core.",
+    "heroBody": "[AR] Brand strategy, identity, content, and 3D visuals that convert."
+  },
+  "locale": {
+    "switchAria": "تبديل اللغة"
+  }
+}

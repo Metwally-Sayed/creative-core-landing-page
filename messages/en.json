@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "work": "Work",
+    "services": "Services",
+    "about": "About",
+    "product": "Product",
+    "stories": "Stories"
+  },
+  "common": {
+    "getQuote": "Get Quote",
+    "startProject": "Start Your Project",
+    "seeWork": "See Our Work",
+    "scrollToExplore": "Scroll to explore",
+    "readMore": "Read more"
+  },
+  "home": {
+    "heroHeadlineLine1": "Ideas That",
+    "heroHeadlineLine2": "Orbit Your",
+    "heroHighlight": "Core.",
+    "heroBody": "Brand strategy, identity, content, and 3D visuals that convert."
+  },
+  "locale": {
+    "switchAria": "Switch language"
+  }
+}
