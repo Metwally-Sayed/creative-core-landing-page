@@ -125,7 +125,7 @@ function LocationModal({
   const [name, setName] = useState(location?.name ?? "");
   const [country, setCountry] = useState(location?.country ?? "");
   const [addressLines, setAddressLines] = useState(
-    location?.address_lines.join("\n") ?? ""
+    (location?.address_lines ?? []).join("\n")
   );
   const [email, setEmail] = useState(location?.email ?? "");
   const [mapUrl, setMapUrl] = useState(location?.map_url ?? "");
@@ -241,7 +241,7 @@ export default function LocationsList({ initialLocations }: Props) {
   const [editingLocation, setEditingLocation] = useState<Location | "new" | null>(null);
   const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
   const [deleteError, setDeleteError] = useState("");
-  const [, startTransition] = useTransition();
+  const [isDeleting, startTransition] = useTransition();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -269,15 +269,17 @@ export default function LocationsList({ initialLocations }: Props) {
     });
   }
 
-  async function confirmDelete(location: Location) {
+  function confirmDelete(location: Location) {
     setDeleteError("");
-    try {
-      await deleteLocation(location.id);
-      setLocations((prev) => prev.filter((l) => l.id !== location.id));
-      setDeletingLocation(null);
-    } catch {
-      setDeleteError("Delete failed. Please try again.");
-    }
+    startTransition(async () => {
+      try {
+        await deleteLocation(location.id);
+        setLocations((prev) => prev.filter((l) => l.id !== location.id));
+        setDeletingLocation(null);
+      } catch {
+        setDeleteError("Delete failed. Please try again.");
+      }
+    });
   }
 
   return (
@@ -336,9 +338,9 @@ export default function LocationsList({ initialLocations }: Props) {
             </AlertDialogHeader>
             {deleteError && <p className="px-1 text-sm text-red-600">{deleteError}</p>}
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => confirmDelete(deletingLocation)}>
-                Delete
+              <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => confirmDelete(deletingLocation)} disabled={isDeleting}>
+                {isDeleting ? "Deleting…" : "Delete"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
