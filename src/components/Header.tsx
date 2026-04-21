@@ -256,7 +256,7 @@ export default function Header() {
               <motion.svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 19 15"
-                className="pointer-events-none absolute right-4 top-1/2 h-[15px] w-[19px] -translate-y-1/2"
+                className="pointer-events-none absolute end-4 top-1/2 h-[15px] w-[19px] -translate-y-1/2"
                 animate={{
                   scale: isHoveringTrigger ? 1.15 : 1,
                 }}
