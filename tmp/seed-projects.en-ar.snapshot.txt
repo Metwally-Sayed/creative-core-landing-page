@@ -1,0 +1,645 @@
+{
+  "generatedAt": "2026-04-21",
+  "note": "Snapshot copy of the project seed dataset (EN + AR) used for Payload seeding. Image paths are local file references and must exist to upload.",
+  "projects": [
+    {
+      "key": "burgito",
+      "slug": "burgito",
+      "title": "Burgito - Tasty Bites, Happy Vibes",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Campaign"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "portrait",
+      "sortOrder": 220,
+      "inheritThemeFromPalette": null,
+      "themePalette": {
+        "accent": { "hex": "#D60523", "name": "Burgito Red" },
+        "secondary": { "hex": "#F9DCEA", "name": "Blush Pink" },
+        "background": { "hex": "#FFFFFF", "name": "White" },
+        "foreground": { "hex": "#000000", "name": "Black" },
+        "supporting": []
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/burgitowebsite-13.webp", "alt": "Burgito brand card image" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/burgitowebsite-04.webp", "alt": "Burgito primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-01.webp", "alt": "Burgito concept exploration" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-11.webp", "alt": "Burgito identity system application" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-05.webp", "alt": "Burgito launch expression" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-11.webp", "alt": "Burgito visual exploration image 1" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-10.webp", "alt": "Burgito visual exploration image 2" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-09.webp", "alt": "Burgito visual exploration image 3" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-07.webp", "alt": "Burgito visual exploration image 4" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-03.webp", "alt": "Burgito visual exploration image 5" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-05.webp", "alt": "Burgito visual exploration image 6" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-06.webp", "alt": "Burgito visual exploration image 7" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-08.webp", "alt": "Burgito visual exploration image 8" },
+          { "filePath": "/Users/metwally/Downloads/burgitowebsite-12.webp", "alt": "Burgito visual exploration image 9" }
+        ]
+      },
+      "copy": {
+        "heroLabel": "Brand Identity",
+        "heroTitle": "Burgito",
+        "heroSubtitle": "A playful burger brand built from appetite, slang, and a wink of retro diner energy.",
+        "heroSummary": "Burgito is a compact brand identity study that turns a fast-food premise into a bold character system, packaging language, and campaign-ready visual toolkit.",
+        "introMeta": {
+          "type": "Branding",
+          "client": "Burgito",
+          "deliverables": "Brand identity, mascot system, packaging, campaign visuals, social assets",
+          "launchLabel": "Explore the system"
+        },
+        "overview": [
+          { "label": "Service", "value": "Branding" },
+          { "label": "Focus", "value": "Identity + packaging + rollout assets" },
+          { "label": "Tone", "value": "Bold, playful, diner-inspired" },
+          { "label": "Output", "value": "Systemized visuals for real-world use" }
+        ],
+        "intro": [
+          "Burgito started as a simple idea: make a burger brand that feels like a catchphrase. The name is short, cheeky, and instantly conversational — the kind of word you can put on a box, a poster, or a sticker and have it carry the mood by itself.",
+          "From there the work became about building a character-driven identity with clear rules: loud color, confident type, and a mascot-led rhythm that can scale from packaging details to campaign moments. The goal wasn’t to over-explain — it was to design an appetite-first system that stays readable and energetic in motion."
+        ],
+        "process": [
+          { "phase": "01", "label": "Discovery", "desc": "Define the brand premise, personality, and the visual references that fit the food category without feeling generic." },
+          { "phase": "02", "label": "Concept", "desc": "Explore naming energy, mascot direction, and a flexible layout language for packaging and social surfaces." },
+          { "phase": "03", "label": "System", "desc": "Lock typography, color roles, and repeatable components so every asset feels related without becoming repetitive." },
+          { "phase": "04", "label": "Expression", "desc": "Apply the system across packaging, campaign visuals, and social templates to prove it holds up in the wild." }
+        ],
+        "sections": [
+          {
+            "eyebrow": "Concept",
+            "title": "Appetite-first premise",
+            "body": [
+              "Burgito needed to read instantly as food, but feel more like culture than a menu item. The concept work focused on high-contrast shape, punchy color, and a mascot tone that can carry humor without becoming a gimmick.",
+              "The system favors simple, repeatable moves — strong silhouettes, bold blocks of color, and a flexible composition grid that works at sticker scale and poster scale."
+            ],
+            "imageLayout": "left",
+            "tone": "light"
+          },
+          {
+            "eyebrow": "Identity System",
+            "title": "A toolkit, not a logo lockup",
+            "body": [
+              "The identity was designed as a set of parts: typography, badges, character moments, and layout rules that can remix endlessly. That makes the brand feel alive across packaging and social content.",
+              "Color roles are intentionally opinionated: a primary accent for impact, a soft secondary for contrast, and a clean base so photography and typography stay readable."
+            ],
+            "imageLayout": "right",
+            "tone": "light"
+          },
+          {
+            "eyebrow": "Launch Expression",
+            "title": "Campaign-ready surfaces",
+            "body": [
+              "To prove the system, we pushed it into launch-style assets: bold headline moments, repeatable templates, and compositions that can flex between product focus and pure brand energy.",
+              "Everything is built to stay consistent under real constraints — cropping, quick edits, and different formats — while still feeling unmistakably Burgito."
+            ],
+            "imageLayout": "left",
+            "tone": "navy"
+          }
+        ],
+        "impactMetrics": [
+          { "label": "Clarity", "value": "A readable identity that stays loud across sizes and formats." },
+          { "label": "Flexibility", "value": "A component system that supports endless brand applications." },
+          { "label": "Expression", "value": "Packaging and campaign visuals that feel cohesive, not templated." }
+        ],
+        "credits": [
+          { "label": "Services", "value": "Branding, Packaging, Campaign Visuals" },
+          { "label": "Deliverables", "value": "Identity toolkit, mascot system, social templates" },
+          { "label": "Studio", "value": "Creative Core" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "بورغيتو - لقيمات لذيذة، مزاج سعيد",
+          "tags": ["هوية بصرية", "تغليف", "حملة"],
+          "themePalette": {
+            "accent": { "hex": "#D60523", "name": "أحمر بورغيتو" },
+            "secondary": { "hex": "#F9DCEA", "name": "وردي خفيف" },
+            "background": { "hex": "#FFFFFF", "name": "أبيض" },
+            "foreground": { "hex": "#000000", "name": "أسود" },
+            "supporting": []
+          },
+          "copy": {
+            "heroLabel": "هوية العلامة التجارية",
+            "heroTitle": "Burgito",
+            "heroSubtitle": "علامة برغر مرحة مبنية على الشهية والعبارات الخفيفة ولمسة من طاقة المطاعم الكلاسيكية.",
+            "heroSummary": "بورغيتو دراسة هوية قصيرة تحوّل فكرة الوجبات السريعة إلى نظام شخصية جريء ولغة تغليف ومجموعة مرئيات جاهزة للحملات.",
+            "introMeta": {
+              "type": "هوية بصرية",
+              "client": "Burgito",
+              "deliverables": "هوية العلامة، نظام تميمة/شخصية، تغليف، مرئيات حملات، أصول وسائل التواصل",
+              "launchLabel": "استكشف النظام"
+            },
+            "overview": [
+              { "label": "الخدمة", "value": "هوية بصرية" },
+              { "label": "التركيز", "value": "هوية + تغليف + أصول إطلاق" },
+              { "label": "النبرة", "value": "جريئة، مرحة، مستوحاة من الداينر" },
+              { "label": "المخرجات", "value": "نظام مرئي قابل للتطبيق في الواقع" }
+            ],
+            "intro": [
+              "بدأت Burgito بفكرة بسيطة: اصنع علامة برغر تشبه عبارة دارجة. الاسم قصير ووقح بلطف وسهل الترديد — كلمة يمكن وضعها على علبة أو بوستر أو ملصق وتحمل المزاج لوحدها.",
+              "بعد ذلك أصبح العمل حول بناء هوية تقودها شخصية بقواعد واضحة: لون صاخب، حروف واثقة، وإيقاع بصري تقوده التميمة يمكن أن يتسع من تفاصيل التغليف إلى لحظات الحملة. الهدف لم يكن الشرح الزائد — بل تصميم نظام قائم على الشهية يبقى مقروءاً ومتحركاً بطاقة."
+            ],
+            "process": [
+              { "phase": "01", "label": "اكتشاف", "desc": "تحديد فكرة العلامة وشخصيتها والمراجع البصرية التي تناسب فئة الطعام دون أن تبدو عامة." },
+              { "phase": "02", "label": "مفهوم", "desc": "استكشاف طاقة الاسم واتجاه التميمة ولغة تكوين مرنة للتغليف ووسائل التواصل." },
+              { "phase": "03", "label": "نظام", "desc": "تثبيت الحروف وأدوار الألوان والمكوّنات القابلة للتكرار بحيث تبدو كل الأصول مترابطة دون أن تصبح مكررة." },
+              { "phase": "04", "label": "تطبيق", "desc": "تطبيق النظام عبر التغليف ومرئيات الحملة وقوالب السوشال لإثبات أنه يعمل في الواقع." }
+            ],
+            "sections": [
+              {
+                "eyebrow": "المفهوم",
+                "title": "فكرة تقودها الشهية",
+                "body": [
+                  "كان على Burgito أن تُقرأ فوراً كطعام، لكن أن تبدو أقرب إلى ثقافة من كونها بند قائمة. ركزت مرحلة المفهوم على شكل عالي التباين ولون صادم ونبرة تميمة تحمل الدعابة دون أن تتحول إلى خدعة.",
+                  "يفضّل النظام حركات بسيطة قابلة للتكرار — ظلال قوية وكتل لون جريئة وشبكة تكوين مرنة تعمل بحجم الملصق وبحجم البوستر."
+                ],
+                "imageLayout": "left",
+                "tone": "light"
+              },
+              {
+                "eyebrow": "نظام الهوية",
+                "title": "مجموعة أدوات، لا قفل شعار",
+                "body": [
+                  "صُممت الهوية كمجموعة أجزاء: حروف وشارات ولحظات شخصية وقواعد تكوين يمكن إعادة مزجها بلا نهاية. هذا يجعل العلامة تبدو حيّة عبر التغليف ومحتوى السوشال.",
+                  "أدوار الألوان مقصودة: لون أساسي للضربة، وثانوي ناعم للتباين، وقاعدة نظيفة تبقي التصوير والحروف مقروءة."
+                ],
+                "imageLayout": "right",
+                "tone": "light"
+              },
+              {
+                "eyebrow": "تطبيق الإطلاق",
+                "title": "أسطح جاهزة للحملة",
+                "body": [
+                  "لإثبات النظام، دفعناه إلى أصول إطلاق: لحظات عناوين قوية وقوالب قابلة للتكرار وتكوينات تتنقل بين التركيز على المنتج وطاقة العلامة الخالصة.",
+                  "كل شيء مبني ليبقى ثابتاً تحت قيود حقيقية — قصّ سريع وتعديلات سريعة وصيغ مختلفة — مع الحفاظ على شخصية Burgito الواضحة."
+                ],
+                "imageLayout": "left",
+                "tone": "navy"
+              }
+            ],
+            "impactMetrics": [
+              { "label": "الوضوح", "value": "هوية مقروءة تبقى عالية الصوت عبر الأحجام والصيغ المختلفة." },
+              { "label": "المرونة", "value": "نظام مكوّنات يدعم تطبيقات لا نهائية للعلامة." },
+              { "label": "التعبير", "value": "تغليف وحملات تبدو متماسكة وليست قوالب جاهزة." }
+            ],
+            "credits": [
+              { "label": "الخدمات", "value": "هوية بصرية، تغليف، مرئيات حملات" },
+              { "label": "المخرجات", "value": "مجموعة أدوات هوية، نظام تميمة، قوالب سوشال" },
+              { "label": "الاستوديو", "value": "Creative Core" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "mazaq",
+      "slug": "mazaq",
+      "title": "Mazaq",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Art Direction"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 230,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#71CAC8", "name": "Al Balad" },
+        "secondary": { "hex": "#1F5C2E", "name": "Old Makkah" },
+        "background": { "hex": "#E8E8E2", "name": "Sand" },
+        "foreground": { "hex": "#0D0D0D", "name": "Black" },
+        "supporting": [
+          { "hex": "#3066B0", "name": "Sunrise" },
+          { "hex": "#911A22", "name": "Hijazi Red" }
+        ]
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/mazaqwebsite-02.webp", "alt": "Mazaq listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/mazaqwebsite-03.webp", "alt": "Mazaq primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-04.webp", "alt": "Mazaq concept system" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-05.webp", "alt": "Mazaq icon system board" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-09.webp", "alt": "Mazaq packaging application" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-05.webp", "alt": "Mazaq visual exploration icon system" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-07.webp", "alt": "Mazaq visual exploration poster split" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-09.webp", "alt": "Mazaq visual exploration bag and bowl" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-10.webp", "alt": "Mazaq visual exploration tabletop composition" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-11.webp", "alt": "Mazaq visual exploration merchandise" },
+          { "filePath": "/Users/metwally/Downloads/mazaqwebsite-12.webp", "alt": "Mazaq visual exploration poster and cup" }
+        ]
+      },
+      "copy": {
+        "heroLabel": "Brand Identity",
+        "heroTitle": "Mazaq",
+        "heroSubtitle": "A modern food identity built from local visual memory, street culture, and Hijazi references.",
+        "heroSummary": "Mazaq reframes familiar Hijazi street-food cues as a contemporary identity system, spanning packaging, printed ephemera, posters, and merchandise-ready applications.",
+        "introMeta": { "type": "Branding", "client": "Mazaq", "deliverables": "Brand identity, packaging, printed applications, merchandise, campaign visuals", "launchLabel": "Explore the identity" },
+        "overview": [
+          { "label": "Service", "value": "Branding" },
+          { "label": "Scope", "value": "Identity, packaging, posters, merchandise, takeaway touchpoints" },
+          { "label": "Strategy", "value": "Heritage references + modular graphic language" },
+          { "label": "Palette", "value": "Turquoise + green core with supporting blue and red accents" }
+        ],
+        "intro": [
+          "Mazaq starts with a recognizable street-food world, then edits it into a clear contemporary system. Instead of leaning on nostalgia, the identity treats heritage cues as structure: Arabic typographic rhythm, tiled geometry, and stamp-like details that feel collected rather than fabricated.",
+          "The visual language is designed to scale across real touchpoints — posters, packaging, tabletop moments, and takeaway assets — while staying cohesive. A turquoise-and-green backbone drives recognition, and supporting colors provide contrast without changing the system’s core voice."
+        ],
+        "process": [
+          { "phase": "01", "label": "Discovery", "desc": "Define the brand thesis, cultural references, and the voice the identity should carry across physical touchpoints." },
+          { "phase": "02", "label": "Concept", "desc": "Translate street cues into modular graphic building blocks: motifs, composition rules, and typographic rhythm." },
+          { "phase": "03", "label": "System", "desc": "Build a reusable toolkit of icons, stamps, and layouts that stays flexible across packaging and print." },
+          { "phase": "04", "label": "Application", "desc": "Apply the system to posters, packaging, tabletop presence, and merchandise to validate consistency." }
+        ],
+        "sections": [
+          { "eyebrow": "Concept", "title": "From street cues to a contemporary system", "body": ["The concept phase focused on reframing familiar Hijazi visual cues as a modern brand language — not as decoration, but as a repeatable system.", "Tiled geometry and print textures give the identity a collected, place-based feeling, while clean structure keeps it legible across formats."], "imageLayout": "left", "tone": "light" },
+          { "eyebrow": "Identity System", "title": "Icons, stamps, and modular rhythm", "body": ["The identity toolkit is built for repetition without monotony: icon families, stamp marks, and modular motifs that can recombine across surfaces.", "Typography and spacing rules establish a consistent rhythm so everything from a label to a poster reads as Mazaq."], "imageLayout": "right", "tone": "light" },
+          { "eyebrow": "Brand In Use", "title": "Packaging and takeaway recognition", "body": ["Applications prioritize recognition at a glance — the kinds of moments where packaging and tabletop presence do the talking.", "The system stays flexible for posters, cups, bags, and merch while keeping a clear turquoise-green signature."], "imageLayout": "left", "tone": "navy" }
+        ],
+        "impactMetrics": [
+          { "label": "Consistency", "value": "Coherent identity across physical, printed, and takeaway touchpoints." },
+          { "label": "Character", "value": "Stronger local voice and recall without relying on clichés." },
+          { "label": "Flexibility", "value": "A modular system that scales from packaging details to poster campaigns and merchandise." }
+        ],
+        "credits": [{ "label": "Services", "value": "Branding, Visual Identity, Packaging Direction, Art Direction" }]
+      },
+      "locales": {
+        "ar": {
+          "title": "مذاق",
+          "tags": ["هوية بصرية", "تغليف", "إخراج فني"],
+          "themePalette": {
+            "accent": { "hex": "#71CAC8", "name": "البلد" },
+            "secondary": { "hex": "#1F5C2E", "name": "مكة القديمة" },
+            "background": { "hex": "#E8E8E2", "name": "رمل" },
+            "foreground": { "hex": "#0D0D0D", "name": "أسود" },
+            "supporting": [
+              { "hex": "#3066B0", "name": "شروق" },
+              { "hex": "#911A22", "name": "أحمر حجازي" }
+            ]
+          },
+          "copy": {
+            "heroLabel": "هوية العلامة التجارية",
+            "heroTitle": "Mazaq",
+            "heroSubtitle": "هوية طعام عصرية مبنية على الذاكرة البصرية المحلية، وثقافة الشارع، وإشارات حجازية.",
+            "heroSummary": "مذاق يعيد صياغة إشارات أطعمة الشارع الحجازية كنظام هوية معاصر يمتد عبر التغليف والتطبيقات المطبوعة والملصقات وتطبيقات جاهزة للبضاعة.",
+            "introMeta": { "type": "هوية بصرية", "client": "Mazaq", "deliverables": "هوية العلامة، التغليف، تطبيقات مطبوعة، بضاعة، مرئيات حملات", "launchLabel": "استكشف الهوية" },
+            "overview": [
+              { "label": "الخدمة", "value": "هوية بصرية" },
+              { "label": "النطاق", "value": "هوية، تغليف، ملصقات، بضاعة، نقاط تواصل تيك أواي" },
+              { "label": "الاستراتيجية", "value": "مراجع تراثية + لغة رسومية معيارية قابلة للتركيب" },
+              { "label": "لوحة الألوان", "value": "تركواز وأخضر كأساس مع أزرق وأحمر داعمين للتباين" }
+            ],
+            "intro": [
+              "ينطلق مذاق من عالم طعام شارع مألوف، ثم يعيد تحريره إلى نظام معاصر واضح. بدلاً من الاعتماد على الحنين، تعامل الهوية إشارات التراث كبنية: إيقاع حروف عربية، وهندسة مربعات، وتفاصيل تشبه الأختام تبدو مجمّعة لا مصطنعة.",
+              "اللغة البصرية مصممة لتتمدد عبر نقاط تواصل حقيقية — ملصقات وتغليف ولحظات على الطاولة وأصول تيك أواي — مع الحفاظ على الاتساق. أساس تركواز-أخضر يبني التعرف، وألوان داعمة تضيف تبايناً دون تغيير صوت النظام."
+            ],
+            "process": [
+              { "phase": "01", "label": "اكتشاف", "desc": "تحديد أطروحة العلامة والمراجع الثقافية والنبرة التي يجب أن تحملها الهوية عبر نقاط التماس المادية." },
+              { "phase": "02", "label": "مفهوم", "desc": "ترجمة إشارات الشارع إلى وحدات رسومية معيارية: موتيفات وقواعد تكوين وإيقاع حروفي." },
+              { "phase": "03", "label": "نظام", "desc": "بناء مجموعة أدوات قابلة لإعادة الاستخدام من أيقونات وأختام وتخطيطات تبقى مرنة عبر التغليف والمطبوعات." },
+              { "phase": "04", "label": "تطبيق", "desc": "تطبيق النظام على ملصقات وتغليف وحضور على الطاولة وبضاعة للتحقق من الاتساق عبر الاستخدامات." }
+            ],
+            "sections": [
+              { "eyebrow": "المفهوم", "title": "من إشارات الشارع إلى نظام معاصر", "body": ["ركزت مرحلة المفهوم على إعادة صياغة إشارات بصرية حجازية مألوفة كلغة علامة حديثة — ليست كزخرفة، بل كنظام قابل للتكرار.", "هندسة المربعات وملمس الطباعة يمنحان الهوية إحساساً مجمعاً ومرتبطاً بالمكان، بينما يبقيها البناء النظيف مقروءة عبر الصيغ."], "imageLayout": "left", "tone": "light" },
+              { "eyebrow": "نظام الهوية", "title": "أيقونات وأختام وإيقاع معياري", "body": ["مجموعة أدوات الهوية مبنية للتكرار دون ملل: عائلات أيقونات وعلامات ختم وموتيفات معيارية يمكن إعادة تركيبها عبر الأسطح.", "قواعد الحروف والمسافات تبني إيقاعاً ثابتاً بحيث يبدو كل شيء — من ملصق إلى بوستر — كأنه مذاق."], "imageLayout": "right", "tone": "light" },
+              { "eyebrow": "الهوية في الاستخدام", "title": "تغليف وتعرّف فوري في التيك أواي", "body": ["التطبيقات تعطي الأولوية للتعرّف من النظرة الأولى — وهي لحظات يتكلم فيها التغليف وحضور الطاولة بدلاً عن الكلمات.", "يبقى النظام مرناً للبوسترات والأكواب والأكياس والبضاعة مع الحفاظ على توقيع تركواز-أخضر واضح."], "imageLayout": "left", "tone": "navy" }
+            ],
+            "impactMetrics": [
+              { "label": "الاتساق", "value": "هوية متماسكة عبر نقاط تواصل مادية ومطبوعة وتيك أواي." },
+              { "label": "الطابع", "value": "صوت محلي أقوى وتعرّف أعلى دون الاعتماد على كليشيهات." },
+              { "label": "المرونة", "value": "نظام معياري يتمدد من تفاصيل التغليف إلى حملات البوسترات وتطبيقات البضاعة." }
+            ],
+            "credits": [{ "label": "الخدمات", "value": "هوية بصرية، هوية علامة، توجيه تغليف، إخراج فني" }]
+          }
+        }
+      }
+    },
+    {
+      "key": "emboss-burger",
+      "slug": "emboss-burger",
+      "title": "EMBOSS BURGER",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Campaign"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 240,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#114237", "name": "EM'S" },
+        "secondary": { "hex": "#EDA8CB", "name": "Bun Blush" },
+        "background": { "hex": "#F0EFEF", "name": "Mayo" },
+        "foreground": { "hex": "#114237", "name": "EM'S" },
+        "supporting": [{ "hex": "#F5EED9", "name": "Butter" }]
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/embosswebsite-10.webp", "alt": "EMBOSS BURGER listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/embosswebsite-04.webp", "alt": "EMBOSS BURGER primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-01.webp", "alt": "EMBOSS BURGER concept" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-02.webp", "alt": "EMBOSS BURGER identity system" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-03.webp", "alt": "EMBOSS BURGER launch expression" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-02.webp", "alt": "EMBOSS BURGER visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-03.webp", "alt": "EMBOSS BURGER visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-06.webp", "alt": "EMBOSS BURGER visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-07.webp", "alt": "EMBOSS BURGER visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-08.webp", "alt": "EMBOSS BURGER visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-09.webp", "alt": "EMBOSS BURGER visual exploration 6" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-11.webp", "alt": "EMBOSS BURGER visual exploration 7" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-12.webp", "alt": "EMBOSS BURGER visual exploration 8" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-13.webp", "alt": "EMBOSS BURGER visual exploration 9" },
+          { "filePath": "/Users/metwally/Downloads/embosswebsite-05.webp", "alt": "EMBOSS BURGER visual exploration 10" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "إمبوس برغر",
+          "tags": ["هوية بصرية", "تغليف", "حملة"],
+          "themePalette": {
+            "accent": { "hex": "#114237", "name": "EM'S" },
+            "secondary": { "hex": "#EDA8CB", "name": "وردي الخبز" },
+            "background": { "hex": "#F0EFEF", "name": "مايونيز" },
+            "foreground": { "hex": "#114237", "name": "EM'S" },
+            "supporting": [{ "hex": "#F5EED9", "name": "زبدة" }]
+          }
+        }
+      }
+    },
+    {
+      "key": "qpasta",
+      "slug": "qpasta",
+      "title": "QPASTA",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Campaign"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 250,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#43564B", "name": "Deep Olive" },
+        "secondary": { "hex": "#B72339", "name": "Tomato Red" },
+        "background": { "hex": "#EDEDEE", "name": "Light Grey" },
+        "foreground": { "hex": "#1E1E1E", "name": "Black" },
+        "supporting": [{ "hex": "#E5D8C3", "name": "Cream" }]
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/Qwebsite-01.webp", "alt": "QPASTA listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/Qwebsite-03.webp", "alt": "QPASTA primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-08.webp", "alt": "QPASTA concept direction" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-02.webp", "alt": "QPASTA identity system" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-09.webp", "alt": "QPASTA brand in use" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-02.webp", "alt": "QPASTA visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-05.webp", "alt": "QPASTA visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-06.webp", "alt": "QPASTA visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-07.webp", "alt": "QPASTA visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-09.webp", "alt": "QPASTA visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-10.webp", "alt": "QPASTA visual exploration 6" },
+          { "filePath": "/Users/metwally/Downloads/Qwebsite-04.webp", "alt": "QPASTA visual exploration 7" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "كيو باستا",
+          "tags": ["هوية بصرية", "تغليف", "حملة"],
+          "themePalette": {
+            "accent": { "hex": "#43564B", "name": "زيتوني عميق" },
+            "secondary": { "hex": "#B72339", "name": "أحمر طماطم" },
+            "background": { "hex": "#EDEDEE", "name": "رمادي فاتح" },
+            "foreground": { "hex": "#1E1E1E", "name": "أسود" },
+            "supporting": [{ "hex": "#E5D8C3", "name": "كريمي" }]
+          }
+        }
+      }
+    },
+    {
+      "key": "come-true",
+      "slug": "come-true",
+      "title": "COME TRUE",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Campaign"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 280,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#013F90", "name": "Blue" },
+        "secondary": { "hex": "#EAE5D9", "name": "Beige" },
+        "background": { "hex": "#EAE5D9", "name": "Beige" },
+        "foreground": { "hex": "#013F90", "name": "Blue" },
+        "supporting": []
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/cometruewebsite-07.webp", "alt": "COME TRUE listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/cometruewebsite-03.webp", "alt": "COME TRUE primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-01.webp", "alt": "COME TRUE concept direction" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-02.webp", "alt": "COME TRUE identity system" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-06.webp", "alt": "COME TRUE brand in use" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-02.webp", "alt": "COME TRUE visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-04.webp", "alt": "COME TRUE visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-05.webp", "alt": "COME TRUE visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-06.webp", "alt": "COME TRUE visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-10.webp", "alt": "COME TRUE visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-11.webp", "alt": "COME TRUE visual exploration 6" },
+          { "filePath": "/Users/metwally/Downloads/cometruewebsite-09.webp", "alt": "COME TRUE visual exploration 7" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "كوم ترو",
+          "tags": ["هوية بصرية", "تغليف", "حملة"],
+          "themePalette": {
+            "accent": { "hex": "#013F90", "name": "أزرق كوبالت" },
+            "secondary": { "hex": "#EAE5D9", "name": "بيج دافئ" },
+            "background": { "hex": "#EAE5D9", "name": "بيج دافئ" },
+            "foreground": { "hex": "#013F90", "name": "أزرق كوبالت" },
+            "supporting": []
+          }
+        }
+      }
+    },
+    {
+      "key": "wahed-makhlout",
+      "slug": "wahed-makhlout",
+      "title": "WAHED MAKHLOUT",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Campaign"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 260,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#7F2422", "name": "Tea" },
+        "secondary": { "hex": "#21361B", "name": "Tea Leaf" },
+        "background": { "hex": "#E4EEC8", "name": "Bloomlight" },
+        "foreground": { "hex": "#21361B", "name": "Tea Leaf" },
+        "supporting": []
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/TEAwebsite-01.webp", "alt": "WAHED MAKHLOUT listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/TEAwebsite-03.webp", "alt": "WAHED MAKHLOUT primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-08.webp", "alt": "WAHED MAKHLOUT concept direction" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-02.webp", "alt": "WAHED MAKHLOUT identity system" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-05.webp", "alt": "WAHED MAKHLOUT brand in use" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-02.webp", "alt": "WAHED MAKHLOUT visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-04.webp", "alt": "WAHED MAKHLOUT visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-05.webp", "alt": "WAHED MAKHLOUT visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-06.webp", "alt": "WAHED MAKHLOUT visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-07.webp", "alt": "WAHED MAKHLOUT visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/TEAwebsite-09.webp", "alt": "WAHED MAKHLOUT visual exploration 6" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "واحد مخلوط",
+          "tags": ["هوية بصرية", "تغليف", "حملة"],
+          "themePalette": {
+            "accent": { "hex": "#7F2422", "name": "شاي" },
+            "secondary": { "hex": "#21361B", "name": "ورق شاي" },
+            "background": { "hex": "#E4EEC8", "name": "ضوء نباتي" },
+            "foreground": { "hex": "#21361B", "name": "ورق شاي" },
+            "supporting": []
+          }
+        }
+      }
+    },
+    {
+      "key": "lima",
+      "slug": "lima",
+      "title": "lima",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Fashion", "Packaging"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 290,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#4C0F12", "name": "Burgundy" },
+        "secondary": { "hex": "#EAD1D6", "name": "Soft Pink" },
+        "background": { "hex": "#EAEAE7", "name": "Warm Off-White" },
+        "foreground": { "hex": "#000000", "name": "Black" },
+        "supporting": []
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/Untitled-1-03.webp", "alt": "lima listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/Untitled-1-01.webp", "alt": "lima primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-02.webp", "alt": "lima concept direction" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-04.webp", "alt": "lima identity system" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-08.webp", "alt": "lima brand in use" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-04.webp", "alt": "lima visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-05.webp", "alt": "lima visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-06.webp", "alt": "lima visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-08.webp", "alt": "lima visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-07.webp", "alt": "lima visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-09.webp", "alt": "lima visual exploration 6" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-10.webp", "alt": "lima visual exploration 7" },
+          { "filePath": "/Users/metwally/Downloads/Untitled-1-11.webp", "alt": "lima visual exploration 8" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "ليما",
+          "tags": ["هوية بصرية", "أزياء", "تغليف"],
+          "themePalette": {
+            "accent": { "hex": "#4C0F12", "name": "عنابي" },
+            "secondary": { "hex": "#EAD1D6", "name": "وردي فاتح" },
+            "background": { "hex": "#EAEAE7", "name": "أوف وايت دافئ" },
+            "foreground": { "hex": "#000000", "name": "أسود" },
+            "supporting": []
+          }
+        }
+      }
+    },
+    {
+      "key": "neamah",
+      "slug": "neamah",
+      "title": "Neamah",
+      "serviceType": "Branding",
+      "tags": ["Branding", "Packaging", "Retail"],
+      "workFilters": ["Branding"],
+      "cardAspectRatio": "portrait",
+      "featuredAspectRatio": "landscape",
+      "sortOrder": 270,
+      "inheritThemeFromPalette": true,
+      "themePalette": {
+        "accent": { "hex": "#7C0914", "name": "Red" },
+        "secondary": { "hex": "#214952", "name": "Dark Green" },
+        "background": { "hex": "#FCF9E6", "name": "Beige" },
+        "foreground": { "hex": "#214952", "name": "Dark Green" },
+        "supporting": [
+          { "hex": "#4F0001", "name": "Dark Red" },
+          { "hex": "#DDC9E4", "name": "Lavender" },
+          { "hex": "#CBE6E4", "name": "Mint" },
+          { "hex": "#FFD8DE", "name": "Pink" },
+          { "hex": "#C6923E", "name": "Gold" },
+          { "hex": "#000000", "name": "Black" }
+        ]
+      },
+      "media": {
+        "cardImage": { "filePath": "/Users/metwally/Downloads/Nwebsite-01.webp", "alt": "Neamah listing card" },
+        "primaryShowcase": { "filePath": "/Users/metwally/Downloads/Nwebsite-03.webp", "alt": "Neamah primary showcase" },
+        "storySections": [
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-08.webp", "alt": "Neamah concept direction" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-05.webp", "alt": "Neamah identity system" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-12.webp", "alt": "Neamah brand in use" }
+        ],
+        "gallery": [
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-02.webp", "alt": "Neamah visual exploration 1" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-04.webp", "alt": "Neamah visual exploration 2" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-05.webp", "alt": "Neamah visual exploration 3" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-06.webp", "alt": "Neamah visual exploration 4" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-07.webp", "alt": "Neamah visual exploration 5" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-09.webp", "alt": "Neamah visual exploration 6" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-10.webp", "alt": "Neamah visual exploration 7" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-11.webp", "alt": "Neamah visual exploration 8" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-12.webp", "alt": "Neamah visual exploration 9" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-13.webp", "alt": "Neamah visual exploration 10" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-14.webp", "alt": "Neamah visual exploration 11" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-15.webp", "alt": "Neamah visual exploration 12" },
+          { "filePath": "/Users/metwally/Downloads/Nwebsite-16.webp", "alt": "Neamah visual exploration 13" }
+        ]
+      },
+      "locales": {
+        "ar": {
+          "title": "نعمة",
+          "tags": ["هوية بصرية", "تغليف", "بيع بالتجزئة"],
+          "themePalette": {
+            "accent": { "hex": "#7C0914", "name": "أحمر" },
+            "secondary": { "hex": "#214952", "name": "أخضر داكن" },
+            "background": { "hex": "#FCF9E6", "name": "بيج" },
+            "foreground": { "hex": "#214952", "name": "أخضر داكن" },
+            "supporting": [
+              { "hex": "#4F0001", "name": "أحمر داكن" },
+              { "hex": "#DDC9E4", "name": "لافندر" },
+              { "hex": "#CBE6E4", "name": "نعناع" },
+              { "hex": "#FFD8DE", "name": "وردي" },
+              { "hex": "#C6923E", "name": "ذهبي" },
+              { "hex": "#000000", "name": "أسود" }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
+

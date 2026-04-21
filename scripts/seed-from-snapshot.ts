@@ -1,10 +1,10 @@
 /**
  * Seed 8 real brand projects from tmp/seed-projects.en-ar.snapshot.txt
  *
+ * - Deletes all existing projects (cascade handles children) then re-seeds
  * - Uploads all local images to Supabase Storage (projects/{slug}/{filename})
- * - Inserts into projects + 5 child tables
+ * - Inserts into projects + all child tables including project_process
  * - EN copy is primary; AR translations stored in translations.ar jsonb
- * - Idempotent: skips projects whose slug already exists
  *
  * Usage:
  *   npx tsx scripts/seed-from-snapshot.ts
@@ -35,6 +35,8 @@ interface SectionCopy {
 
 interface FactRow { label: string; value: string }
 
+interface ProcessPhase { phase: string; label: string; desc: string }
+
 interface EnCopy {
   heroLabel: string;
   heroTitle: string;
@@ -43,6 +45,7 @@ interface EnCopy {
   introMeta: { type: string; client: string; deliverables: string; launchLabel: string };
   overview: FactRow[];
   intro: string[];
+  process?: ProcessPhase[];
   sections: SectionCopy[];
   impactMetrics: FactRow[];
   credits: FactRow[];
@@ -460,8 +463,8 @@ function buildProjectArTranslations(ar: Record<string, any>): Record<string, unk
   };
   if (ar.copy) {
     Object.assign(t, {
-      hero_label:   ar.copy.heroLabel,
-      hero_title:   ar.copy.heroTitle,
+      hero_label:    ar.copy.heroLabel,
+      hero_title:    ar.copy.heroTitle,
       hero_subtitle: ar.copy.heroSubtitle,
       hero_summary:  ar.copy.heroSummary,
       project_type:  ar.copy.introMeta?.type,
@@ -482,22 +485,20 @@ async function main() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const snapshot: { projects: any[] } = JSON.parse(raw);
 
+  // Delete all existing projects (cascade removes all children)
+  console.log("Deleting existing projects…");
+  const { error: delErr } = await supabase.from("projects").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  if (delErr) {
+    console.error("Failed to delete projects:", delErr.message);
+    process.exit(1);
+  }
+  console.log("Existing projects deleted ✓\n");
+
   for (const p of snapshot.projects) {
     const slug: string = p.slug;
+    console.log(`→ Seeding: ${slug}`);
 
-    // Skip if already seeded
-    const { count } = await supabase
-      .from("projects")
-      .select("*", { count: "exact", head: true })
-      .eq("slug", slug);
-    if ((count ?? 0) > 0) {
-      console.log(`⏭  ${slug} already exists — skipping`);
-      continue;
-    }
-
-    console.log(`\n→ Seeding: ${slug}`);
-
-    // Resolve EN copy
+    // Resolve EN copy (from snapshot or fallback map)
     const copy: EnCopy = p.copy ?? EN_COPY[p.key];
     if (!copy) {
       console.error(`  ✗ No EN copy found for ${slug}`);
@@ -519,7 +520,6 @@ async function main() {
       p.media.storySections.map((s: any) => uploadImage(slug, s.filePath))
     );
 
-    // Deduplicate gallery file paths before uploading (same file may appear twice)
     const galleryItems: Array<{ filePath: string; alt: string }> = p.media.gallery;
     const uploadedPaths = new Map<string, string>();
     for (const g of galleryItems) {
@@ -536,34 +536,42 @@ async function main() {
       ? { ar: buildProjectArTranslations(ar) }
       : {};
 
+    // ── Theme palette ────────────────────────────────────────────────────────
+    const themePalette = p.themePalette ?? {};
+
     // ── Insert main project row ──────────────────────────────────────────────
     const { data: row, error: rowErr } = await supabase
       .from("projects")
       .insert({
         slug,
-        title:              p.title,
-        tags:               p.tags,
-        aspect_ratio:       p.cardAspectRatio,
-        cover_image_url:    coverImageUrl,
-        published:          true,
-        sort_order:         p.sortOrder,
-        hero_label:         copy.heroLabel,
-        hero_title:         copy.heroTitle,
-        hero_subtitle:      copy.heroSubtitle,
-        hero_summary:       copy.heroSummary,
-        hero_image_url:     showcaseImageUrl,
-        client:             copy.introMeta.client,
-        project_type:       copy.introMeta.type,
-        deliverables:       copy.introMeta.deliverables,
-        launch_label:       copy.introMeta.launchLabel,
-        launch_url:         "",
-        intro:              copy.intro,
-        showcase_image_url: showcaseImageUrl,
-        showcase_alt:       p.media.primaryShowcase.alt,
-        showcase_label:     "Primary showcase",
-        feature_eyebrow:    "",
-        feature_title:      "",
-        feature_body:       "",
+        title:                      p.title,
+        tags:                       p.tags,
+        aspect_ratio:               p.cardAspectRatio,
+        cover_image_url:            coverImageUrl,
+        published:                  true,
+        sort_order:                 p.sortOrder,
+        service_type:               p.serviceType ?? "",
+        work_filters:               p.workFilters ?? [],
+        featured_aspect_ratio:      p.featuredAspectRatio ?? p.cardAspectRatio,
+        inherit_theme_from_palette: p.inheritThemeFromPalette ?? false,
+        theme_palette:              themePalette,
+        hero_label:                 copy.heroLabel,
+        hero_title:                 copy.heroTitle,
+        hero_subtitle:              copy.heroSubtitle,
+        hero_summary:               copy.heroSummary,
+        hero_image_url:             showcaseImageUrl,
+        client:                     copy.introMeta.client,
+        project_type:               copy.introMeta.type,
+        deliverables:               copy.introMeta.deliverables,
+        launch_label:               copy.introMeta.launchLabel,
+        launch_url:                 "",
+        intro:                      copy.intro,
+        showcase_image_url:         showcaseImageUrl,
+        showcase_alt:               p.media.primaryShowcase.alt,
+        showcase_label:             "Primary showcase",
+        feature_eyebrow:            "",
+        feature_title:              "",
+        feature_body:               "",
         translations,
       })
       .select("id")
@@ -579,7 +587,6 @@ async function main() {
 
     // ── Insert story sections ────────────────────────────────────────────────
     if (copy.sections.length) {
-      // AR sections only available for burgito and mazaq
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const arSections: any[] = ar?.copy?.sections ?? [];
 
@@ -595,13 +602,7 @@ async function main() {
           tone:         s.tone,
           sort_order:   i,
           translations: arSections[i]
-            ? {
-                ar: {
-                  eyebrow: arSections[i].eyebrow,
-                  title:   arSections[i].title,
-                  body:    arSections[i].body,
-                },
-              }
+            ? { ar: { eyebrow: arSections[i].eyebrow, title: arSections[i].title, body: arSections[i].body } }
             : {},
         }))
       );
@@ -676,6 +677,27 @@ async function main() {
       );
       if (ovErr) console.error(`  ✗ Overview: ${ovErr.message}`);
       else console.log(`  ${copy.overview.length} overview facts inserted ✓`);
+    }
+
+    // ── Insert process phases ────────────────────────────────────────────────
+    const processPhases: ProcessPhase[] = copy.process ?? [];
+    if (processPhases.length) {
+      const arProcess: Array<{ phase: string; label: string; desc: string }> =
+        ar?.copy?.process ?? [];
+      const { error: procErr } = await supabase.from("project_process").insert(
+        processPhases.map((ph, i) => ({
+          project_id:   projectId,
+          phase:        ph.phase,
+          label:        ph.label,
+          description:  ph.desc,
+          sort_order:   i,
+          translations: arProcess[i]
+            ? { ar: { label: arProcess[i].label, description: arProcess[i].desc } }
+            : {},
+        }))
+      );
+      if (procErr) console.error(`  ✗ Process phases: ${procErr.message}`);
+      else console.log(`  ${processPhases.length} process phases inserted ✓`);
     }
 
     console.log(`✓ ${slug} seeded`);

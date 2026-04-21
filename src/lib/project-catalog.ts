@@ -42,6 +42,17 @@ export type ProjectIntroMeta = {
   deliverables: string;
 };
 
+export type ProjectColor = {
+  hex: string;
+  name: string;
+};
+
+export type ProjectProcess = {
+  phase: string;
+  label: string;
+  desc: string;
+};
+
 export type ProjectDetail = ProjectSummary & {
   heroLabel: string;
   heroTitle: string;
@@ -57,6 +68,8 @@ export type ProjectDetail = ProjectSummary & {
   gallery: ProjectGalleryImage[];
   credits: ProjectFact[];
   relatedIds: string[];
+  colors?: ProjectColor[];
+  process?: ProjectProcess[];
 };
 
 export const projects: ProjectSummary[] = [

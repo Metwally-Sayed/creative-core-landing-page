@@ -10,12 +10,13 @@ import type {
   ProjectSectionDb,
   ProjectGalleryDb,
   ProjectFactDb,
+  ProjectProcessDb,
   ProjectInput,
   ProjectFullInput,
 } from "@/lib/project-data";
 
 const SUMMARY_COLS =
-  "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, translations";
+  "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, service_type, work_filters, featured_aspect_ratio, inherit_theme_from_palette, theme_palette, translations";
 
 export async function listProjects(): Promise<ProjectSummaryDb[]> {
   const session = await auth();
@@ -40,7 +41,7 @@ export async function getProject(id: string): Promise<ProjectFullDb> {
     .single();
   if (error || !row) throw new Error("Project not found");
 
-  const [sections, gallery, metrics, credits, overview, related] =
+  const [sections, gallery, metrics, credits, overview, process, related] =
     await Promise.all([
       supabase
         .from("project_sections")
@@ -73,6 +74,12 @@ export async function getProject(id: string): Promise<ProjectFullDb> {
         .order("sort_order")
         .then((r) => (r.data ?? []) as ProjectFactDb[]),
       supabase
+        .from("project_process")
+        .select("*")
+        .eq("project_id", id)
+        .order("sort_order")
+        .then((r) => (r.data ?? []) as ProjectProcessDb[]),
+      supabase
         .from("project_related")
         .select("related_project_id")
         .eq("project_id", id)
@@ -91,6 +98,7 @@ export async function getProject(id: string): Promise<ProjectFullDb> {
     metrics,
     credits,
     overview,
+    process,
     related_ids: related,
   } as ProjectFullDb;
 }
@@ -135,6 +143,11 @@ export async function updateProject(
       aspect_ratio: input.aspect_ratio,
       cover_image_url: input.cover_image_url,
       published: input.published,
+      service_type: input.service_type,
+      work_filters: input.work_filters,
+      featured_aspect_ratio: input.featured_aspect_ratio,
+      inherit_theme_from_palette: input.inherit_theme_from_palette,
+      theme_palette: input.theme_palette,
       hero_label: input.hero_label,
       hero_title: input.hero_title,
       hero_subtitle: input.hero_subtitle,
@@ -219,6 +232,19 @@ export async function updateProject(
       if (input.overview.length) {
         const { error: e } = await supabase.from("project_overview").insert(
           input.overview.map((o, i) => ({ ...o, project_id: id, sort_order: i }))
+        );
+        if (e) throw e;
+      }
+    })(),
+    (async () => {
+      const { error } = await supabase
+        .from("project_process")
+        .delete()
+        .eq("project_id", id);
+      if (error) throw error;
+      if (input.process.length) {
+        const { error: e } = await supabase.from("project_process").insert(
+          input.process.map((ph, i) => ({ ...ph, project_id: id, sort_order: i }))
         );
         if (e) throw e;
       }

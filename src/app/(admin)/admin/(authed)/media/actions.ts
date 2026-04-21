@@ -1,5 +1,6 @@
 "use server";
 
+import dns from "dns";
 import { auth } from "@/auth";
 import { supabase, STORAGE_BUCKET } from "@/lib/supabase";
 import {
@@ -9,6 +10,29 @@ import {
   type MediaAssetPatch,
   MAX_FILE_SIZES,
 } from "@/lib/media-types";
+
+function isPrivateIp(ip: string): boolean {
+  // IPv6 loopback
+  if (ip === "::1") return true;
+  // IPv6 unique-local (fc00::/7)
+  const first2 = ip.slice(0, 2).toLowerCase();
+  if (first2 === "fc" || first2 === "fd") return true;
+  // IPv4-mapped IPv6 (::ffff:x.x.x.x)
+  const mapped = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  if (mapped) return isPrivateIp(mapped[1]);
+
+  const parts = ip.split(".").map(Number);
+  if (parts.length !== 4 || parts.some((p) => isNaN(p) || p < 0 || p > 255))
+    return false;
+  const [a, b] = parts;
+  if (a === 0) return true;           // 0.0.0.0/8
+  if (a === 10) return true;          // 10.0.0.0/8
+  if (a === 127) return true;         // 127.0.0.0/8  loopback
+  if (a === 169 && b === 254) return true; // 169.254.0.0/16  link-local
+  if (a === 172 && b >= 16 && b <= 31) return true; // 172.16.0.0/12
+  if (a === 192 && b === 168) return true; // 192.168.0.0/16
+  return false;
+}
 
 export async function listMediaAssets(
   filter?: { fileType?: string }
@@ -121,6 +145,20 @@ export async function importFromUrl(url: string): Promise<MediaAsset> {
   }
   if (!["http:", "https:"].includes(parsedUrl.protocol)) {
     throw new Error("Only http:// and https:// URLs are supported.");
+  }
+
+  // SSRF prevention: resolve hostname and reject private/loopback targets
+  let resolvedAddress: string;
+  try {
+    const { address } = await dns.promises.lookup(parsedUrl.hostname);
+    resolvedAddress = address;
+  } catch {
+    throw new Error("Could not resolve the hostname in the provided URL.");
+  }
+  if (isPrivateIp(resolvedAddress)) {
+    throw new Error(
+      "URL resolves to a private network address and cannot be imported."
+    );
   }
 
   // HEAD first to validate MIME type and size before downloading

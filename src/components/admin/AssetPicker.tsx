@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { listMediaAssets } from "@/app/(admin)/admin/media/actions";
+import { listMediaAssets } from "@/app/(admin)/admin/(authed)/media/actions";
 import type { MediaAsset } from "@/lib/media-types";
 
 export interface SelectedAsset {

@@ -20,15 +20,14 @@ type ProjectDetailViewProps = {
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 
-// --- MOCK EXTENSIONS ---
-const projectProcess = [
+const DEFAULT_PROCESS = [
   { phase: "01", label: "Discovery", desc: "Understanding the core narrative, gathering requirements, and defining technical constraints." },
   { phase: "02", label: "Design", desc: "Crafting the visual language, typography scales, interactions, and motion curves." },
   { phase: "03", label: "Build", desc: "Developing the architecture and engineering the responsive frontend experience." },
   { phase: "04", label: "Launch", desc: "Performance optimization, accessibility audits, scaling, and final deployment." }
 ];
 
-const projectColors = [
+const DEFAULT_COLORS = [
   { hex: "#0a1b3f", name: "Deep Navy" },
   { hex: "#8ea2ff", name: "Periwinkle" },
   { hex: "#ffc39b", name: "Warm Peach" },
@@ -526,7 +525,7 @@ function RelatedProjectCard({ project, index }: { project: ProjectSummary; index
   );
 }
 
-function ProcessTimeline() {
+function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS }) {
   const t = useTranslations("projectDetail");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-20%" });
@@ -537,15 +536,15 @@ function ProcessTimeline() {
         <SplitText text={t("theProcess")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
       </div>
       <div ref={ref} className="relative">
-        <motion.div 
+        <motion.div
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{ duration: 1.5, ease: transitionEase }}
           className="absolute top-6 left-0 w-full h-px bg-border origin-left hidden md:block"
         />
-        
+
         <div className="grid md:grid-cols-4 gap-12 md:gap-8">
-          {projectProcess.map((step, idx) => (
+          {steps.map((step, idx) => (
             <motion.div 
               key={idx}
               initial={{ opacity: 0, y: 30 }}
@@ -635,7 +634,7 @@ function TestimonialCarousel() {
   );
 }
 
-function ColorPaletteShowcase() {
+function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
   const t = useTranslations("projectDetail");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
@@ -657,7 +656,7 @@ function ColorPaletteShowcase() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-        {projectColors.map((color, idx) => (
+        {colors.map((color, idx) => (
           <motion.button 
             key={idx}
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -691,6 +690,8 @@ function ColorPaletteShowcase() {
 
 export default function ProjectDetailView({ project, relatedProjects }: ProjectDetailViewProps) {
   const t = useTranslations("projectDetail");
+  const projectColors = project.colors?.length ? project.colors : DEFAULT_COLORS;
+  const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS;
   const { scrollYProgress } = useScroll();
 
   const heroRef = useRef(null);
@@ -851,7 +852,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         </section>
 
         {/* NEW: Process Timeline */}
-        <ProcessTimeline />
+        <ProcessTimeline steps={projectProcess} />
 
         {/* 5. Story Chapters (with Sticky Image Stacking) */}
         {project.sections.map((section, idx) => (
@@ -862,7 +863,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <MarqueeTicker words={project.tags} />
 
         {/* NEW: Color Palette Showcase */}
-        <ColorPaletteShowcase />
+        <ColorPaletteShowcase colors={projectColors} />
 
         {/* NEW: Pinned Horizontal Scroll Section */}
         <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: "200vh" }}>

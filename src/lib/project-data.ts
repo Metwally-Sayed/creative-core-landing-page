@@ -10,6 +10,19 @@ import type {
 
 // ─── DB types ────────────────────────────────────────────────────────────────
 
+export interface ThemePaletteColor {
+  hex: string;
+  name: string;
+}
+
+export interface ThemePalette {
+  accent: ThemePaletteColor;
+  secondary: ThemePaletteColor;
+  background: ThemePaletteColor;
+  foreground: ThemePaletteColor;
+  supporting: ThemePaletteColor[];
+}
+
 export interface ProjectTranslationsAr {
   title?: string;
   tags?: string[];
@@ -28,6 +41,7 @@ export interface ProjectTranslationsAr {
   metrics?: Array<{ label?: string; value?: string }>;
   credits?: Array<{ label?: string; value?: string }>;
   overview?: Array<{ label?: string; value?: string }>;
+  process?: Array<{ label?: string; description?: string }>;
 }
 
 export interface ProjectSummaryDb {
@@ -39,7 +53,22 @@ export interface ProjectSummaryDb {
   cover_image_url: string;
   published: boolean;
   sort_order: number;
+  service_type: string;
+  work_filters: string[];
+  featured_aspect_ratio: string;
+  inherit_theme_from_palette: boolean;
+  theme_palette: ThemePalette | Record<string, never>;
   translations: { ar?: ProjectTranslationsAr };
+}
+
+export interface ProjectProcessDb {
+  id: string;
+  project_id: string;
+  phase: string;
+  label: string;
+  description: string;
+  sort_order: number;
+  translations: { ar?: { label?: string; description?: string } };
 }
 
 export interface ProjectGalleryDb {
@@ -97,6 +126,7 @@ export interface ProjectFullDb extends ProjectSummaryDb {
   metrics: ProjectFactDb[];
   credits: ProjectFactDb[];
   overview: ProjectFactDb[];
+  process: ProjectProcessDb[];
   related_ids: string[];
   created_at: string;
   updated_at: string;
@@ -134,6 +164,12 @@ export interface ProjectFactInput {
   value: string;
 }
 
+export interface ProjectProcessInput {
+  phase: string;
+  label: string;
+  description: string;
+}
+
 export interface ProjectFullInput {
   title: string;
   slug: string;
@@ -141,6 +177,11 @@ export interface ProjectFullInput {
   aspect_ratio: "portrait" | "landscape" | "square";
   cover_image_url: string;
   published: boolean;
+  service_type: string;
+  work_filters: string[];
+  featured_aspect_ratio: string;
+  inherit_theme_from_palette: boolean;
+  theme_palette: ThemePalette | Record<string, never>;
   hero_label: string;
   hero_title: string;
   hero_subtitle: string;
@@ -163,13 +204,14 @@ export interface ProjectFullInput {
   metrics: ProjectFactInput[];
   credits: ProjectFactInput[];
   overview: ProjectFactInput[];
+  process: ProjectProcessInput[];
   related_ids: string[];
 }
 
 // ─── Public cached fetchers ───────────────────────────────────────────────────
 
 const SUMMARY_COLS =
-  "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, translations";
+  "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, service_type, work_filters, featured_aspect_ratio, inherit_theme_from_palette, theme_palette, translations";
 
 export const getProjects = unstable_cache(
   async (): Promise<ProjectSummaryDb[]> => {
@@ -195,7 +237,7 @@ export const getProject = unstable_cache(
       .single();
     if (error || !row) return null;
 
-    const [sections, gallery, metrics, credits, overview, related] =
+    const [sections, gallery, metrics, credits, overview, process, related] =
       await Promise.all([
         supabase
           .from("project_sections")
@@ -228,6 +270,12 @@ export const getProject = unstable_cache(
           .order("sort_order")
           .then((r) => r.data ?? []),
         supabase
+          .from("project_process")
+          .select("*")
+          .eq("project_id", row.id)
+          .order("sort_order")
+          .then((r) => r.data ?? []),
+        supabase
           .from("project_related")
           .select("related_project_id")
           .eq("project_id", row.id)
@@ -242,6 +290,7 @@ export const getProject = unstable_cache(
       metrics,
       credits,
       overview,
+      process,
       related_ids: related,
     } as ProjectFullDb;
   },
@@ -322,5 +371,17 @@ export function dbFullToLegacy(db: ProjectFullDb): ProjectDetail {
     })) as LegacyGallery[],
     credits: db.credits.map((c) => ({ label: c.label, value: c.value })) as LegacyFact[],
     relatedIds: db.related_ids,
+    colors: buildColors(db.theme_palette),
+    process: db.process.map((p) => ({ phase: p.phase, label: p.label, desc: p.description })),
   };
+}
+
+function buildColors(palette: ProjectFullDb["theme_palette"]) {
+  if (!palette || !("accent" in palette)) return undefined;
+  const p = palette as ThemePalette;
+  const colors = [p.accent, p.secondary, p.background, p.foreground, ...p.supporting];
+  const seen = new Set<string>();
+  return colors
+    .filter((c) => c?.hex && !seen.has(c.hex) && seen.add(c.hex))
+    .map((c) => ({ hex: c.hex, name: c.name }));
 }
