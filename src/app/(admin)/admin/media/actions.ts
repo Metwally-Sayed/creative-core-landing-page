@@ -113,6 +113,16 @@ export async function importFromUrl(url: string): Promise<MediaAsset> {
   const session = await auth();
   if (!session) throw new Error("UNAUTHORIZED");
 
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    throw new Error("Invalid URL. Provide a fully-qualified https:// address.");
+  }
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    throw new Error("Only http:// and https:// URLs are supported.");
+  }
+
   // HEAD first to validate MIME type and size before downloading
   let headRes: Response;
   try {
@@ -138,6 +148,9 @@ export async function importFromUrl(url: string): Promise<MediaAsset> {
   }
 
   const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Remote server returned ${res.status} ${res.statusText}.`);
+  }
   const arrayBuffer = await res.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
@@ -179,6 +192,12 @@ export async function updateMediaAsset(
 ): Promise<MediaAsset> {
   const session = await auth();
   if (!session) throw new Error("UNAUTHORIZED");
+
+  if (patch.title !== undefined) {
+    const trimmed = patch.title.trim();
+    if (!trimmed) throw new Error("title must not be empty");
+    patch = { ...patch, title: trimmed };
+  }
 
   const { data, error } = await supabase
     .from("media_assets")
