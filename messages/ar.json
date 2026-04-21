@@ -45,7 +45,10 @@
     "eyebrow": "[AR] Common Inquiries",
     "title": "[AR] Curated for the curious.",
     "titleItalic": "[AR] Answered for the committed.",
-    "ctaButton": "[AR] Start your discovery sprint"
+    "ctaButton": "[AR] Start your discovery sprint",
+    "insightSpotlight": "[AR] Insight Spotlight",
+    "standardDeliverables": "[AR] Standard Deliverables",
+    "companyQuote": "[AR] We value clarity and outcomes over billable hours."
   },
   "locale": {
     "switchAria": "تبديل اللغة"

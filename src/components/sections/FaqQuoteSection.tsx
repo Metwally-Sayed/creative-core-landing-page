@@ -113,7 +113,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
               >
                 <div>
                   <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-secondary/60">
-                    Insight Spotlight
+                    {t("insightSpotlight")}
                   </p>
                   <h3 className="text-4xl lg:text-5xl leading-[1.1] text-white font-serif italic">
                     {activeFaq.question}
@@ -127,7 +127,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
                 {activeFaq.deliverables?.length ? (
                   <div className="space-y-4">
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
-                      Standard Deliverables
+                      {t("standardDeliverables")}
                     </p>
                     <ul className="flex flex-wrap gap-2">
                       {activeFaq.deliverables.map((deliverable) => (
@@ -144,7 +144,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
 
                 <div className="pt-8 border-t border-white/10">
                   <p className="mb-6 text-sm text-white/50 italic">
-                    "We value clarity and outcomes over billable hours."
+                    &ldquo;{t("companyQuote")}&rdquo;
                   </p>
                   <QuoteBriefDialog
                     triggerLabel={t("ctaButton")}

@@ -45,7 +45,10 @@
     "eyebrow": "Common Inquiries",
     "title": "Curated for the curious.",
     "titleItalic": "Answered for the committed.",
-    "ctaButton": "Start your discovery sprint"
+    "ctaButton": "Start your discovery sprint",
+    "insightSpotlight": "Insight Spotlight",
+    "standardDeliverables": "Standard Deliverables",
+    "companyQuote": "We value clarity and outcomes over billable hours."
   },
   "locale": {
     "switchAria": "Switch language"
