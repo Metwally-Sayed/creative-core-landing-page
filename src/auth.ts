@@ -2,19 +2,19 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { getAdminUser } from "@/lib/admin-users";
 
-const envSchema = z.object({
-  AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
-  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email"),
-  ADMIN_PASSWORD_HASH: z
-    .string()
-    .min(1, "ADMIN_PASSWORD_HASH is required (see scripts/hash-password.ts)"),
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
 });
 
-const envParsed = envSchema.safeParse({
+const authSecretSchema = z.object({
+  AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
+});
+
+const envParsed = authSecretSchema.safeParse({
   AUTH_SECRET: process.env.AUTH_SECRET,
-  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-  ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
 });
 
 if (!envParsed.success) {
@@ -24,24 +24,8 @@ if (!envParsed.success) {
   throw new Error(`[auth] Missing/invalid environment variables:\n${issues}`);
 }
 
-const env = envParsed.data;
-
-const credentialsSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
-}
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: env.AUTH_SECRET,
+  secret: envParsed.data.AUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -60,19 +44,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
-        const emailMatches = constantTimeEqual(
-          email.toLowerCase(),
-          env.ADMIN_EMAIL.toLowerCase(),
-        );
-        if (!emailMatches) return null;
 
-        const passwordMatches = await bcrypt.compare(
-          password,
-          env.ADMIN_PASSWORD_HASH,
-        );
+        // Look up the admin from Supabase — no env var hashing issues
+        const admin = await getAdminUser();
+        if (!admin) return null;
+
+        if (email.toLowerCase() !== admin.email.toLowerCase()) return null;
+
+        const passwordMatches = await bcrypt.compare(password, admin.password_hash);
         if (!passwordMatches) return null;
 
-        return { id: "admin", email: env.ADMIN_EMAIL, role: "admin" };
+        return { id: admin.id, email: admin.email, role: "admin" };
       },
     }),
   ],

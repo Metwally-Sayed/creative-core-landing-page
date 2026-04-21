@@ -165,6 +165,7 @@ export async function updateProject(
       feature_eyebrow: input.feature_eyebrow,
       feature_title: input.feature_title,
       feature_body: input.feature_body,
+      translations: input.translations ?? {},
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

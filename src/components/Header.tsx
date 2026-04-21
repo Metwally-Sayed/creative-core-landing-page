@@ -4,18 +4,11 @@ import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motio
 import { Link, usePathname } from "@/i18n/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useDirection } from "@/hooks/useDirection";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import LocaleSwitch from "@/components/LocaleSwitch";
-
-const menuItemDefs = [
-  { key: "work" as const, href: "/work" },
-  { key: "services" as const, href: "/services" },
-  { key: "about" as const, href: "/about" },
-  { key: "stories" as const, href: "/work" },
-  { key: "product" as const, href: "/product" },
-];
+import type { NavLink } from "@/lib/nav-data";
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -64,15 +57,15 @@ function LogoMark({
   );
 }
 
-export default function Header() {
-  const tNav = useTranslations("nav");
+export default function Header({ navLinks = [] }: { navLinks?: NavLink[] }) {
   const tCommon = useTranslations("common");
   const tHeader = useTranslations("header");
+  const locale = useLocale();
   const dir = useDirection();
 
-  const menuItems = menuItemDefs.map((item) => ({
-    label: tNav(item.key),
-    href: item.href,
+  const menuItems = navLinks.map((link) => ({
+    label: locale === "ar" && link.label_ar ? link.label_ar : link.label_en,
+    href: link.href,
   }));
 
   const pathname = usePathname() || "";
@@ -153,8 +146,9 @@ export default function Header() {
   // Revert back when out of hero or not on project.
   const forceInvert = (isProjectPage || isProductPage) && inHero;
   const useNeutralHeader = isWorkPage && !forceInvert;
-  const heroTriggerFill = useNeutralHeader ? "#111111" : "hsl(var(--accent))";
-  const heroTriggerIconFill = useNeutralHeader ? "#111111" : "#ffffff";
+  // Trigger blob always uses accent fill (white icon) — only the logo text goes neutral on the work page
+  const heroTriggerFill = forceInvert ? "#ffffff" : "hsl(var(--accent))";
+  const heroTriggerIconFill = forceInvert ? "#1d1f23" : "#ffffff";
 
   return (
     <>
@@ -245,7 +239,8 @@ export default function Header() {
               <svg
                 viewBox="0 0 114 1000"
                 preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full left-[25%]"
+                className="absolute inset-0 h-full w-full"
+                style={{ left: dir === 1 ? "25%" : "auto", right: dir === -1 ? "25%" : "auto", transform: dir === -1 ? "scaleX(-1)" : undefined }}
                 aria-hidden="true"
               >
                 <path
@@ -275,40 +270,46 @@ export default function Header() {
         {isMenuOpen && (
           <div className="fixed inset-0 z-60 overflow-hidden">
             <motion.div
-              initial={{ x: "100%" }}
+              initial={{ x: `${100 * dir}%` }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: `${100 * dir}%` }}
               transition={{ duration: 0.9, ease: transitionEase }}
               className="absolute inset-y-0"
               style={{
                 ...menuShellStyles,
-                left: "calc(0px - var(--menu-lead))",
+                left: dir === 1 ? "calc(0px - var(--menu-lead))" : "auto",
+                right: dir === -1 ? "calc(0px - var(--menu-lead))" : "auto",
                 width: "calc(100vw + var(--menu-lead) + var(--menu-right-seam))",
               }}
             >
               <div
-                className="absolute inset-y-0 bg-black"
+                className="absolute inset-y-0"
                 style={{
-                  left: "calc(var(--menu-lead) - 1px)",
-                  right: "calc(var(--menu-right-seam) - 1px)",
+                  left: dir === 1 ? "calc(var(--menu-lead) - 1px)" : "calc(var(--menu-right-seam) - 1px)",
+                  right: dir === 1 ? "calc(var(--menu-right-seam) - 1px)" : "calc(var(--menu-lead) - 1px)",
                   background: "hsl(var(--accent))",
                 }}
               />
-              <div
-                className="absolute left-0 top-[-6vh] bg-accent"
-                style={{
-                  height: "112vh",
-                  width: "calc(var(--menu-lead) + 1px)",
-                  borderRadius: "58% 0 0 42% / 30% 0 0 70%",
-                }}
-              />
+              {/* Left curved edge (entrance side) */}
               <div
                 className="absolute top-[-6vh] bg-accent"
                 style={{
-                  right: "calc(var(--menu-right-seam) - var(--menu-right-curve))",
+                  left: dir === 1 ? 0 : "auto",
+                  right: dir === -1 ? 0 : "auto",
+                  height: "112vh",
+                  width: "calc(var(--menu-lead) + 1px)",
+                  borderRadius: dir === 1 ? "58% 0 0 42% / 30% 0 0 70%" : "0 58% 42% 0 / 0 30% 70% 0",
+                }}
+              />
+              {/* Right curved edge (exit seam side) */}
+              <div
+                className="absolute top-[-6vh] bg-accent"
+                style={{
+                  right: dir === 1 ? "calc(var(--menu-right-seam) - var(--menu-right-curve))" : "auto",
+                  left: dir === -1 ? "calc(var(--menu-right-seam) - var(--menu-right-curve))" : "auto",
                   height: "112vh",
                   width: "calc(var(--menu-right-curve) + 1px)",
-                  borderRadius: "0 44% 40% 0 / 0 24% 76% 0",
+                  borderRadius: dir === 1 ? "0 44% 40% 0 / 0 24% 76% 0" : "44% 0 0 40% / 24% 0 0 76%",
                 }}
               />
             </motion.div>
@@ -322,7 +323,7 @@ export default function Header() {
             >
               <Link
                 href="/"
-                className="absolute start-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
+                className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
                 aria-label={tHeader("homeAriaLabel")}
               >
                 <LogoMark inverted className="opacity-92" />
@@ -341,7 +342,12 @@ export default function Header() {
                 <svg
                   viewBox="0 0 114 1000"
                   preserveAspectRatio="none"
-                  className="absolute inset-y-0 right-[35%] top-[25%] left-[0%] h-[50%] w-full"
+                  className="absolute inset-y-0 h-[50%] w-full top-[25%]"
+                  style={{
+                    left: dir === 1 ? "0%" : "auto",
+                    right: dir === -1 ? "0%" : "auto",
+                    transform: dir === -1 ? "scaleX(-1)" : undefined,
+                  }}
                   aria-hidden="true"
                 >
                   <path
@@ -352,7 +358,8 @@ export default function Header() {
                 <svg
                   viewBox="0 0 34 34"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="pointer-events-none absolute right-[2.10rem] top-1/2 -translate-y-1/2 w-[34px] h-[34px]"
+                  className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-[34px] h-[34px]"
+                  style={{ right: dir === 1 ? "2.10rem" : "auto", left: dir === -1 ? "2.10rem" : "auto" }}
                 >
                   <g transform="translate(11.4, 10.4)">
                     <path d="M10.94,9.73c0-.06,0-.26-.08-.3s-.23-.29-.37-.42a.6.6,0,0,1-.12-.29c0-.08-.14-.08-.19-.14a4.1,4.1,0,0,1-.26-.41A32.4,32.4,0,0,0,7.16,5.34c-.07,0-.18,0-.22,0C7,5,6.66,5,6.44,4.77,6,4.44,5.66,4,5.27,3.65c0,0-.14,0-.19,0-.21-.13-.32-.38-.6-.37a1.62,1.62,0,0,0-.92-.71c.06-.21-.13-.19-.21-.26s-.1-.15-.18-.2a13.54,13.54,0,0,0-1.11-.84c0-.1,0-.19-.07-.21-.23.16-.44.31-.54.17l-.33.24c0-.19-.18-.08-.37.09.13.24.37.44.17.89,0,.08.08,0,.11.09A1.57,1.57,0,0,0,1.37,3.9c.34.05.43.33.66.56.26-.1.24.15.32.26s.25.12.35.21.13.28.35.23c0,.11,0,.06.05.17a.36.36,0,0,1,.19,0c.35.25.61.67,1,.78,0,.07,0,.11,0,.17s.27.2.38.27.07.16.14.23.25.13.35.21c.37.33.78.73,1,1s.55.49.79.76.42.34.59.54.14.26.23.37.44.2.48.52a1.17,1.17,0,0,1,.2.06A13.37,13.37,0,0,1,10,12c.05.07.09-.14.11-.07.21.12.25.35.41.49s.05-.06.08,0,.12.16.25.15.18-.16.22-.08.12,0,.14.15c.24-.15.26,0,.38.09s.24,0,.33.1.13.26.27.27.06-.1.16-.17a.85.85,0,0,0-.07-.64c-.1-.1,0-.37-.23-.47s.12,0,0-.1-.07,0-.1,0c.17-.17-.06-.4-.17-.36s0,.05,0,.09-.22-.27-.21-.43c.1,0,0,.19.15.17a1.13,1.13,0,0,0-.24-.48c-.11.1.09.16,0,.31-.09-.11-.17-.33-.23-.38s.17-.08.11-.16C11.31,10.09,11.06,10,10.94,9.73Zm.33.62c.07.07-.14-.11,0,0Zm-.4-.55c.11-.08,0,.07.05.07C10.83,10,10.87,9.82,10.87,9.8ZM11,10l-.07-.12S11.11,9.93,11,10Zm.89,1.37c.08-.07.07.07.11.09S11.9,11.43,11.86,11.41Z" transform="translate(-0.75 -0.39)" fill="#1d1f23" fillRule="evenodd"></path>
@@ -372,9 +379,9 @@ export default function Header() {
 
               <nav
                 id="site-menu"
-                className="absolute start-1/2 top-1/2 w-full max-w-[1600px] -translate-x-1/2 -translate-y-1/2"
+                className="absolute left-1/2 top-1/2 w-full max-w-[1600px] -translate-x-1/2 -translate-y-1/2"
               >
-                <div className="ms-auto me-[13vw] w-fit space-y-4 pe-8 lg:me-[16vw] lg:pe-0">
+                <div className={`w-fit space-y-4 ${dir === 1 ? "ms-auto me-[13vw] lg:me-[16vw] pe-8 lg:pe-0" : "me-auto ms-[13vw] lg:ms-[16vw] ps-8 lg:ps-0"}`}>
                   {menuItems.map((item, index) => (
                     <motion.div
                       key={item.label}
@@ -414,7 +421,7 @@ export default function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="absolute bottom-12 start-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
+                className="absolute bottom-12 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
               >
                 {['Facebook', 'Instagram', 'Twitter', 'Vimeo', 'LinkedIn'].map((platform) => (
                   <a

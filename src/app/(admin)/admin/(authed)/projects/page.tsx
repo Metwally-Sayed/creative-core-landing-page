@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listProjects } from "./actions";
 import ProjectsList from "./ProjectsList";
+import ClientOnly from "@/components/admin/ClientOnly";
 
 export default async function AdminProjectsPage() {
   const projects = await listProjects();
@@ -17,7 +18,9 @@ export default async function AdminProjectsPage() {
           + New
         </Link>
       </div>
-      <ProjectsList initialProjects={projects} />
+      <ClientOnly>
+        <ProjectsList initialProjects={projects} />
+      </ClientOnly>
     </div>
   );
 }

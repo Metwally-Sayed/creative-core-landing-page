@@ -104,23 +104,36 @@ export default function Hero({
             style={{ y: contentY, opacity }}
             className="absolute left-1/2 top-[63%] flex w-[92vw] max-w-[520px] -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center sm:top-[66%] sm:max-w-[580px] lg:top-[78%] lg:w-[38vw] lg:max-w-[680px]"
           >
-            <div className="mb-2 flex flex-wrap justify-center overflow-hidden py-1">
-              {eyebrowText.split("").map((char, index) => (
-                <motion.span
-                  key={`${char}-${index}`}
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.02,
-                    ease: transitionEase,
-                  }}
-                  className="inline-block whitespace-pre text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </div>
+            {/[\u0600-\u06FF]/.test(eyebrowText) ? (
+              // Arabic eyebrow: animate whole text — per-char inline-block in RTL reverses visual order
+              <motion.div
+                className="mb-2 overflow-hidden py-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
+                style={{ direction: "rtl" }}
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, ease: transitionEase }}
+              >
+                {eyebrowText}
+              </motion.div>
+            ) : (
+              <div className="mb-2 flex flex-wrap justify-center overflow-hidden py-1">
+                {eyebrowText.split("").map((char, index) => (
+                  <motion.span
+                    key={`${char}-${index}`}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: index * 0.02,
+                      ease: transitionEase,
+                    }}
+                    className="inline-block whitespace-pre text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </div>
+            )}
 
             <AnimatePresence initial={false} mode="wait">
               <motion.h1

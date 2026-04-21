@@ -44,7 +44,7 @@ import type {
   ProjectFactDb,
 } from "@/lib/project-data";
 
-// ─── Editor item types (add _id for stable DnD keys) ─────────────────────────
+// ─── Editor item types ────────────────────────────────────────────────────────
 
 interface EditorSection extends ProjectSectionDb { _id: string }
 interface EditorGallery extends ProjectGalleryDb { _id: string }
@@ -60,11 +60,12 @@ function toSlug(text: string) {
 
 // ─── Layout helpers ───────────────────────────────────────────────────────────
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children, ar }: { title: string; children: React.ReactNode; ar?: boolean }) {
   return (
-    <div className="rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-6 space-y-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-[hsl(var(--admin-text-muted))]">
+    <div className={`rounded-lg border bg-[hsl(var(--admin-surface))] p-6 space-y-4 ${ar ? "border-amber-400/40 bg-amber-50/5" : "border-[hsl(var(--admin-border))]"}`}>
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-[hsl(var(--admin-text-muted))] flex items-center gap-2">
         {title}
+        {ar && <span className="text-xs font-normal text-amber-500 normal-case tracking-normal">العربية</span>}
       </h2>
       {children}
     </div>
@@ -80,34 +81,52 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+function ArDivider() {
+  return (
+    <div className="flex items-center gap-2 pt-1">
+      <div className="flex-1 border-t border-amber-400/30" />
+      <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">العربية (Arabic)</span>
+      <div className="flex-1 border-t border-amber-400/30" />
+    </div>
+  );
+}
+
+// ─── Language tabs ────────────────────────────────────────────────────────────
+
+function LangTabs({ lang, onChange }: { lang: "en" | "ar"; onChange: (l: "en" | "ar") => void }) {
+  return (
+    <div className="flex gap-1 rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] p-1 w-fit">
+      {(["en", "ar"] as const).map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => onChange(l)}
+          className={`px-4 py-1.5 rounded text-sm font-medium transition-colors ${
+            lang === l
+              ? "bg-[hsl(var(--admin-surface))] text-[hsl(var(--admin-text))] shadow-sm"
+              : "text-[hsl(var(--admin-text-muted))] hover:text-[hsl(var(--admin-text))]"
+          }`}
+        >
+          {l === "en" ? "English" : "العربية"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ─── Generic sortable row ─────────────────────────────────────────────────────
 
-function SortableChildRow({
-  id,
-  label,
-  onEdit,
-  onDelete,
-}: {
-  id: string;
-  label: string;
-  onEdit: () => void;
-  onDelete: () => void;
+function SortableChildRow({ id, label, onEdit, onDelete }: {
+  id: string; label: string; onEdit: () => void; onDelete: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
-
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
       className="flex items-center gap-3 rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2"
     >
-      <button
-        {...attributes}
-        {...listeners}
-        className="cursor-grab touch-none text-[hsl(var(--admin-text-muted))]"
-        aria-label="Drag to reorder"
-      >
+      <button {...attributes} {...listeners} className="cursor-grab touch-none text-[hsl(var(--admin-text-muted))]" aria-label="Drag to reorder">
         <GripVertical className="h-4 w-4" />
       </button>
       <span className="flex-1 truncate text-sm text-[hsl(var(--admin-text))]">{label}</span>
@@ -121,18 +140,14 @@ function SortableChildRow({
   );
 }
 
-// ─── Fact editor (label + value rows, shared by metrics/credits/overview) ────
+// ─── Fact editor (label + value + AR translations) ────────────────────────────
 
-function FactListEditor({
-  items,
-  onChange,
-}: {
-  items: EditorFact[];
-  onChange: (items: EditorFact[]) => void;
-}) {
+function FactListEditor({ items, onChange }: { items: EditorFact[]; onChange: (items: EditorFact[]) => void }) {
   const [editingItem, setEditingItem] = useState<EditorFact | null>(null);
   const [editLabel, setEditLabel] = useState("");
   const [editValue, setEditValue] = useState("");
+  const [editArLabel, setEditArLabel] = useState("");
+  const [editArValue, setEditArValue] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -148,20 +163,32 @@ function FactListEditor({
   }
 
   function openAdd() {
-    setEditLabel("");
-    setEditValue("");
+    setEditLabel(""); setEditValue(""); setEditArLabel(""); setEditArValue("");
     setEditingItem({ _id: factId(), id: "", project_id: "", label: "", value: "", sort_order: 0, translations: {} });
   }
 
   function openEdit(item: EditorFact) {
     setEditLabel(item.label);
     setEditValue(item.value);
+    setEditArLabel(item.translations?.ar?.label ?? "");
+    setEditArValue(item.translations?.ar?.value ?? "");
     setEditingItem(item);
   }
 
   function handleSave() {
     if (!editingItem) return;
-    const updated = { ...editingItem, label: editLabel.trim(), value: editValue.trim() };
+    const updated: EditorFact = {
+      ...editingItem,
+      label: editLabel.trim(),
+      value: editValue.trim(),
+      translations: {
+        ...editingItem.translations,
+        ar: {
+          label: editArLabel.trim() || undefined,
+          value: editArValue.trim() || undefined,
+        },
+      },
+    };
     if (items.find((i) => i._id === editingItem._id)) {
       onChange(items.map((i) => (i._id === editingItem._id ? updated : i)));
     } else {
@@ -176,8 +203,7 @@ function FactListEditor({
         <SortableContext items={items.map((i) => i._id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
             <SortableChildRow
-              key={item._id}
-              id={item._id}
+              key={item._id} id={item._id}
               label={`${item.label}: ${item.value}`}
               onEdit={() => openEdit(item)}
               onDelete={() => onChange(items.filter((i) => i._id !== item._id))}
@@ -203,6 +229,13 @@ function FactListEditor({
               <Field label="Value">
                 <Input value={editValue} onChange={(e) => setEditValue(e.target.value)} placeholder="Google" />
               </Field>
+              <ArDivider />
+              <Field label="Label (AR)">
+                <Input dir="rtl" value={editArLabel} onChange={(e) => setEditArLabel(e.target.value)} placeholder="العميل" />
+              </Field>
+              <Field label="Value (AR)">
+                <Input dir="rtl" value={editArValue} onChange={(e) => setEditArValue(e.target.value)} placeholder="جوجل" />
+              </Field>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditingItem(null)}>Cancel</Button>
@@ -217,13 +250,7 @@ function FactListEditor({
 
 // ─── Gallery editor ───────────────────────────────────────────────────────────
 
-function GalleryEditor({
-  items,
-  onChange,
-}: {
-  items: EditorGallery[];
-  onChange: (items: EditorGallery[]) => void;
-}) {
+function GalleryEditor({ items, onChange }: { items: EditorGallery[]; onChange: (items: EditorGallery[]) => void }) {
   const [editingItem, setEditingItem] = useState<EditorGallery | null>(null);
   const [editUrl, setEditUrl] = useState("");
   const [editAlt, setEditAlt] = useState("");
@@ -249,9 +276,7 @@ function GalleryEditor({
   }
 
   function openEdit(item: EditorGallery) {
-    setEditUrl(item.image_url);
-    setEditAlt(item.image_alt);
-    setEditLabel(item.image_label);
+    setEditUrl(item.image_url); setEditAlt(item.image_alt); setEditLabel(item.image_label);
     setEditingItem(item);
   }
 
@@ -272,8 +297,7 @@ function GalleryEditor({
         <SortableContext items={items.map((i) => i._id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
             <SortableChildRow
-              key={item._id}
-              id={item._id}
+              key={item._id} id={item._id}
               label={item.image_label || item.image_alt || item.image_url || "(no label)"}
               onEdit={() => openEdit(item)}
               onDelete={() => onChange(items.filter((i) => i._id !== item._id))}
@@ -314,20 +338,17 @@ function GalleryEditor({
   );
 }
 
-// ─── Section editor ───────────────────────────────────────────────────────────
+// ─── Section editor (with AR fields in dialog) ───────────────────────────────
 
-function SectionListEditor({
-  items,
-  onChange,
-}: {
-  items: EditorSection[];
-  onChange: (items: EditorSection[]) => void;
-}) {
+function SectionListEditor({ items, onChange }: { items: EditorSection[]; onChange: (items: EditorSection[]) => void }) {
   const [editingItem, setEditingItem] = useState<EditorSection | null>(null);
   const [form, setForm] = useState<Omit<EditorSection, "_id" | "id" | "project_id" | "sort_order" | "translations">>({
     eyebrow: "", title: "", body: [], image_url: "", image_alt: "", image_layout: "right", tone: "light",
   });
   const [bodyRaw, setBodyRaw] = useState("");
+  const [arEyebrow, setArEyebrow] = useState("");
+  const [arTitle, setArTitle] = useState("");
+  const [arBodyRaw, setArBodyRaw] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -345,13 +366,16 @@ function SectionListEditor({
   function openAdd() {
     const blank: EditorSection = { _id: factId(), id: "", project_id: "", eyebrow: "", title: "", body: [], image_url: "", image_alt: "", image_layout: "right", tone: "light", sort_order: 0, translations: {} };
     setForm({ eyebrow: "", title: "", body: [], image_url: "", image_alt: "", image_layout: "right", tone: "light" });
-    setBodyRaw("");
+    setBodyRaw(""); setArEyebrow(""); setArTitle(""); setArBodyRaw("");
     setEditingItem(blank);
   }
 
   function openEdit(item: EditorSection) {
     setForm({ eyebrow: item.eyebrow, title: item.title, body: item.body, image_url: item.image_url, image_alt: item.image_alt, image_layout: item.image_layout, tone: item.tone });
     setBodyRaw(item.body.join("\n\n"));
+    setArEyebrow(item.translations?.ar?.eyebrow ?? "");
+    setArTitle(item.translations?.ar?.title ?? "");
+    setArBodyRaw((item.translations?.ar?.body ?? []).join("\n\n"));
     setEditingItem(item);
   }
 
@@ -361,6 +385,16 @@ function SectionListEditor({
       ...editingItem,
       ...form,
       body: bodyRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
+      translations: {
+        ...editingItem.translations,
+        ar: {
+          eyebrow: arEyebrow.trim() || undefined,
+          title: arTitle.trim() || undefined,
+          body: arBodyRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).length > 0
+            ? arBodyRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+            : undefined,
+        },
+      },
     };
     if (items.find((i) => i._id === editingItem._id)) {
       onChange(items.map((i) => (i._id === editingItem._id ? updated : i)));
@@ -376,8 +410,7 @@ function SectionListEditor({
         <SortableContext items={items.map((i) => i._id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
             <SortableChildRow
-              key={item._id}
-              id={item._id}
+              key={item._id} id={item._id}
               label={`${item.eyebrow ? item.eyebrow + " — " : ""}${item.title || "(untitled)"}`}
               onEdit={() => openEdit(item)}
               onDelete={() => onChange(items.filter((i) => i._id !== item._id))}
@@ -404,7 +437,7 @@ function SectionListEditor({
                 <Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />
               </Field>
               <Field label="Body (blank line = new paragraph)">
-                <Textarea value={bodyRaw} onChange={(e) => setBodyRaw(e.target.value)} rows={5} />
+                <Textarea value={bodyRaw} onChange={(e) => setBodyRaw(e.target.value)} rows={4} />
               </Field>
               <Field label="Image">
                 <ImageField value={form.image_url} onChange={(url) => setForm((f) => ({ ...f, image_url: url }))} label="Section" />
@@ -413,24 +446,28 @@ function SectionListEditor({
                 <Input value={form.image_alt} onChange={(e) => setForm((f) => ({ ...f, image_alt: e.target.value }))} />
               </Field>
               <Field label="Image Layout">
-                <select
-                  value={form.image_layout}
-                  onChange={(e) => setForm((f) => ({ ...f, image_layout: e.target.value as "left" | "right" }))}
-                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm"
-                >
+                <select value={form.image_layout} onChange={(e) => setForm((f) => ({ ...f, image_layout: e.target.value as "left" | "right" }))}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm">
                   <option value="right">Right</option>
                   <option value="left">Left</option>
                 </select>
               </Field>
               <Field label="Tone">
-                <select
-                  value={form.tone}
-                  onChange={(e) => setForm((f) => ({ ...f, tone: e.target.value as "light" | "navy" }))}
-                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm"
-                >
+                <select value={form.tone} onChange={(e) => setForm((f) => ({ ...f, tone: e.target.value as "light" | "navy" }))}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm">
                   <option value="light">Light</option>
                   <option value="navy">Navy</option>
                 </select>
+              </Field>
+              <ArDivider />
+              <Field label="Eyebrow (AR)">
+                <Input dir="rtl" value={arEyebrow} onChange={(e) => setArEyebrow(e.target.value)} placeholder="التحدي" />
+              </Field>
+              <Field label="Title (AR)">
+                <Input dir="rtl" value={arTitle} onChange={(e) => setArTitle(e.target.value)} />
+              </Field>
+              <Field label="Body (AR — blank line = new paragraph)">
+                <Textarea dir="rtl" value={arBodyRaw} onChange={(e) => setArBodyRaw(e.target.value)} rows={4} />
               </Field>
             </div>
             <DialogFooter>
@@ -446,25 +483,14 @@ function SectionListEditor({
 
 // ─── Related Projects panel ───────────────────────────────────────────────────
 
-function RelatedPanel({
-  currentId,
-  allProjects,
-  selectedIds,
-  onChange,
-}: {
-  currentId: string;
-  allProjects: ProjectSummaryDb[];
-  selectedIds: string[];
-  onChange: (ids: string[]) => void;
+function RelatedPanel({ currentId, allProjects, selectedIds, onChange }: {
+  currentId: string; allProjects: ProjectSummaryDb[]; selectedIds: string[]; onChange: (ids: string[]) => void;
 }) {
   const candidates = allProjects.filter((p) => p.id !== currentId);
 
   function toggle(id: string) {
-    if (selectedIds.includes(id)) {
-      onChange(selectedIds.filter((i) => i !== id));
-    } else if (selectedIds.length < 3) {
-      onChange([...selectedIds, id]);
-    }
+    if (selectedIds.includes(id)) onChange(selectedIds.filter((i) => i !== id));
+    else if (selectedIds.length < 3) onChange([...selectedIds, id]);
   }
 
   return (
@@ -475,17 +501,8 @@ function RelatedPanel({
           const checked = selectedIds.includes(p.id);
           const disabled = !checked && selectedIds.length >= 3;
           return (
-            <label
-              key={p.id}
-              className={`flex items-center gap-3 rounded px-3 py-2 cursor-pointer ${disabled ? "opacity-40" : "hover:bg-[hsl(var(--admin-bg))]"}`}
-            >
-              <input
-                type="checkbox"
-                checked={checked}
-                disabled={disabled}
-                onChange={() => toggle(p.id)}
-                className="h-4 w-4"
-              />
+            <label key={p.id} className={`flex items-center gap-3 rounded px-3 py-2 cursor-pointer ${disabled ? "opacity-40" : "hover:bg-[hsl(var(--admin-bg))]"}`}>
+              <input type="checkbox" checked={checked} disabled={disabled} onChange={() => toggle(p.id)} className="h-4 w-4" />
               <span className="text-sm text-[hsl(var(--admin-text))]">{p.title}</span>
             </label>
           );
@@ -506,7 +523,9 @@ export default function ProjectEditor({ project, allProjects }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [saveError, setSaveError] = useState("");
+  const [lang, setLang] = useState<"en" | "ar">("en");
 
+  // ── English state ──────────────────────────────────────────────────────────
   const [title, setTitle] = useState(project.title);
   const [slug, setSlug] = useState(project.slug);
   const [tagsRaw, setTagsRaw] = useState(project.tags.join(", "));
@@ -536,23 +555,30 @@ export default function ProjectEditor({ project, allProjects }: Props) {
   const [featureTitle, setFeatureTitle] = useState(project.feature_title);
   const [featureBody, setFeatureBody] = useState(project.feature_body);
 
-  const [sections, setSections] = useState<EditorSection[]>(
-    project.sections.map((s) => ({ ...s, _id: s.id || factId() }))
-  );
-  const [gallery, setGallery] = useState<EditorGallery[]>(
-    project.gallery.map((g) => ({ ...g, _id: g.id || factId() }))
-  );
-  const [metrics, setMetrics] = useState<EditorFact[]>(
-    project.metrics.map((m) => ({ ...m, _id: m.id || factId() }))
-  );
-  const [credits, setCredits] = useState<EditorFact[]>(
-    project.credits.map((c) => ({ ...c, _id: c.id || factId() }))
-  );
-  const [overviewFacts, setOverviewFacts] = useState<EditorFact[]>(
-    project.overview.map((o) => ({ ...o, _id: o.id || factId() }))
-  );
+  const [sections, setSections] = useState<EditorSection[]>(project.sections.map((s) => ({ ...s, _id: s.id || factId() })));
+  const [gallery, setGallery] = useState<EditorGallery[]>(project.gallery.map((g) => ({ ...g, _id: g.id || factId() })));
+  const [metrics, setMetrics] = useState<EditorFact[]>(project.metrics.map((m) => ({ ...m, _id: m.id || factId() })));
+  const [credits, setCredits] = useState<EditorFact[]>(project.credits.map((c) => ({ ...c, _id: c.id || factId() })));
+  const [overviewFacts, setOverviewFacts] = useState<EditorFact[]>(project.overview.map((o) => ({ ...o, _id: o.id || factId() })));
   const [relatedIds, setRelatedIds] = useState(project.related_ids);
 
+  // ── Arabic translation state ───────────────────────────────────────────────
+  const projectAr = project.translations?.ar ?? {};
+  const [arTitle, setArTitle] = useState(projectAr.title ?? "");
+  const [arHeroLabel, setArHeroLabel] = useState(projectAr.hero_label ?? "");
+  const [arHeroTitle, setArHeroTitle] = useState(projectAr.hero_title ?? "");
+  const [arHeroSubtitle, setArHeroSubtitle] = useState(projectAr.hero_subtitle ?? "");
+  const [arHeroSummary, setArHeroSummary] = useState(projectAr.hero_summary ?? "");
+  const [arClient, setArClient] = useState(projectAr.client ?? "");
+  const [arProjectType, setArProjectType] = useState(projectAr.project_type ?? "");
+  const [arDeliverables, setArDeliverables] = useState(projectAr.deliverables ?? "");
+  const [arLaunchLabel, setArLaunchLabel] = useState(projectAr.launch_label ?? "");
+  const [arIntroRaw, setArIntroRaw] = useState((projectAr.intro ?? []).join("\n\n"));
+  const [arFeatureEyebrow, setArFeatureEyebrow] = useState(projectAr.feature_eyebrow ?? "");
+  const [arFeatureTitle, setArFeatureTitle] = useState(projectAr.feature_title ?? "");
+  const [arFeatureBody, setArFeatureBody] = useState(projectAr.feature_body ?? "");
+
+  // ── Save ───────────────────────────────────────────────────────────────────
   function handleSave() {
     if (!title.trim()) { setSaveError("Title is required."); return; }
     setSaveError("");
@@ -568,14 +594,51 @@ export default function ProjectEditor({ project, allProjects }: Props) {
       intro: introRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
       showcase_image_url: showcaseImageUrl, showcase_alt: showcaseAlt, showcase_label: showcaseLabel,
       feature_eyebrow: featureEyebrow, feature_title: featureTitle, feature_body: featureBody,
-      sections: sections.map(({ eyebrow, title: st, body, image_url, image_alt, image_layout, tone }) => ({
-        eyebrow, title: st, body, image_url, image_alt, image_layout, tone,
+      sections: sections.map(({ eyebrow, title: st, body, image_url, image_alt, image_layout, tone, translations }) => ({
+        eyebrow, title: st, body, image_url, image_alt, image_layout, tone, translations,
       })),
       gallery: gallery.map(({ image_url, image_alt, image_label }) => ({ image_url, image_alt, image_label })),
-      metrics: metrics.map(({ label, value }) => ({ label, value })),
-      credits: credits.map(({ label, value }) => ({ label, value })),
-      overview: overviewFacts.map(({ label, value }) => ({ label, value })),
+      metrics: metrics.map(({ label, value, translations }) => ({ label, value, translations })),
+      credits: credits.map(({ label, value, translations }) => ({ label, value, translations })),
+      overview: overviewFacts.map(({ label, value, translations }) => ({ label, value, translations })),
+      process: [],
       related_ids: relatedIds,
+      translations: {
+        ar: {
+          title: arTitle.trim() || undefined,
+          hero_label: arHeroLabel.trim() || undefined,
+          hero_title: arHeroTitle.trim() || undefined,
+          hero_subtitle: arHeroSubtitle.trim() || undefined,
+          hero_summary: arHeroSummary.trim() || undefined,
+          client: arClient.trim() || undefined,
+          project_type: arProjectType.trim() || undefined,
+          deliverables: arDeliverables.trim() || undefined,
+          launch_label: arLaunchLabel.trim() || undefined,
+          intro: arIntroRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).length > 0
+            ? arIntroRaw.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+            : undefined,
+          feature_eyebrow: arFeatureEyebrow.trim() || undefined,
+          feature_title: arFeatureTitle.trim() || undefined,
+          feature_body: arFeatureBody.trim() || undefined,
+          sections: sections.map((s) => ({
+            eyebrow: s.translations?.ar?.eyebrow,
+            title: s.translations?.ar?.title,
+            body: s.translations?.ar?.body,
+          })),
+          metrics: metrics.map((m) => ({
+            label: m.translations?.ar?.label,
+            value: m.translations?.ar?.value,
+          })),
+          credits: credits.map((c) => ({
+            label: c.translations?.ar?.label,
+            value: c.translations?.ar?.value,
+          })),
+          overview: overviewFacts.map((o) => ({
+            label: o.translations?.ar?.label,
+            value: o.translations?.ar?.value,
+          })),
+        },
+      },
     };
 
     startTransition(async () => {
@@ -588,8 +651,10 @@ export default function ProjectEditor({ project, allProjects }: Props) {
     });
   }
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Sticky header */}
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-8 py-4">
         <div className="flex items-center gap-4">
           <Link href="/admin/projects" className="text-sm text-[hsl(var(--admin-text-muted))] hover:text-[hsl(var(--admin-text))]">
@@ -608,127 +673,265 @@ export default function ProjectEditor({ project, allProjects }: Props) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-8 space-y-6 max-w-3xl">
-        <Section title="Basic Info">
-          <Field label="Title *">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-          </Field>
-          <Field label="Slug *">
-            <Input value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} />
-            <p className="text-xs text-[hsl(var(--admin-text-muted))]">/projects/{slug || "…"}</p>
-          </Field>
-          <Field label="Tags (comma-separated)">
-            <Input value={tagsRaw} onChange={(e) => setTagsRaw(e.target.value)} placeholder="Experiences, Branding" />
-          </Field>
-          <Field label="Aspect Ratio">
-            <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as typeof aspectRatio)}
-              className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm">
-              <option value="landscape">Landscape</option>
-              <option value="portrait">Portrait</option>
-              <option value="square">Square</option>
-            </select>
-          </Field>
-          <Field label="Cover Image">
-            <ImageField value={coverImageUrl} onChange={setCoverImageUrl} label="Cover" />
-          </Field>
-          <div className="flex items-center gap-3">
-            <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4" />
-            <Label htmlFor="published">Published (visible on public site)</Label>
-          </div>
-        </Section>
+        {/* Language tabs */}
+        <LangTabs lang={lang} onChange={setLang} />
 
-        <Section title="Hero">
-          <Field label="Label (eyebrow)">
-            <Input value={heroLabel} onChange={(e) => setHeroLabel(e.target.value)} placeholder="Case Study" />
-          </Field>
-          <Field label="Hero Title">
-            <Input value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} />
-          </Field>
-          <Field label="Hero Subtitle">
-            <Input value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
-          </Field>
-          <Field label="Hero Summary">
-            <Textarea value={heroSummary} onChange={(e) => setHeroSummary(e.target.value)} rows={3} />
-          </Field>
-          <Field label="Hero Image">
-            <ImageField value={heroImageUrl} onChange={setHeroImageUrl} label="Hero" />
-          </Field>
-        </Section>
+        {/* ═══════════════ ENGLISH ═══════════════ */}
+        {lang === "en" && (
+          <>
+            <Section title="Basic Info">
+              <Field label="Title *">
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+              </Field>
+              <Field label="Slug *">
+                <Input value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} />
+                <p className="text-xs text-[hsl(var(--admin-text-muted))]">/projects/{slug || "…"}</p>
+              </Field>
+              <Field label="Tags (comma-separated)">
+                <Input value={tagsRaw} onChange={(e) => setTagsRaw(e.target.value)} placeholder="Experiences, Branding" />
+              </Field>
+              <Field label="Aspect Ratio">
+                <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as typeof aspectRatio)}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm">
+                  <option value="landscape">Landscape</option>
+                  <option value="portrait">Portrait</option>
+                  <option value="square">Square</option>
+                </select>
+              </Field>
+              <Field label="Cover Image">
+                <ImageField value={coverImageUrl} onChange={setCoverImageUrl} label="Cover" />
+              </Field>
+              <div className="flex items-center gap-3">
+                <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4" />
+                <Label htmlFor="published">Published (visible on public site)</Label>
+              </div>
+            </Section>
 
-        <Section title="Overview Bar">
-          <Field label="Client">
-            <Input value={client} onChange={(e) => setClient(e.target.value)} />
-          </Field>
-          <Field label="Project Type">
-            <Input value={projectType} onChange={(e) => setProjectType(e.target.value)} />
-          </Field>
-          <Field label="Deliverables">
-            <Input value={deliverables} onChange={(e) => setDeliverables(e.target.value)} />
-          </Field>
-          <Field label="Launch Label">
-            <Input value={launchLabel} onChange={(e) => setLaunchLabel(e.target.value)} placeholder="Launch project" />
-          </Field>
-          <Field label="Launch URL">
-            <Input value={launchUrl} onChange={(e) => setLaunchUrl(e.target.value)} placeholder="https://…" />
-          </Field>
-        </Section>
+            <Section title="Hero">
+              <Field label="Label (eyebrow)">
+                <Input value={heroLabel} onChange={(e) => setHeroLabel(e.target.value)} placeholder="Case Study" />
+              </Field>
+              <Field label="Hero Title">
+                <Input value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} />
+              </Field>
+              <Field label="Hero Subtitle">
+                <Input value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
+              </Field>
+              <Field label="Hero Summary">
+                <Textarea value={heroSummary} onChange={(e) => setHeroSummary(e.target.value)} rows={3} />
+              </Field>
+              <Field label="Hero Image">
+                <ImageField value={heroImageUrl} onChange={setHeroImageUrl} label="Hero" />
+              </Field>
+            </Section>
 
-        <Section title="Intro Paragraphs">
-          <p className="text-xs text-[hsl(var(--admin-text-muted))]">Separate paragraphs with a blank line.</p>
-          <Textarea value={introRaw} onChange={(e) => setIntroRaw(e.target.value)} rows={8} placeholder={"First paragraph.\n\nSecond paragraph."} />
-        </Section>
+            <Section title="Overview Bar">
+              <Field label="Client">
+                <Input value={client} onChange={(e) => setClient(e.target.value)} />
+              </Field>
+              <Field label="Project Type">
+                <Input value={projectType} onChange={(e) => setProjectType(e.target.value)} />
+              </Field>
+              <Field label="Deliverables">
+                <Input value={deliverables} onChange={(e) => setDeliverables(e.target.value)} />
+              </Field>
+              <Field label="Launch Label">
+                <Input value={launchLabel} onChange={(e) => setLaunchLabel(e.target.value)} placeholder="Launch project" />
+              </Field>
+              <Field label="Launch URL">
+                <Input value={launchUrl} onChange={(e) => setLaunchUrl(e.target.value)} placeholder="https://…" />
+              </Field>
+            </Section>
 
-        <Section title="Overview Facts">
-          <FactListEditor items={overviewFacts} onChange={setOverviewFacts} />
-        </Section>
+            <Section title="Intro Paragraphs">
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Separate paragraphs with a blank line.</p>
+              <Textarea value={introRaw} onChange={(e) => setIntroRaw(e.target.value)} rows={8} placeholder={"First paragraph.\n\nSecond paragraph."} />
+            </Section>
 
-        <Section title="Primary Showcase">
-          <Field label="Image">
-            <ImageField value={showcaseImageUrl} onChange={setShowcaseImageUrl} label="Showcase" />
-          </Field>
-          <Field label="Alt Text">
-            <Input value={showcaseAlt} onChange={(e) => setShowcaseAlt(e.target.value)} />
-          </Field>
-          <Field label="Label">
-            <Input value={showcaseLabel} onChange={(e) => setShowcaseLabel(e.target.value)} placeholder="Primary showcase" />
-          </Field>
-        </Section>
+            <Section title="Overview Facts">
+              <FactListEditor items={overviewFacts} onChange={setOverviewFacts} />
+            </Section>
 
-        <Section title="Feature Block">
-          <Field label="Eyebrow">
-            <Input value={featureEyebrow} onChange={(e) => setFeatureEyebrow(e.target.value)} placeholder="Experience frame" />
-          </Field>
-          <Field label="Title">
-            <Input value={featureTitle} onChange={(e) => setFeatureTitle(e.target.value)} />
-          </Field>
-          <Field label="Body">
-            <Textarea value={featureBody} onChange={(e) => setFeatureBody(e.target.value)} rows={3} />
-          </Field>
-        </Section>
+            <Section title="Primary Showcase">
+              <Field label="Image">
+                <ImageField value={showcaseImageUrl} onChange={setShowcaseImageUrl} label="Showcase" />
+              </Field>
+              <Field label="Alt Text">
+                <Input value={showcaseAlt} onChange={(e) => setShowcaseAlt(e.target.value)} />
+              </Field>
+              <Field label="Label">
+                <Input value={showcaseLabel} onChange={(e) => setShowcaseLabel(e.target.value)} placeholder="Primary showcase" />
+              </Field>
+            </Section>
 
-        <Section title="Story Sections">
-          <SectionListEditor items={sections} onChange={setSections} />
-        </Section>
+            <Section title="Feature Block">
+              <Field label="Eyebrow">
+                <Input value={featureEyebrow} onChange={(e) => setFeatureEyebrow(e.target.value)} placeholder="Experience frame" />
+              </Field>
+              <Field label="Title">
+                <Input value={featureTitle} onChange={(e) => setFeatureTitle(e.target.value)} />
+              </Field>
+              <Field label="Body">
+                <Textarea value={featureBody} onChange={(e) => setFeatureBody(e.target.value)} rows={3} />
+              </Field>
+            </Section>
 
-        <Section title="Gallery">
-          <GalleryEditor items={gallery} onChange={setGallery} />
-        </Section>
+            <Section title="Story Sections">
+              <SectionListEditor items={sections} onChange={setSections} />
+            </Section>
 
-        <Section title="Impact Metrics">
-          <FactListEditor items={metrics} onChange={setMetrics} />
-        </Section>
+            <Section title="Gallery">
+              <GalleryEditor items={gallery} onChange={setGallery} />
+            </Section>
 
-        <Section title="Credits">
-          <FactListEditor items={credits} onChange={setCredits} />
-        </Section>
+            <Section title="Impact Metrics">
+              <FactListEditor items={metrics} onChange={setMetrics} />
+            </Section>
 
-        <Section title="Related Projects">
-          <RelatedPanel
-            currentId={project.id}
-            allProjects={allProjects}
-            selectedIds={relatedIds}
-            onChange={setRelatedIds}
-          />
-        </Section>
+            <Section title="Credits">
+              <FactListEditor items={credits} onChange={setCredits} />
+            </Section>
+
+            <Section title="Related Projects">
+              <RelatedPanel currentId={project.id} allProjects={allProjects} selectedIds={relatedIds} onChange={setRelatedIds} />
+            </Section>
+          </>
+        )}
+
+        {/* ═══════════════ ARABIC ═══════════════ */}
+        {lang === "ar" && (
+          <>
+            <p className="text-sm text-[hsl(var(--admin-text-muted))]">
+              Fill in Arabic translations for all text fields. Images, URLs, and structural fields are shared across languages.
+              For story sections, overview facts, metrics, and credits — open each row&apos;s edit dialog to set Arabic content.
+            </p>
+
+            <Section title="Basic Info" ar>
+              <Field label="Title (AR)">
+                <Input dir="rtl" value={arTitle} onChange={(e) => setArTitle(e.target.value)} placeholder="عنوان المشروع" />
+              </Field>
+            </Section>
+
+            <Section title="Hero" ar>
+              <Field label="Label / Eyebrow (AR)">
+                <Input dir="rtl" value={arHeroLabel} onChange={(e) => setArHeroLabel(e.target.value)} placeholder="دراسة حالة" />
+              </Field>
+              <Field label="Hero Title (AR)">
+                <Input dir="rtl" value={arHeroTitle} onChange={(e) => setArHeroTitle(e.target.value)} />
+              </Field>
+              <Field label="Hero Subtitle (AR)">
+                <Input dir="rtl" value={arHeroSubtitle} onChange={(e) => setArHeroSubtitle(e.target.value)} />
+              </Field>
+              <Field label="Hero Summary (AR)">
+                <Textarea dir="rtl" value={arHeroSummary} onChange={(e) => setArHeroSummary(e.target.value)} rows={3} />
+              </Field>
+            </Section>
+
+            <Section title="Overview Bar" ar>
+              <Field label="Client (AR)">
+                <Input dir="rtl" value={arClient} onChange={(e) => setArClient(e.target.value)} />
+              </Field>
+              <Field label="Project Type (AR)">
+                <Input dir="rtl" value={arProjectType} onChange={(e) => setArProjectType(e.target.value)} />
+              </Field>
+              <Field label="Deliverables (AR)">
+                <Input dir="rtl" value={arDeliverables} onChange={(e) => setArDeliverables(e.target.value)} />
+              </Field>
+              <Field label="Launch Label (AR)">
+                <Input dir="rtl" value={arLaunchLabel} onChange={(e) => setArLaunchLabel(e.target.value)} placeholder="إطلاق المشروع" />
+              </Field>
+            </Section>
+
+            <Section title="Intro Paragraphs" ar>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Separate paragraphs with a blank line.</p>
+              <Textarea dir="rtl" value={arIntroRaw} onChange={(e) => setArIntroRaw(e.target.value)} rows={8} placeholder={"الفقرة الأولى.\n\nالفقرة الثانية."} />
+            </Section>
+
+            <Section title="Overview Facts" ar>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Switch to English tab → open each row to edit Arabic content.</p>
+              {overviewFacts.length > 0 ? (
+                <div className="space-y-1">
+                  {overviewFacts.map((f) => (
+                    <div key={f._id} className="flex items-center justify-between rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm">
+                      <span className="text-[hsl(var(--admin-text-muted))]">{f.label}: {f.value}</span>
+                      <span dir="rtl" className="text-[hsl(var(--admin-text))]">
+                        {f.translations?.ar?.label || f.translations?.ar?.value
+                          ? `${f.translations.ar.label ?? ""}: ${f.translations.ar.value ?? ""}`
+                          : <span className="text-amber-500 text-xs">No AR</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="text-xs text-[hsl(var(--admin-text-muted))]">No facts added yet.</p>}
+            </Section>
+
+            <Section title="Feature Block" ar>
+              <Field label="Eyebrow (AR)">
+                <Input dir="rtl" value={arFeatureEyebrow} onChange={(e) => setArFeatureEyebrow(e.target.value)} />
+              </Field>
+              <Field label="Title (AR)">
+                <Input dir="rtl" value={arFeatureTitle} onChange={(e) => setArFeatureTitle(e.target.value)} />
+              </Field>
+              <Field label="Body (AR)">
+                <Textarea dir="rtl" value={arFeatureBody} onChange={(e) => setArFeatureBody(e.target.value)} rows={3} />
+              </Field>
+            </Section>
+
+            <Section title="Story Sections" ar>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Switch to English tab → open each section to edit Arabic content.</p>
+              {sections.length > 0 ? (
+                <div className="space-y-1">
+                  {sections.map((s) => (
+                    <div key={s._id} className="flex items-center justify-between rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm">
+                      <span className="text-[hsl(var(--admin-text-muted))] truncate max-w-[40%]">{s.eyebrow ? `${s.eyebrow} — ` : ""}{s.title || "(untitled)"}</span>
+                      <span dir="rtl" className="truncate max-w-[40%] text-[hsl(var(--admin-text))]">
+                        {s.translations?.ar?.title
+                          ? s.translations.ar.title
+                          : <span className="text-amber-500 text-xs">No AR</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="text-xs text-[hsl(var(--admin-text-muted))]">No sections added yet.</p>}
+            </Section>
+
+            <Section title="Impact Metrics" ar>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Switch to English tab → open each metric to edit Arabic content.</p>
+              {metrics.length > 0 ? (
+                <div className="space-y-1">
+                  {metrics.map((m) => (
+                    <div key={m._id} className="flex items-center justify-between rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm">
+                      <span className="text-[hsl(var(--admin-text-muted))]">{m.label}: {m.value}</span>
+                      <span dir="rtl" className="text-[hsl(var(--admin-text))]">
+                        {m.translations?.ar?.label
+                          ? `${m.translations.ar.label}: ${m.translations.ar.value ?? ""}`
+                          : <span className="text-amber-500 text-xs">No AR</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="text-xs text-[hsl(var(--admin-text-muted))]">No metrics added yet.</p>}
+            </Section>
+
+            <Section title="Credits" ar>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">Switch to English tab → open each credit to edit Arabic content.</p>
+              {credits.length > 0 ? (
+                <div className="space-y-1">
+                  {credits.map((c) => (
+                    <div key={c._id} className="flex items-center justify-between rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm">
+                      <span className="text-[hsl(var(--admin-text-muted))]">{c.label}: {c.value}</span>
+                      <span dir="rtl" className="text-[hsl(var(--admin-text))]">
+                        {c.translations?.ar?.label
+                          ? `${c.translations.ar.label}: ${c.translations.ar.value ?? ""}`
+                          : <span className="text-amber-500 text-xs">No AR</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="text-xs text-[hsl(var(--admin-text-muted))]">No credits added yet.</p>}
+            </Section>
+          </>
+        )}
       </div>
     </div>
   );

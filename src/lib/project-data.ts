@@ -151,6 +151,7 @@ export interface ProjectSectionInput {
   image_alt: string;
   image_layout: "left" | "right";
   tone: "light" | "navy";
+  translations?: { ar?: { eyebrow?: string; title?: string; body?: string[] } };
 }
 
 export interface ProjectGalleryInput {
@@ -162,6 +163,7 @@ export interface ProjectGalleryInput {
 export interface ProjectFactInput {
   label: string;
   value: string;
+  translations?: { ar?: { label?: string; value?: string } };
 }
 
 export interface ProjectProcessInput {
@@ -206,6 +208,7 @@ export interface ProjectFullInput {
   overview: ProjectFactInput[];
   process: ProjectProcessInput[];
   related_ids: string[];
+  translations?: { ar?: ProjectTranslationsAr };
 }
 
 // ─── Public cached fetchers ───────────────────────────────────────────────────
@@ -325,54 +328,74 @@ export function dbSummaryToLegacy(db: ProjectSummaryDb): ProjectSummary {
   };
 }
 
-export function dbFullToLegacy(db: ProjectFullDb): ProjectDetail {
+export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail {
+  // Only apply Arabic translations when locale is "ar".
+  // For English, always use the base English fields — never touch translations.ar.
+  const isAr = locale === "ar";
+  const ar: ProjectTranslationsAr = isAr ? (db.translations?.ar ?? {}) : {};
+
   return {
     id: db.slug,
-    title: db.title,
-    tags: db.tags,
+    title: ar.title || db.title,
+    tags: ar.tags?.length ? ar.tags : db.tags,
     image: db.cover_image_url,
     aspectRatio: db.aspect_ratio,
-    heroLabel: db.hero_label,
-    heroTitle: db.hero_title,
-    heroSubtitle: db.hero_subtitle,
-    heroSummary: db.hero_summary,
+    heroLabel: ar.hero_label || db.hero_label,
+    heroTitle: ar.hero_title || db.hero_title,
+    heroSubtitle: ar.hero_subtitle || db.hero_subtitle,
+    heroSummary: ar.hero_summary || db.hero_summary,
     introMeta: {
-      launchLabel: db.launch_label,
-      type: db.project_type,
-      client: db.client,
-      deliverables: db.deliverables,
+      launchLabel: ar.launch_label || db.launch_label,
+      type: ar.project_type || db.project_type,
+      client: ar.client || db.client,
+      deliverables: ar.deliverables || db.deliverables,
     },
-    overview: db.overview.map((f) => ({ label: f.label, value: f.value })) as LegacyFact[],
-    intro: db.intro,
+    overview: db.overview.map((f, i) => ({
+      label: isAr ? (f.translations?.ar?.label || ar.overview?.[i]?.label || f.label) : f.label,
+      value: isAr ? (f.translations?.ar?.value || ar.overview?.[i]?.value || f.value) : f.value,
+    })) as LegacyFact[],
+    intro: ar.intro?.length ? ar.intro : db.intro,
     primaryShowcase: {
       src: db.showcase_image_url,
       alt: db.showcase_alt,
       label: db.showcase_label,
     } as LegacyGallery,
     feature: {
-      eyebrow: db.feature_eyebrow,
-      title: db.feature_title,
-      body: db.feature_body,
+      eyebrow: ar.feature_eyebrow || db.feature_eyebrow,
+      title: ar.feature_title || db.feature_title,
+      body: ar.feature_body || db.feature_body,
     },
-    sections: db.sections.map((s) => ({
-      eyebrow: s.eyebrow,
-      title: s.title,
-      body: s.body,
+    sections: db.sections.map((s, i) => ({
+      eyebrow: isAr ? (s.translations?.ar?.eyebrow || ar.sections?.[i]?.eyebrow || s.eyebrow) : s.eyebrow,
+      title: isAr ? (s.translations?.ar?.title || ar.sections?.[i]?.title || s.title) : s.title,
+      body: isAr
+        ? (s.translations?.ar?.body?.length ? s.translations.ar.body : (ar.sections?.[i]?.body?.length ? ar.sections[i].body! : s.body))
+        : s.body,
       image: s.image_url,
       imageAlt: s.image_alt,
       imageLayout: s.image_layout,
       tone: s.tone,
     })) as LegacySection[],
-    impactMetrics: db.metrics.map((m) => ({ label: m.label, value: m.value })) as LegacyFact[],
+    impactMetrics: db.metrics.map((m, i) => ({
+      label: isAr ? (m.translations?.ar?.label || ar.metrics?.[i]?.label || m.label) : m.label,
+      value: isAr ? (m.translations?.ar?.value || ar.metrics?.[i]?.value || m.value) : m.value,
+    })) as LegacyFact[],
     gallery: db.gallery.map((g) => ({
       src: g.image_url,
       alt: g.image_alt,
       label: g.image_label,
     })) as LegacyGallery[],
-    credits: db.credits.map((c) => ({ label: c.label, value: c.value })) as LegacyFact[],
+    credits: db.credits.map((c, i) => ({
+      label: isAr ? (c.translations?.ar?.label || ar.credits?.[i]?.label || c.label) : c.label,
+      value: isAr ? (c.translations?.ar?.value || ar.credits?.[i]?.value || c.value) : c.value,
+    })) as LegacyFact[],
     relatedIds: db.related_ids,
     colors: buildColors(db.theme_palette),
-    process: db.process.map((p) => ({ phase: p.phase, label: p.label, desc: p.description })),
+    process: db.process.map((p) => ({
+      phase: p.phase,
+      label: isAr ? (p.translations?.ar?.label || p.label) : p.label,
+      desc: isAr ? (p.translations?.ar?.description || p.description) : p.description,
+    })),
   };
 }
 

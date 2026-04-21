@@ -1,6 +1,13 @@
 import { unstable_cache } from "next/cache";
 import { supabase } from "@/lib/supabase";
 
+export interface FaqItemTranslationsAr {
+  question?: string;
+  answer?: string;
+  preview?: string;
+  deliverables?: string[];
+}
+
 export interface FaqItemDb {
   id: string;
   question: string;
@@ -8,6 +15,7 @@ export interface FaqItemDb {
   preview: string;
   deliverables: string[];
   sort_order: number;
+  translations: { ar?: FaqItemTranslationsAr };
   created_at: string;
   updated_at: string;
 }

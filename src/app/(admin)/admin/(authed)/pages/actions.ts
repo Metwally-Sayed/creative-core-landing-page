@@ -54,7 +54,7 @@ export async function createPage(input: PageInput): Promise<string> {
     .single();
   if (error) throw error;
 
-  revalidateTag("pages");
+  revalidateTag("pages", "max");
   return data.id;
 }
 
@@ -74,6 +74,7 @@ export async function updatePage(
       meta_description: input.meta_description,
       og_image_url: input.og_image_url,
       published: input.published,
+      translations: input.translations ?? {},
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -90,6 +91,7 @@ export async function updatePage(
       page_id: id,
       type: s.type,
       content: s.content,
+      translations: s.translations ?? {},
       sort_order: i,
     }));
     const { error: insErr } = await supabase
@@ -98,7 +100,7 @@ export async function updatePage(
     if (insErr) throw insErr;
   }
 
-  revalidateTag("pages");
+  revalidateTag("pages", "max");
 }
 
 export async function deletePage(id: string): Promise<void> {
@@ -108,7 +110,7 @@ export async function deletePage(id: string): Promise<void> {
   const { error } = await supabase.from("pages").delete().eq("id", id);
   if (error) throw error;
 
-  revalidateTag("pages");
+  revalidateTag("pages", "max");
 }
 
 export async function togglePublished(
@@ -124,7 +126,7 @@ export async function togglePublished(
     .eq("id", id);
   if (error) throw error;
 
-  revalidateTag("pages");
+  revalidateTag("pages", "max");
 }
 
 export async function reorderPages(ids: string[]): Promise<void> {
@@ -136,7 +138,7 @@ export async function reorderPages(ids: string[]): Promise<void> {
       supabase.from("pages").update({ sort_order: i }).eq("id", id)
     )
   );
-  revalidateTag("pages");
+  revalidateTag("pages", "max");
 }
 
 export async function createPageAndRedirect(input: PageInput): Promise<never> {

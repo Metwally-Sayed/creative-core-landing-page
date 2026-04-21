@@ -56,6 +56,7 @@ export default async function SlugPage({
         sections={page.sections}
         projects={projects}
         faqItems={faqItems}
+        pageSlug={slug}
       />
     </div>
   );

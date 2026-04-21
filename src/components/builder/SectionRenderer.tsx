@@ -1,3 +1,4 @@
+import { getLocale } from "next-intl/server";
 import CreativeHero from "@/components/sections/CreativeHero";
 import Projects from "@/components/sections/Projects";
 import FaqQuoteSection from "@/components/sections/FaqQuoteSection";
@@ -14,17 +15,41 @@ interface Props {
   sections: PageSectionDb[];
   projects?: ProjectSummaryDb[];
   faqItems?: FaqItemDb[];
+  pageSlug?: string;
 }
 
-export default function SectionRenderer({
+// Merge AR translations on top of EN content for the current locale.
+// Fields with no AR value fall back to English automatically.
+function resolveContent(
+  section: PageSectionDb,
+  isAr: boolean
+): Record<string, unknown> {
+  if (!isAr) return section.content;
+  const ar = ((section.translations?.ar ?? {}) as Record<string, unknown>);
+  // Only override entries that are non-empty strings / non-empty arrays
+  const overrides = Object.fromEntries(
+    Object.entries(ar).filter(([, v]) => {
+      if (typeof v === "string") return v.trim().length > 0;
+      if (Array.isArray(v)) return v.length > 0;
+      return v != null;
+    })
+  );
+  return { ...section.content, ...overrides };
+}
+
+export default async function SectionRenderer({
   sections,
   projects = [],
   faqItems = [],
+  pageSlug,
 }: Props) {
+  const locale = await getLocale();
+  const isAr = locale === "ar";
+
   return (
     <>
       {sections.map((section) => {
-        const c = section.content;
+        const c = resolveContent(section, isAr);
 
         switch (section.type) {
           case "hero": {
@@ -54,7 +79,7 @@ export default function SectionRenderer({
             );
 
           case "projects_grid":
-            return <Projects key={section.id} projects={projects} />;
+            return <Projects key={section.id} projects={projects} showHeader={pageSlug !== "work"} />;
 
           case "faq":
             return <FaqQuoteSection key={section.id} faqItems={faqItems} />;

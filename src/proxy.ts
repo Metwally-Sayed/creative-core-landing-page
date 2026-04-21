@@ -18,8 +18,8 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Login page — pass through so unauthenticated users can log in.
-  if (pathname === "/admin/login") {
+  // Login / signup pages — pass through so unauthenticated users can access them.
+  if (pathname === "/admin/login" || pathname === "/admin/signup") {
     return NextResponse.next();
   }
 

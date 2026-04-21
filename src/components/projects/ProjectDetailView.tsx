@@ -3,10 +3,10 @@
 import { useRef, useState, useEffect, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
-import { ArrowUpRight, Plus, Minus, ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
+import { ArrowUpRight, Plus, Minus, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 
@@ -20,7 +20,7 @@ type ProjectDetailViewProps = {
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 
-const DEFAULT_PROCESS = [
+const DEFAULT_PROCESS_EN = [
   { phase: "01", label: "Discovery", desc: "Understanding the core narrative, gathering requirements, and defining technical constraints." },
   { phase: "02", label: "Design", desc: "Crafting the visual language, typography scales, interactions, and motion curves." },
   { phase: "03", label: "Build", desc: "Developing the architecture and engineering the responsive frontend experience." },
@@ -34,11 +34,6 @@ const DEFAULT_COLORS = [
   { hex: "#f6f7ff", name: "Cloud White" }
 ];
 
-const projectTestimonials = [
-  { quote: "Every interaction was thoughtfully considered. It's rare to see this level of craft and attention to detail.", author: "Jane Doe", role: "Creative Director" },
-  { quote: "They didn't just understand the brief, they elevated it. The final product feels like absolute magic.", author: "John Smith", role: "Product Lead" },
-  { quote: "The motion feels physically grounded yet entirely digital. It perfectly captures our brand ethos.", author: "Sarah Lee", role: "Founder" }
-];
 // ---------------------------------------------------
 
 // -------------------------------------------------------------
@@ -147,27 +142,54 @@ function MarqueeTicker({ words }: { words: string[] }) {
   );
 }
 
+// Pin text direction on the split-text wrapper. Without this, each character
+// renders as a separate inline-block span and the RTL page context reverses
+// their visual order — turning "Burgitu" into "utigruB". We use an inline
+// style (not the `dir` attribute) so Framer Motion can't swallow it.
+function isArabicText(text: string): boolean {
+  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(text);
+}
+
 function SplitText({ text, className }: { text: string; className?: string }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
-  
+
+  // Arabic characters must NOT be split into individual inline-block spans:
+  // per-character inline-block in an RTL context reverses visual order AND
+  // breaks Arabic ligature shaping. Animate the whole block instead.
+  if (isArabicText(text)) {
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
+        style={{ direction: "rtl" }}
+        initial={{ opacity: 0, y: 40, filter: "blur(6px)" }}
+        animate={inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 40, filter: "blur(6px)" }}
+        transition={{ duration: 0.8, ease: transitionEase }}
+      >
+        {text}
+      </motion.div>
+    );
+  }
+
   const chars = text.split("");
-  
+
   return (
-    <motion.div 
-      ref={ref} 
-      className={className} 
-      initial="hidden" 
-      animate={inView ? "visible" : "hidden"} 
+    <motion.div
+      ref={ref}
+      style={{ direction: "ltr" }}
+      className={className}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
       variants={{ visible: { transition: { staggerChildren: 0.03 } } }}
     >
       {chars.map((char, i) => (
-        <motion.span 
-          key={i} 
-          className="inline-block relative will-change-transform" 
-          variants={{ 
-            hidden: { opacity: 0, y: 40, rotateX: -45, filter: "blur(6px)" }, 
-            visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: transitionEase } } 
+        <motion.span
+          key={i}
+          className="inline-block relative will-change-transform"
+          variants={{
+            hidden: { opacity: 0, y: 40, rotateX: -45, filter: "blur(6px)" },
+            visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: transitionEase } }
           }}
         >
           {char === " " ? "\u00A0" : char}
@@ -249,24 +271,28 @@ function AnimatedDivider() {
 }
 
 function PullQuote() {
+  const t = useTranslations("projectDetail");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-20%" });
+  const quote = t("pullQuote");
+  const isAr = isArabicText(quote);
   return (
     <section ref={ref} className="site-shell py-16 md:py-28 px-6 md:px-12 relative z-10">
       <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-        <motion.div 
-          initial={{ scaleX: 0 }} 
-          animate={inView ? { scaleX: 1 } : { scaleX: 0 }} 
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{ duration: 0.8, ease: transitionEase }}
-          className="h-1 w-16 mb-12 bg-[hsl(var(--secondary))] origin-center rounded-full" 
+          className="h-1 w-16 mb-12 bg-[hsl(var(--secondary))] origin-center rounded-full"
         />
-        <motion.h3 
+        <motion.h3
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.2, ease: transitionEase }}
           className="font-serif italic text-[2.2rem] md:text-[3.5rem] leading-[1.2] text-[hsl(var(--accent))] font-light tracking-[-0.02em]"
+          style={isAr ? { direction: "rtl" } : undefined}
         >
-          &ldquo;Every pixel serves a purpose.<br className="hidden md:block"/>Every interaction tells a story.&rdquo;
+          &ldquo;{quote}&rdquo;
         </motion.h3>
       </div>
     </section>
@@ -339,12 +365,14 @@ function MetricReveal({ metric, index, total }: { metric: { label: string, value
 }
 
 function TableOfContents({ count }: { count: number }) {
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   return (
     <div className="fixed end-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4 mix-blend-difference pointer-events-none">
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: isRtl ? -20 : 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 2 + (i * 0.1), duration: 0.5 }}
           className="size-[6px] rounded-full bg-white/40 shadow-[0_0_10px_rgba(255,255,255,0.2)]"
@@ -358,7 +386,8 @@ function StaggeredText({ text, className }: { text: string; className?: string }
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const words = text.split(" ");
-  
+  const direction = isArabicText(text) ? "rtl" : "ltr";
+
   const container = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
@@ -372,9 +401,27 @@ function StaggeredText({ text, className }: { text: string; className?: string }
     hidden: { opacity: 0, y: 20 },
   };
 
+  // Same reasoning as SplitText: Arabic words as inline-block spans in RTL
+  // context reverses word order visually. Animate the whole paragraph instead.
+  if (isArabicText(text)) {
+    return (
+      <motion.p
+        ref={ref}
+        style={{ direction: "rtl" }}
+        className={className}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, ease: transitionEase }}
+      >
+        {text}
+      </motion.p>
+    );
+  }
+
   return (
     <motion.p
       ref={ref}
+      style={{ direction: "ltr" }}
       variants={container}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
@@ -525,8 +572,17 @@ function RelatedProjectCard({ project, index }: { project: ProjectSummary; index
   );
 }
 
-function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS }) {
+function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS_EN }) {
   const t = useTranslations("projectDetail");
+  // If the steps are the English defaults (no project-specific process data),
+  // replace labels/descs with translated versions.
+  const isDefaultSteps = steps === DEFAULT_PROCESS_EN;
+  const translatedSteps = isDefaultSteps ? [
+    { phase: "01", label: t("processPhase01Label"), desc: t("processPhase01Desc") },
+    { phase: "02", label: t("processPhase02Label"), desc: t("processPhase02Desc") },
+    { phase: "03", label: t("processPhase03Label"), desc: t("processPhase03Desc") },
+    { phase: "04", label: t("processPhase04Label"), desc: t("processPhase04Desc") },
+  ] : steps;
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-20%" });
 
@@ -544,7 +600,7 @@ function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS }) {
         />
 
         <div className="grid md:grid-cols-4 gap-12 md:gap-8">
-          {steps.map((step, idx) => (
+          {translatedSteps.map((step, idx) => (
             <motion.div 
               key={idx}
               initial={{ opacity: 0, y: 30 }}
@@ -566,76 +622,10 @@ function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS }) {
   );
 }
 
-function TestimonialCarousel() {
-  const [active, setActive] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-20%" });
-
-  const next = () => setActive((prev) => (prev + 1) % projectTestimonials.length);
-  const prev = () => setActive((prev) => (prev - 1 + projectTestimonials.length) % projectTestimonials.length);
-
-  return (
-    <section ref={ref} className="bg-accent text-white py-24 md:py-40 overflow-hidden relative">
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)]" />
-      
-      <div className="site-shell px-6 md:px-12 relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.8, ease: transitionEase }}
-          className="mb-12"
-        >
-          <svg className="size-12 fill-secondary opacity-80" viewBox="0 0 24 24">
-            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-          </svg>
-        </motion.div>
-
-        <div className="relative w-full min-h-[200px] flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -20, filter: "blur(4px)" }}
-              transition={{ duration: 0.5, ease: transitionEase }}
-              className="space-y-8"
-            >
-              <h3 className="font-serif text-[1.8rem] md:text-[2.8rem] leading-[1.3] text-white/90 font-light">
-                &ldquo;{projectTestimonials[active].quote}&rdquo;
-              </h3>
-              <div>
-                <p className="font-bold text-[1.1rem] text-white tracking-wide uppercase">{projectTestimonials[active].author}</p>
-                <p className="text-secondary text-[1.05rem]">{projectTestimonials[active].role}</p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        <div className="flex items-center gap-6 mt-16">
-          <button onClick={prev} className="p-4 rounded-full border border-white/20 hover:bg-white/10 transition-colors">
-            <ChevronLeft className="size-6" />
-          </button>
-          <div className="flex gap-2">
-            {projectTestimonials.map((_, idx) => (
-              <button 
-                key={idx} 
-                onClick={() => setActive(idx)}
-                className={`h-2 transition-all duration-300 rounded-full ${idx === active ? 'w-8 bg-secondary' : 'w-2 bg-white/20'}`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
-          </div>
-          <button onClick={next} className="p-4 rounded-full border border-white/20 hover:bg-white/10 transition-colors">
-            <ChevronRight className="size-6" />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
   const t = useTranslations("projectDetail");
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const [copied, setCopied] = useState<string | null>(null);
@@ -649,9 +639,9 @@ function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
   return (
     <section ref={ref} className="site-shell py-24 md:py-32 px-6 md:px-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-        <div>
+        <div className={isRtl ? "text-right" : ""}>
           <SplitText text={t("colorStory")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
-          <p className="text-muted-foreground text-lg mt-4 max-w-md">{t("colorStoryBody")}</p>
+          <p className="text-muted-foreground text-lg mt-4 max-w-md" style={isRtl ? { direction: "rtl" } : undefined}>{t("colorStoryBody")}</p>
         </div>
       </div>
 
@@ -691,7 +681,7 @@ function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
 export default function ProjectDetailView({ project, relatedProjects }: ProjectDetailViewProps) {
   const t = useTranslations("projectDetail");
   const projectColors = project.colors?.length ? project.colors : DEFAULT_COLORS;
-  const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS;
+  const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS_EN;
   const { scrollYProgress } = useScroll();
 
   const heroRef = useRef(null);
@@ -716,8 +706,11 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
     target: showcaseContainerRef,
     offset: ["start start", "end end"] // The container itself generates progress
   });
-  // Map vertical scroll of container to horizontal translation of gallery track
-  const horizontalX = useTransform(horizontalScrollProgress, [0, 1], ["0%", "-66.66%"]);
+  // Map vertical scroll of container to horizontal translation of gallery track.
+  // In RTL the track starts at the end (right), so it slides right (positive x).
+  const locale = useLocale();
+  const isRtl = locale === "ar";
+  const horizontalX = useTransform(horizontalScrollProgress, [0, 1], ["0%", isRtl ? "66.66%" : "-66.66%"]);
 
   // We need to pass the progress as a number to NavPill
   const [currentProgress, setCurrentProgress] = useState(0);
@@ -869,12 +862,16 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: "200vh" }}>
           {/* Sticky wrapper that holds exactly 100vh and pins during scroll */}
           <div className="sticky top-0 h-screen w-full flex flex-col justify-center">
-            <div className="site-shell mb-8 md:mb-12 w-full px-6 md:px-12">
+            <div className={`site-shell mb-8 md:mb-12 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
               <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
             </div>
             {/* The horizontal track that translates based on vertical scroll */}
             <div className="w-full overflow-hidden">
-              <motion.div style={{ x: horizontalX }} className="flex gap-6 md:gap-12 px-6 md:px-12 w-[300vw] items-center">
+              <motion.div
+                style={{ x: horizontalX }}
+                className="flex gap-6 md:gap-12 px-6 md:px-12 w-[300vw] items-center"
+                dir="ltr"
+              >
                 {project.gallery.slice(0, 3).map((image, idx) => (
                   <div key={idx} className="w-[85vw] md:w-[60vw] shrink-0">
                     <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
@@ -894,9 +891,6 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
             </div>
           </div>
         </section>
-
-        {/* NEW: Testimonial Carousel */}
-        <TestimonialCarousel />
 
         {/* 6. Impact Metrics — Redesigned */}
         <section ref={metricsRef} className="relative py-32 md:py-48 overflow-hidden">

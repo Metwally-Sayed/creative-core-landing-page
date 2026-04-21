@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import type { FaqItemDb } from "@/lib/faq-data";
@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 
 export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] }) {
   const t = useTranslations("faq");
+  const locale = useLocale();
+  const isAr = locale === "ar";
   const [activeFaqId, setActiveFaqId] = useState<string>(faqItems[0]?.id ?? "");
   const [openFaq, setOpenFaq] = useState<string | undefined>(faqItems[0]?.id);
 
@@ -24,6 +26,22 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
     () => faqItems.find((item) => item.id === activeFaqId) ?? faqItems[0],
     [activeFaqId, faqItems]
   );
+
+  // Resolve a localized field: prefer AR translation when locale is "ar"
+  function loc(item: FaqItemDb, field: keyof NonNullable<FaqItemDb["translations"]["ar"]>): string {
+    if (isAr) {
+      const arVal = item.translations?.ar?.[field];
+      if (typeof arVal === "string" && arVal) return arVal;
+    }
+    return String(item[field as keyof FaqItemDb] ?? "");
+  }
+
+  function locDeliverables(item: FaqItemDb): string[] {
+    if (isAr && item.translations?.ar?.deliverables?.length) {
+      return item.translations.ar.deliverables;
+    }
+    return item.deliverables ?? [];
+  }
 
   if (!activeFaq) return null;
 
@@ -81,10 +99,10 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
                         onMouseEnter={() => setActiveFaqId(item.id)}
                         className="py-6 text-left text-lg font-medium text-accent hover:no-underline md:text-2xl"
                       >
-                        {item.question}
+                        {loc(item, "question")}
                       </AccordionTrigger>
                       <AccordionContent className="pb-6 pt-2 text-base leading-relaxed text-muted-foreground">
-                        {item.answer}
+                        {loc(item, "answer")}
                       </AccordionContent>
                     </AccordionItem>
                   </motion.div>
@@ -116,21 +134,21 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
                     {t("insightSpotlight")}
                   </p>
                   <h3 className="text-4xl lg:text-5xl leading-[1.1] text-white font-serif italic">
-                    {activeFaq.question}
+                    {loc(activeFaq, "question")}
                   </h3>
                 </div>
 
                 <p className="text-lg leading-relaxed text-white/60">
-                  {activeFaq.preview}
+                  {loc(activeFaq, "preview")}
                 </p>
 
-                {activeFaq.deliverables?.length ? (
+                {locDeliverables(activeFaq).length ? (
                   <div className="space-y-4">
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
                       {t("standardDeliverables")}
                     </p>
                     <ul className="flex flex-wrap gap-2">
-                      {activeFaq.deliverables.map((deliverable) => (
+                      {locDeliverables(activeFaq).map((deliverable) => (
                         <li 
                           key={deliverable} 
                           className="px-4 py-2 rounded-full border border-white/10 text-xs text-white/80 bg-white/5"

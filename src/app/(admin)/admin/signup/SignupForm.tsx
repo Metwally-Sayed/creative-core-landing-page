@@ -4,15 +4,13 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction, type LoginState } from "./actions";
+import { signupAction, type SignupState } from "./actions";
 import Link from "next/link";
 
-const initialState: LoginState = { error: null };
+const initialState: SignupState = { error: null };
 
-type Props = { from: string };
-
-export default function LoginForm({ from }: Props) {
-  const [state, formAction, isPending] = useActionState(loginAction, initialState);
+export default function SignupForm() {
+  const [state, formAction, isPending] = useActionState(signupAction, initialState);
 
   return (
     <form
@@ -21,9 +19,12 @@ export default function LoginForm({ from }: Props) {
       className="w-full max-w-sm rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-6 shadow-sm"
     >
       <div className="mb-6">
-        <h1 className="mt-1 text-lg font-medium">Sign in to admin</h1>
+        <h1 className="text-lg font-medium">Create admin account</h1>
+        <p className="mt-1 text-sm text-[hsl(var(--admin-text-muted))]">
+          One-time setup — only one admin is allowed.
+        </p>
       </div>
-      <input type="hidden" name="from" value={from} />
+
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">Email</Label>
@@ -35,7 +36,11 @@ export default function LoginForm({ from }: Props) {
             required
             autoFocus
           />
+          {state.fieldErrors?.email && (
+            <p className="text-xs text-red-600">{state.fieldErrors.email}</p>
+          )}
         </div>
+
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="password">Password</Label>
           <Input
@@ -45,27 +50,44 @@ export default function LoginForm({ from }: Props) {
             autoComplete="new-password"
             required
           />
+          {state.fieldErrors?.password && (
+            <p className="text-xs text-red-600">{state.fieldErrors.password}</p>
+          )}
         </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            required
+          />
+          {state.fieldErrors?.confirmPassword && (
+            <p className="text-xs text-red-600">
+              {state.fieldErrors.confirmPassword}
+            </p>
+          )}
+        </div>
+
         {state.error && (
-          <p
-            role="alert"
-            aria-live="polite"
-            className="text-sm text-red-600"
-          >
+          <p role="alert" aria-live="polite" className="text-sm text-red-600">
             {state.error}
           </p>
         )}
+
         <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Signing in…" : "Sign in"}
+          {isPending ? "Creating account…" : "Create account"}
         </Button>
 
         <p className="text-center text-sm text-[hsl(var(--admin-text-muted))]">
-          No account yet?{" "}
+          Already have an account?{" "}
           <Link
-            href="/admin/signup"
+            href="/admin/login"
             className="text-[hsl(var(--admin-accent))] hover:underline"
           >
-            Create one
+            Sign in
           </Link>
         </p>
       </div>

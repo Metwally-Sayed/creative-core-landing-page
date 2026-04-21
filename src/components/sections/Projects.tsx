@@ -147,7 +147,7 @@ const categoryTranslationKeys: Record<Category, string> = {
   Digital: "projectsFilterDigital",
 };
 
-export default function Projects({ projects }: { projects: ProjectSummaryDb[] }) {
+export default function Projects({ projects, showHeader = true }: { projects: ProjectSummaryDb[]; showHeader?: boolean }) {
   const t = useTranslations("home");
   const dir = useDirection();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
@@ -179,76 +179,80 @@ export default function Projects({ projects }: { projects: ProjectSummaryDb[] })
         "--y-up": yUpPx,
         "--y-down": yDownPx,
       } as React.CSSProperties}
-      className="relative -mt-16 overflow-hidden px-5 pb-16 pt-28 md:pb-24 lg:-mt-24 lg:px-20 lg:pb-28 lg:pt-36" 
+      className={`relative overflow-hidden px-5 pb-16 md:pb-24 lg:px-20 lg:pb-28 ${showHeader ? "-mt-16 pt-28 lg:-mt-24 lg:pt-36" : "pt-40 lg:pt-52"}`}
       id="work"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background)/0.96)_34%,hsl(var(--background)/0.7)_68%,transparent_100%)] lg:h-40" />
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
-        <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-6">
-            <motion.p
-              initial={{ opacity: 0, x: -20 * dir }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              className="eyebrow"
-            >
-              {t("projectsEyebrow")}
-            </motion.p>
-            <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
-              {headingText.split(" ").map((word, i) => (
-                <span key={i} className="inline-block overflow-hidden me-[0.2em] py-1">
-                  <motion.span
-                    initial={{ y: "100%" }}
-                    animate={isInView ? { y: 0 } : {}}
-                    transition={{
-                      duration: 0.8,
-                      delay: i * 0.04,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="inline-block"
-                  >
-                    {word}
-                  </motion.span>
-                </span>
-              ))}
-            </h2>
-          </div>
-          
-          <div className="lg:max-w-md">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.4 }}
-              className="text-balance text-sm leading-relaxed text-muted-foreground md:text-base"
-            >
-              {t("projectsBody")}
-            </motion.p>
-          </div>
-        </div>
+        {showHeader && (
+          <>
+            <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
+              <div className="space-y-6">
+                <motion.p
+                  initial={{ opacity: 0, x: -20 * dir }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  className="eyebrow"
+                >
+                  {t("projectsEyebrow")}
+                </motion.p>
+                <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
+                  {headingText.split(" ").map((word, i) => (
+                    <span key={i} className="inline-block overflow-hidden me-[0.2em] py-1">
+                      <motion.span
+                        initial={{ y: "100%" }}
+                        animate={isInView ? { y: 0 } : {}}
+                        transition={{
+                          duration: 0.8,
+                          delay: i * 0.04,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className="inline-block"
+                      >
+                        {word}
+                      </motion.span>
+                    </span>
+                  ))}
+                </h2>
+              </div>
 
-        {/* Category Filters */}
-        <div className="mb-16 flex flex-wrap gap-4 lg:mb-20">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className="group relative px-6 py-2 text-xs font-semibold uppercase tracking-widest"
-            >
-              <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
-                {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
-              </span>
-              {activeCategory === cat && (
-                <motion.div
-                  layoutId="activeCat"
-                  className="absolute inset-0 bg-accent rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              {activeCategory !== cat && (
-                <div className="absolute inset-0 border border-accent/10 rounded-full group-hover:border-accent/30 transition-colors" />
-              )}
-            </button>
-          ))}
-        </div>
+              <div className="lg:max-w-md">
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.4 }}
+                  className="text-balance text-sm leading-relaxed text-muted-foreground md:text-base"
+                >
+                  {t("projectsBody")}
+                </motion.p>
+              </div>
+            </div>
+
+            {/* Category Filters */}
+            <div className="mb-16 flex flex-wrap gap-4 lg:mb-20">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className="group relative px-6 py-2 text-xs font-semibold uppercase tracking-widest"
+                >
+                  <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
+                    {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
+                  </span>
+                  {activeCategory === cat && (
+                    <motion.div
+                      layoutId="activeCat"
+                      className="absolute inset-0 bg-accent rounded-full"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  {activeCategory !== cat && (
+                    <div className="absolute inset-0 border border-accent/10 rounded-full group-hover:border-accent/30 transition-colors" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Masonry Grid with AnimatePresence */}
         <div className="columns-1 md:columns-2 lg:columns-3 gap-8 min-h-[600px]">
@@ -296,7 +300,7 @@ export default function Projects({ projects }: { projects: ProjectSummaryDb[] })
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-24 flex justify-center pb-32"
+          className="mt-40 flex justify-center pb-32"
         >
           <Link
             href="/projects"

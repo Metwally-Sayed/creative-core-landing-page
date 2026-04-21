@@ -94,7 +94,16 @@
     "resultsEyebrow": "Results & Impact",
     "projectImpact": "Project Impact",
     "projectImpactBody": "Key outcomes that define the project's success and lasting value.",
-    "creditsLabel": "Credits"
+    "creditsLabel": "Credits",
+    "pullQuote": "Every pixel serves a purpose. Every interaction tells a story.",
+    "processPhase01Label": "Discovery",
+    "processPhase01Desc": "Understanding the core narrative, gathering requirements, and defining technical constraints.",
+    "processPhase02Label": "Design",
+    "processPhase02Desc": "Crafting the visual language, typography scales, interactions, and motion curves.",
+    "processPhase03Label": "Build",
+    "processPhase03Desc": "Developing the architecture and engineering the responsive frontend experience.",
+    "processPhase04Label": "Launch",
+    "processPhase04Desc": "Performance optimization, accessibility audits, scaling, and final deployment."
   },
   "quote": {
     "dialogTitle": "Get a Quote",

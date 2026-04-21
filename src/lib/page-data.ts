@@ -70,6 +70,7 @@ export interface PageInput {
 export interface PageSectionInput {
   type: SectionType;
   content: Record<string, unknown>;
+  translations?: Record<string, unknown>;
 }
 
 export interface PageFullInput {
@@ -80,6 +81,7 @@ export interface PageFullInput {
   og_image_url: string;
   published: boolean;
   sections: PageSectionInput[];
+  translations?: Record<string, unknown>;
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {

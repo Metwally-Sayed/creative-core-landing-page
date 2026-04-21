@@ -6,6 +6,7 @@ import {
   FolderKanban,
   FileText,
   Settings,
+  Menu,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,6 +22,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "Locations", href: "/admin/locations", icon: MapPin },
   { label: "FAQ", href: "/admin/faq", icon: HelpCircle },
   { label: "Projects", href: "/admin/projects", icon: FolderKanban },
+  { label: "Navigation", href: "/admin/nav", icon: Menu },
   { label: "Pages", href: "/admin/pages", icon: FileText },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];

@@ -37,7 +37,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <div className="min-h-screen bg-transparent text-foreground">
-      <ProjectDetailContainer project={project} />
+      <ProjectDetailContainer project={project} locale={lang} />
     </div>
   );
 }

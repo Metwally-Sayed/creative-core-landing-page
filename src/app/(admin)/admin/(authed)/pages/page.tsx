@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listPages } from "./actions";
 import PagesList from "./PagesList";
+import ClientOnly from "@/components/admin/ClientOnly";
 
 export default async function AdminPagesPage() {
   const pages = await listPages();
@@ -21,7 +22,9 @@ export default async function AdminPagesPage() {
           No pages yet. Create your first page.
         </p>
       ) : (
-        <PagesList initialPages={pages} />
+        <ClientOnly>
+          <PagesList initialPages={pages} />
+        </ClientOnly>
       )}
     </>
   );

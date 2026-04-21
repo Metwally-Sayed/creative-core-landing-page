@@ -6,12 +6,19 @@ import CreativeHero from "@/components/sections/CreativeHero";
 import Projects from "@/components/sections/Projects";
 import ProductSection from "@/components/sections/ProductSection";
 import FaqQuoteSection from "@/components/sections/FaqQuoteSection";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { CreativeHeroConfig } from "@/lib/hero-types";
 
 export const revalidate = 60;
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  setRequestLocale(lang);
+
   const homePage = await getPage("home");
 
   // If a home page exists in DB with sections, render via builder

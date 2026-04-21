@@ -172,7 +172,7 @@ export default function WorkPageView({
         <div className="mb-14 grid gap-5 md:mb-[4.5rem] md:grid-cols-[6rem_1fr] md:items-start lg:grid-cols-[minmax(0,1fr)_6rem_15rem]">
           <div className="hidden lg:block" />
 
-          <p className="text-[0.76rem] leading-none text-[#999286]">{t("filterLabel")}</p>
+          {/* <p className="text-[0.76rem] leading-none text-[#999286]">{t("filterLabel")}</p> */}
 
           <div className="flex flex-col items-start gap-2">
             {filters.map((filter) => (

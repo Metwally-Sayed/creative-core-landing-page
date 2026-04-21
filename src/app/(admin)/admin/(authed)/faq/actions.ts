@@ -4,6 +4,13 @@ import { auth } from "@/auth";
 import { supabase } from "@/lib/supabase";
 import { revalidateTag } from "next/cache";
 
+export interface FaqItemTranslationsAr {
+  question?: string;
+  answer?: string;
+  preview?: string;
+  deliverables?: string[];
+}
+
 export interface FaqItem {
   id: string;
   question: string;
@@ -11,6 +18,7 @@ export interface FaqItem {
   preview: string;
   deliverables: string[];
   sort_order: number;
+  translations: { ar?: FaqItemTranslationsAr };
   created_at: string;
   updated_at: string;
 }
@@ -20,6 +28,7 @@ export interface FaqItemInput {
   answer: string;
   preview?: string;
   deliverables?: string[];
+  translations?: { ar?: FaqItemTranslationsAr };
 }
 
 export async function listFaqItems(): Promise<FaqItem[]> {
