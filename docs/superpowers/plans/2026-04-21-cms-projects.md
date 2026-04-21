@@ -14,9 +14,9 @@
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `supabase/migrations/20260421000002_create_projects.sql` | Create | 7 tables + RLS |
+| `supabase/migrations/20260421000002_create_projects.sql` | Create | 7 tables + RLS + translations jsonb (DONE) |
 | `src/lib/project-data.ts` | Create | DB types, public cached fetchers, mapper |
-| `scripts/seed-projects.ts` | Create | One-time migration of 23 static projects |
+| `scripts/seed-from-snapshot.ts` | Create | Seed 8 real client projects with images + EN/AR (DONE) |
 | `src/app/(admin)/admin/projects/actions.ts` | Create | 8 server actions |
 | `src/app/(admin)/admin/projects/page.tsx` | Replace stub | List page server component |
 | `src/app/(admin)/admin/projects/ProjectsList.tsx` | Create | DnD list client component |
@@ -31,12 +31,12 @@
 
 ---
 
-## Task 1: SQL Migration
+## Task 1: SQL Migration ✅ DONE
 
 **Files:**
-- Create: `supabase/migrations/20260421000002_create_projects.sql`
+- Create: `supabase/migrations/20260421000002_create_projects.sql` ✅
 
-- [ ] **Step 1: Write the migration**
+- [x] **Step 1: Write the migration** — written with 7 tables + RLS + translations jsonb columns
 
 ```sql
 -- supabase/migrations/20260421000002_create_projects.sql
@@ -190,6 +190,26 @@ import type {
 
 // ─── DB types ────────────────────────────────────────────────────────────────
 
+export interface ProjectTranslationsAr {
+  title?: string;
+  tags?: string[];
+  hero_label?: string;
+  hero_title?: string;
+  hero_subtitle?: string;
+  hero_summary?: string;
+  client?: string;
+  project_type?: string;
+  deliverables?: string;
+  intro?: string[];
+  feature_eyebrow?: string;
+  feature_title?: string;
+  feature_body?: string;
+  sections?: Array<{ eyebrow?: string; title?: string; body?: string[] }>;
+  metrics?: Array<{ label?: string; value?: string }>;
+  credits?: Array<{ label?: string; value?: string }>;
+  overview?: Array<{ label?: string; value?: string }>;
+}
+
 export interface ProjectSummaryDb {
   id: string;
   slug: string;
@@ -198,6 +218,16 @@ export interface ProjectSummaryDb {
   aspect_ratio: "portrait" | "landscape" | "square";
   cover_image_url: string;
   published: boolean;
+  sort_order: number;
+  translations: { ar?: ProjectTranslationsAr };
+}
+
+export interface ProjectGalleryDb {
+  id: string;
+  project_id: string;
+  image_url: string;
+  image_alt: string;
+  image_label: string;
   sort_order: number;
 }
 
@@ -212,15 +242,7 @@ export interface ProjectSectionDb {
   image_layout: "left" | "right";
   tone: "light" | "navy";
   sort_order: number;
-}
-
-export interface ProjectGalleryDb {
-  id: string;
-  project_id: string;
-  image_url: string;
-  image_alt: string;
-  image_label: string;
-  sort_order: number;
+  translations: { ar?: { eyebrow?: string; title?: string; body?: string[] } };
 }
 
 export interface ProjectFactDb {
@@ -229,6 +251,7 @@ export interface ProjectFactDb {
   label: string;
   value: string;
   sort_order: number;
+  translations: { ar?: { label?: string; value?: string } };
 }
 
 export interface ProjectFullDb extends ProjectSummaryDb {
@@ -503,207 +526,35 @@ git commit -m "feat: add project-data.ts with DB types, cached fetchers, and map
 
 ---
 
-## Task 3: Seed Script
+## Task 3: Seed Script ✅ DONE
 
 **Files:**
-- Create: `scripts/seed-projects.ts`
+- Create: `scripts/seed-from-snapshot.ts` ✅ (replaces planned `scripts/seed-projects.ts`)
 
-- [ ] **Step 1: Write the seed script**
+> **Note:** The static-catalog seeder was replaced with a real-data seeder that reads `tmp/seed-projects.en-ar.snapshot.txt`, uploads local `.webp` images to Supabase Storage, and inserts 8 real client projects with full EN content and AR translations (burgito + mazaq have full AR; remaining 6 have `translations.ar.title` + `translations.ar.tags`).
 
-```ts
-// scripts/seed-projects.ts
-import * as dotenv from "dotenv";
-import * as path from "path";
-dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+- [x] **Step 1: Write the seed script** — `scripts/seed-from-snapshot.ts` written and ready
 
-import { createClient } from "@supabase/supabase-js";
-import { projects, getProjectDetail } from "../src/lib/project-catalog";
+- [ ] **Step 2: Apply SQL migration in Supabase dashboard**
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+Copy-paste `supabase/migrations/20260421000002_create_projects.sql` into the Supabase SQL editor and run it.
 
-function toSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 80);
-}
+Expected: All 7 tables created with no errors.
 
-async function main() {
-  const { count } = await supabase
-    .from("projects")
-    .select("*", { count: "exact", head: true });
-
-  if ((count ?? 0) > 0) {
-    console.log("projects table is non-empty — skipping seed.");
-    return;
-  }
-
-  for (let i = 0; i < projects.length; i++) {
-    const summary = projects[i];
-    const detail = getProjectDetail(summary.id)!;
-    const slug = toSlug(summary.title);
-
-    const { data: row, error: rowErr } = await supabase
-      .from("projects")
-      .insert({
-        slug,
-        title: summary.title,
-        tags: summary.tags,
-        aspect_ratio: summary.aspectRatio,
-        cover_image_url: summary.image,
-        published: true,
-        sort_order: i,
-        hero_label: detail.heroLabel,
-        hero_title: detail.heroTitle,
-        hero_subtitle: detail.heroSubtitle,
-        hero_summary: detail.heroSummary,
-        hero_image_url: summary.image,
-        client: detail.introMeta.client,
-        project_type: detail.introMeta.type,
-        deliverables: detail.introMeta.deliverables,
-        launch_label: detail.introMeta.launchLabel,
-        launch_url: "",
-        intro: detail.intro,
-        showcase_image_url: detail.primaryShowcase.src,
-        showcase_alt: detail.primaryShowcase.alt,
-        showcase_label: detail.primaryShowcase.label,
-        feature_eyebrow: detail.feature.eyebrow,
-        feature_title: detail.feature.title,
-        feature_body: detail.feature.body,
-      })
-      .select("id")
-      .single();
-
-    if (rowErr || !row) {
-      console.error(`Failed to insert project "${summary.title}":`, rowErr);
-      continue;
-    }
-
-    const projectId = row.id;
-
-    // Sections
-    if (detail.sections.length) {
-      await supabase.from("project_sections").insert(
-        detail.sections.map((s, idx) => ({
-          project_id: projectId,
-          eyebrow: s.eyebrow,
-          title: s.title,
-          body: s.body,
-          image_url: s.image,
-          image_alt: s.imageAlt,
-          image_layout: s.imageLayout,
-          tone: s.tone ?? "light",
-          sort_order: idx,
-        }))
-      );
-    }
-
-    // Gallery
-    if (detail.gallery.length) {
-      await supabase.from("project_gallery").insert(
-        detail.gallery.map((g, idx) => ({
-          project_id: projectId,
-          image_url: g.src,
-          image_alt: g.alt,
-          image_label: g.label,
-          sort_order: idx,
-        }))
-      );
-    }
-
-    // Metrics
-    if (detail.impactMetrics.length) {
-      await supabase.from("project_metrics").insert(
-        detail.impactMetrics.map((m, idx) => ({
-          project_id: projectId,
-          label: m.label,
-          value: m.value,
-          sort_order: idx,
-        }))
-      );
-    }
-
-    // Credits
-    if (detail.credits.length) {
-      await supabase.from("project_credits").insert(
-        detail.credits.map((c, idx) => ({
-          project_id: projectId,
-          label: c.label,
-          value: c.value,
-          sort_order: idx,
-        }))
-      );
-    }
-
-    // Overview
-    if (detail.overview.length) {
-      await supabase.from("project_overview").insert(
-        detail.overview.map((o, idx) => ({
-          project_id: projectId,
-          label: o.label,
-          value: o.value,
-          sort_order: idx,
-        }))
-      );
-    }
-
-    console.log(`✓ Seeded: ${summary.title}`);
-  }
-
-  // Second pass: wire up related projects by slug
-  for (const summary of projects) {
-    const detail = getProjectDetail(summary.id)!;
-    if (!detail.relatedIds.length) continue;
-
-    const { data: srcRow } = await supabase
-      .from("projects")
-      .select("id")
-      .eq("slug", toSlug(summary.title))
-      .single();
-    if (!srcRow) continue;
-
-    for (let idx = 0; idx < detail.relatedIds.length; idx++) {
-      const relSummary = projects.find((p) => p.id === detail.relatedIds[idx]);
-      if (!relSummary) continue;
-      const { data: relRow } = await supabase
-        .from("projects")
-        .select("id")
-        .eq("slug", toSlug(relSummary.title))
-        .single();
-      if (!relRow) continue;
-
-      await supabase.from("project_related").insert({
-        project_id: srcRow.id,
-        related_project_id: relRow.id,
-        sort_order: idx,
-      });
-    }
-  }
-
-  console.log("Seed complete.");
-}
-
-main().catch(console.error);
-```
-
-- [ ] **Step 2: Run the seed script**
+- [ ] **Step 3: Run seed script**
 
 ```bash
 cd "/Users/metwally/Desktop/Kimi_Agent_Clone Hello Monday Site 2/nextjs-app"
-npx tsx scripts/seed-projects.ts
+npx tsx scripts/seed-from-snapshot.ts
 ```
 
-Expected: 23 `✓ Seeded:` lines followed by "Seed complete."
+Expected: 8 `✓ Seeded:` lines with image upload confirmations.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
-git add scripts/seed-projects.ts
-git commit -m "feat: add seed-projects.ts to migrate static catalog to Supabase"
+git add scripts/seed-from-snapshot.ts supabase/migrations/20260421000002_create_projects.sql
+git commit -m "feat: add projects migration and seed-from-snapshot.ts (8 real client projects, EN+AR)"
 ```
 
 ---
