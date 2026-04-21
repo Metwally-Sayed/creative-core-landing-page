@@ -1,6 +1,6 @@
 "use client";
 
-import type { SectionType, PageSectionInput } from "@/lib/page-data";
+import type { PageSectionInput } from "@/lib/page-data";
 
 interface Props {
   section: PageSectionInput & { id: string };

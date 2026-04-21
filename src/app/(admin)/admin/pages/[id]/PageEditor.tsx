@@ -19,7 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Trash2, ChevronDown, ChevronUp } from "lucide-react";
-import { updatePage } from "./actions";
+import { updatePage } from "../actions";
 import SectionEditor from "./SectionEditor";
 import type { PageFullDb, PageSectionInput, SectionType } from "@/lib/page-data";
 

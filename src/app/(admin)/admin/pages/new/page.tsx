@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { createPageAndRedirect } from "../actions";
 
 export default function NewPagePage() {
@@ -76,12 +77,12 @@ export default function NewPagePage() {
           >
             {isPending ? "Creating…" : "Create Page"}
           </button>
-          <a
+          <Link
             href="/admin/pages"
             className="rounded-md border border-[hsl(var(--admin-border))] px-5 py-2 text-sm font-medium text-[hsl(var(--admin-text))] hover:bg-[hsl(var(--admin-hover))] transition-colors"
           >
             Cancel
-          </a>
+          </Link>
         </div>
       </form>
     </>

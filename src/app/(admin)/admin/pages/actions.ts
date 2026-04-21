@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import type {
   PageSummaryDb,
   PageFullDb,
-  PageSectionDb,
   PageInput,
   PageFullInput,
 } from "@/lib/page-data";
