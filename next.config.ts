@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const nextConfig: any = {
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,7 +12,7 @@ const nextConfig: any = {
   },
   images: {
     unoptimized: true,
-  }
+  },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
