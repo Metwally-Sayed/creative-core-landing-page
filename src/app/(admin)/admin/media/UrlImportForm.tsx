@@ -48,7 +48,7 @@ export default function UrlImportForm({ onImported }: Props) {
         URL
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(next) => { if (!isPending) setOpen(next); }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Import from URL</DialogTitle>

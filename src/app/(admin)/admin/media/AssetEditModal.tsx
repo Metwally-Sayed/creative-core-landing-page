@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -57,6 +58,9 @@ export default function AssetEditModal({ asset, onClose, onSaved }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit asset</DialogTitle>
+          <DialogDescription className="sr-only">
+            Edit the title, alt text, and tags for this media asset.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">

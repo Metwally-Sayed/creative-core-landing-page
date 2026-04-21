@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { Pencil, Trash2, FileText, Film } from "lucide-react";
-import type { MediaAsset } from "@/lib/media-types";
-import { formatBytes } from "@/lib/media-types";
+import { formatBytes, type MediaAsset } from "@/lib/media-types";
 
 interface Props {
   asset: MediaAsset;
@@ -15,11 +15,12 @@ export default function AssetCard({ asset, onEdit, onDelete }: Props) {
     <div className="group relative overflow-hidden rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))]">
       <div className="relative aspect-square bg-[hsl(var(--admin-bg))]">
         {asset.file_type === "image" ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={asset.public_url}
             alt={asset.alt_text ?? asset.title}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -31,8 +32,8 @@ export default function AssetCard({ asset, onEdit, onDelete }: Props) {
           </div>
         )}
 
-        {/* Hover overlay with action buttons */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+        {/* Hover overlay — also shown on keyboard focus inside */}
+        <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
           <button
             onClick={() => onEdit(asset)}
             className="rounded-full bg-white/90 p-2 hover:bg-white"
@@ -42,10 +43,10 @@ export default function AssetCard({ asset, onEdit, onDelete }: Props) {
           </button>
           <button
             onClick={() => onDelete(asset)}
-            className="rounded-full bg-white/90 p-2 hover:bg-red-50"
+            className="group/delete rounded-full bg-white/90 p-2 hover:bg-red-50"
             aria-label="Delete asset"
           >
-            <Trash2 className="h-4 w-4 text-gray-800 hover:text-red-600" />
+            <Trash2 className="h-4 w-4 text-gray-800 group-hover/delete:text-red-600" />
           </button>
         </div>
       </div>
