@@ -25,7 +25,9 @@
     "projectsFilterDesign": "Design",
     "projectsFilterStrategy": "Strategy",
     "projectsFilterExperience": "Experience",
-    "projectsFilterDigital": "Digital"
+    "projectsFilterDigital": "Digital",
+    "projectsViewAllLabel": "Explore All",
+    "projectsViewAllSub": "23 dynamic case studies"
   },
   "product": {
     "eyebrow": "Product Acceleration",

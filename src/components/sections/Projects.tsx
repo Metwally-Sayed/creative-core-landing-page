@@ -309,10 +309,10 @@ export default function Projects() {
             </div>
             <div className="text-center">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
-                Explore All
+                {t("projectsViewAllLabel")}
               </span>
               <p className="mt-1 text-sm text-muted-foreground">
-                23 dynamic case studies
+                {t("projectsViewAllSub")}
               </p>
             </div>
           </Link>

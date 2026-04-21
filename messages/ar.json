@@ -25,7 +25,9 @@
     "projectsFilterDesign": "[AR] Design",
     "projectsFilterStrategy": "[AR] Strategy",
     "projectsFilterExperience": "[AR] Experience",
-    "projectsFilterDigital": "[AR] Digital"
+    "projectsFilterDigital": "[AR] Digital",
+    "projectsViewAllLabel": "[AR] Explore All",
+    "projectsViewAllSub": "[AR] 23 dynamic case studies"
   },
   "product": {
     "eyebrow": "[AR] Product Acceleration",
