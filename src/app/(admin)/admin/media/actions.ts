@@ -40,7 +40,7 @@ export async function getSignedUploadUrl(
   const fileType = mimeTypeToFileType(mimeType);
   if (!fileType) throw new Error(`Unsupported MIME type: ${mimeType}`);
 
-  const ext = filename.includes(".") ? filename.split(".").pop()! : "bin";
+  const ext = (filename.includes(".") ? filename.split(".").pop() : "") || "bin";
   const folder = fileTypeToFolder(fileType);
   const storagePath = `${folder}/${crypto.randomUUID()}.${ext}`;
 
@@ -76,6 +76,20 @@ export async function saveMediaAsset(
   const fileType = mimeTypeToFileType(input.mime_type);
   if (!fileType) throw new Error(`Unsupported MIME type: ${input.mime_type}`);
 
+  if (!Number.isInteger(input.size_bytes) || input.size_bytes <= 0) {
+    throw new Error("size_bytes must be a positive integer");
+  }
+
+  const maxSize = MAX_FILE_SIZES[fileType];
+  if (input.size_bytes > maxSize) {
+    throw new Error(
+      `File exceeds the ${fileType} size limit of ${maxSize / 1024 / 1024} MB`
+    );
+  }
+
+  const title = input.title.trim();
+  if (!title) throw new Error("title must not be empty");
+
   const { data, error } = await supabase
     .from("media_assets")
     .insert({
@@ -84,7 +98,7 @@ export async function saveMediaAsset(
       file_type: fileType,
       mime_type: input.mime_type,
       size_bytes: input.size_bytes,
-      title: input.title,
+      title,
       alt_text: null,
       tags: [],
     })
