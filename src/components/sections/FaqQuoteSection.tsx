@@ -25,6 +25,8 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
     [activeFaqId, faqItems]
   );
 
+  if (!activeFaq) return null;
+
   return (
     <section id="faq" className="site-section px-5 lg:px-20 pb-32">
       <div className="site-shell max-w-[1400px] px-0">
