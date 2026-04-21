@@ -1,10 +1,28 @@
-export default function AdminPagesPage() {
+import Link from "next/link";
+import { listPages } from "./actions";
+import PagesList from "./PagesList";
+
+export default async function AdminPagesPage() {
+  const pages = await listPages();
+
   return (
     <>
-      <h1 className="text-2xl font-semibold">Pages</h1>
-      <p className="mt-2 text-sm text-[hsl(var(--admin-text-muted))]">
-        Coming soon — page builder will land in sub-project #5.
-      </p>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Pages</h1>
+        <Link
+          href="/admin/pages/new"
+          className="rounded-md bg-[hsl(var(--admin-accent))] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+        >
+          + New Page
+        </Link>
+      </div>
+      {pages.length === 0 ? (
+        <p className="text-sm text-[hsl(var(--admin-text-muted))]">
+          No pages yet. Create your first page.
+        </p>
+      ) : (
+        <PagesList initialPages={pages} />
+      )}
     </>
   );
 }
