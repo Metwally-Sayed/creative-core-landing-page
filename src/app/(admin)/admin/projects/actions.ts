@@ -14,8 +14,6 @@ import type {
   ProjectFullInput,
 } from "@/lib/project-data";
 
-export type { ProjectSummaryDb, ProjectFullDb, ProjectInput, ProjectFullInput };
-
 const SUMMARY_COLS =
   "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, translations";
 

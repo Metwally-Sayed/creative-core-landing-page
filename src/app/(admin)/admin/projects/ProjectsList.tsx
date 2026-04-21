@@ -41,8 +41,8 @@ import {
   deleteProject,
   reorderProjects,
   togglePublished,
-  type ProjectSummaryDb,
 } from "./actions";
+import type { ProjectSummaryDb } from "@/lib/project-data";
 
 function SortableRow({
   project,
