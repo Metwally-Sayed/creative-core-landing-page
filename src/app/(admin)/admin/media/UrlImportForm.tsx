@@ -5,6 +5,7 @@ import { Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -52,6 +53,9 @@ export default function UrlImportForm({ onImported }: Props) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Import from URL</DialogTitle>
+            <DialogDescription className="sr-only">
+              Paste a public URL to import a media file directly into the library.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">

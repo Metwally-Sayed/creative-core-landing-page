@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -40,9 +40,9 @@ function uploadFileDirectly(
   signedUrl: string,
   file: File,
   onProgress: (pct: number) => void
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
+): { promise: Promise<void>; xhr: XMLHttpRequest } {
+  const xhr = new XMLHttpRequest();
+  const promise = new Promise<void>((resolve, reject) => {
     xhr.upload.addEventListener("progress", (e) => {
       if (e.lengthComputable) {
         onProgress(Math.round((e.loaded / e.total) * 100));
@@ -59,6 +59,7 @@ function uploadFileDirectly(
     xhr.setRequestHeader("Content-Type", file.type);
     xhr.send(file);
   });
+  return { promise, xhr };
 }
 
 interface Props {
@@ -73,6 +74,13 @@ export default function MediaLibrary({ initialAssets }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const dragCounterRef = useRef(0);
+  const activeXhrsRef = useRef<XMLHttpRequest[]>([]);
+
+  useEffect(() => {
+    return () => {
+      activeXhrsRef.current.forEach((x) => x.abort());
+    };
+  }, []);
 
   const updateUploadItem = useCallback(
     (id: string, update: Partial<UploadItem>) => {
@@ -127,34 +135,43 @@ export default function MediaLibrary({ initialAssets }: Props) {
 
       setUploadItems((prev) => [...prev, ...newItems]);
 
-      for (const file of validFiles) {
-        const itemId = file._uploadId;
-        try {
-          const { signedUrl, storagePath, publicUrl } =
-            await getSignedUploadUrl(file.name, file.type);
+      await Promise.allSettled(
+        validFiles.map(async (file) => {
+          const itemId = file._uploadId;
+          try {
+            const { signedUrl, storagePath, publicUrl } =
+              await getSignedUploadUrl(file.name, file.type);
 
-          await uploadFileDirectly(signedUrl, file, (pct) => {
-            updateUploadItem(itemId, { progress: pct });
-          });
+            const { promise: uploadPromise, xhr } = uploadFileDirectly(
+              signedUrl,
+              file,
+              (pct) => { updateUploadItem(itemId, { progress: pct }); }
+            );
+            activeXhrsRef.current.push(xhr);
+            try {
+              await uploadPromise;
+            } finally {
+              activeXhrsRef.current = activeXhrsRef.current.filter((x) => x !== xhr);
+            }
 
-          const saved = await saveMediaAsset({
-            storage_path: storagePath,
-            public_url: publicUrl,
-            mime_type: file.type,
-            size_bytes: file.size,
-            title: file.name,
-          });
+            const saved = await saveMediaAsset({
+              storage_path: storagePath,
+              public_url: publicUrl,
+              mime_type: file.type,
+              size_bytes: file.size,
+              title: file.name,
+            });
 
-          updateUploadItem(itemId, { status: "done", progress: 100 });
-          setAssets((prev) => [saved, ...prev]);
-        } catch (e) {
-          updateUploadItem(itemId, {
-            status: "error",
-            errorMessage:
-              e instanceof Error ? e.message : "Upload failed",
-          });
-        }
-      }
+            updateUploadItem(itemId, { status: "done", progress: 100 });
+            setAssets((prev) => [saved, ...prev]);
+          } catch (e) {
+            updateUploadItem(itemId, {
+              status: "error",
+              errorMessage: e instanceof Error ? e.message : "Upload failed",
+            });
+          }
+        })
+      );
     },
     [updateUploadItem]
   );
