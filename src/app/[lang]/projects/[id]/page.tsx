@@ -1,50 +1,43 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-
+import { notFound } from "next/navigation";
 import ProjectDetailContainer from "@/components/projects/ProjectDetailContainer";
 import { locales } from "@/i18n/config";
-import { getProjectDetail, projects } from "@/lib/project-catalog";
+import { getProject, getProjects } from "@/lib/project-data";
+
+export const revalidate = 60;
+export const dynamicParams = true;
 
 type ProjectPageProps = {
-  params: Promise<{
-    lang: string;
-    id: string;
-  }>;
+  params: Promise<{ lang: string; id: string }>;
 };
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getProjects();
   return locales.flatMap((lang) =>
-    projects.map((p) => ({ lang, id: p.id })),
+    projects.map((p) => ({ lang, id: p.slug }))
   );
 }
 
-export async function generateMetadata({
-  params,
-}: ProjectPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { id } = await params;
-  const project = getProjectDetail(id);
-
-  if (!project) {
-    return {
-      title: "Project Not Found",
-    };
-  }
-
+  const project = await getProject(id);
+  if (!project) return { title: "Project Not Found" };
   return {
-    title: `${project.heroTitle} | Hello Monday`,
-    description: project.heroSummary,
+    title: `${project.hero_title || project.title} | Hello Monday`,
+    description: project.hero_summary,
   };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { lang, id } = await params;
   setRequestLocale(lang);
+  const project = await getProject(id);
+  if (!project) notFound();
 
   return (
     <div className="min-h-screen bg-transparent text-foreground">
-      <ProjectDetailContainer projectId={id} />
+      <ProjectDetailContainer project={project} />
     </div>
   );
 }

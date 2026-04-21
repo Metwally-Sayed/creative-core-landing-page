@@ -1,22 +1,13 @@
-import { notFound } from "next/navigation";
-
 import ProjectDetailView from "@/components/projects/ProjectDetailView";
-import { getProjectDetail, getRelatedProjects } from "@/lib/project-catalog";
+import { getRelatedProjects, dbFullToLegacy, dbSummaryToLegacy } from "@/lib/project-data";
+import type { ProjectFullDb } from "@/lib/project-data";
 
-type ProjectDetailContainerProps = {
-  projectId: string;
-};
+type Props = { project: ProjectFullDb };
 
-export default function ProjectDetailContainer({
-  projectId,
-}: ProjectDetailContainerProps) {
-  const project = getProjectDetail(projectId);
+export default async function ProjectDetailContainer({ project }: Props) {
+  const relatedSummariesDb = await getRelatedProjects(project.related_ids);
+  const legacyProject = dbFullToLegacy(project);
+  const relatedProjects = relatedSummariesDb.map(dbSummaryToLegacy);
 
-  if (!project) {
-    notFound();
-  }
-
-  const relatedProjects = getRelatedProjects(projectId);
-
-  return <ProjectDetailView project={project} relatedProjects={relatedProjects} />;
+  return <ProjectDetailView project={legacyProject} relatedProjects={relatedProjects} />;
 }
