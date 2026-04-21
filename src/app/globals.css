@@ -134,6 +134,15 @@
     --shadow-float: 0 24px 70px hsl(var(--accent) / 0.12);
   }
 
+  [data-admin] {
+    --admin-bg: 0 0% 98%;
+    --admin-surface: 0 0% 100%;
+    --admin-border: 0 0% 90%;
+    --admin-text: 0 0% 15%;
+    --admin-text-muted: 0 0% 45%;
+    --admin-accent: var(--primary);
+  }
+
   .dark {
     --background: 218 65% 18%;
     --foreground: 0 0% 91%;
