@@ -1,6 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, locales } from "@/i18n/config";
+import { auth } from "@/auth";
 
 const intlMiddleware = createMiddleware({
   locales: [...locales],
@@ -9,17 +10,27 @@ const intlMiddleware = createMiddleware({
   localeDetection: true,
 });
 
-export default function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export default async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
 
-  // Admin routes are not localized — sub-project #1 (auth) will add its own
-  // protection logic here when that work resumes. For now, just pass through.
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+  // Auth.js API routes — pass through so auth flows work.
+  if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
-  // Auth.js API routes (from sub-project #1) — pass through untouched.
-  if (pathname.startsWith("/api/auth")) {
+  // Login page — pass through so unauthenticated users can log in.
+  if (pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
+  // All other /admin/* routes require an active session.
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const session = await auth();
+    if (!session) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("from", pathname + search);
+      return NextResponse.redirect(loginUrl);
+    }
     return NextResponse.next();
   }
 
