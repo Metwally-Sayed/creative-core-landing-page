@@ -1,11 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
 import LiquidCard from "@/components/LiquidCard";
 import {
   EditorialReveal,
   EditorialWordReveal,
 } from "@/components/editorial/EditorialMotion";
+import { useDirection } from "@/hooks/useDirection";
 import type {
   AwardStat,
   ServiceArtKey,
@@ -27,9 +31,10 @@ type ServicesPageViewProps = {
 };
 
 function JumpAhead({ sections }: { sections: ServiceSection[] }) {
+  const t = useTranslations("services");
   return (
     <div className="flex flex-col gap-1 text-[0.84rem] leading-[1.2] text-accent">
-      <p className="pr-6 text-secondary/80">Jump ahead:</p>
+      <p className="pe-6 text-secondary/80">{t("jumpAheadLabel")}</p>
       {sections.map((section) => (
         <a
           key={section.id}
@@ -40,7 +45,7 @@ function JumpAhead({ sections }: { sections: ServiceSection[] }) {
         </a>
       ))}
       <a href="#shiny-things" className="transition-colors hover:text-secondary">
-        Shiny Things
+        {t("shinyThingsLink")}
       </a>
     </div>
   );
@@ -337,12 +342,13 @@ function ServicesHero({
   sections: ServiceSection[];
   title: string;
 }) {
+  const dir = useDirection();
   return (
     <section className="border-b border-border/55">
       <div className="mx-auto max-w-[1450px] px-6 pb-20 pt-[8.6rem] md:px-10 md:pb-28 md:pt-40 lg:px-16 lg:pt-[10.5rem]">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_13rem_15rem] lg:gap-x-12">
           <div className="hidden lg:block" />
-          <EditorialReveal delay={0.08} x={24} y={0}>
+          <EditorialReveal delay={0.08} x={24 * dir} y={0}>
             <JumpAhead sections={sections} />
           </EditorialReveal>
           <div />
@@ -354,7 +360,7 @@ function ServicesHero({
             text={title}
             className="font-serif text-[clamp(4.8rem,9vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-accent"
           />
-          <EditorialReveal delay={0.16} x={30} y={18}>
+          <EditorialReveal delay={0.16} x={30 * dir} y={18}>
             <p className="max-w-[36rem] pb-2 text-[clamp(1.45rem,2.35vw,2.15rem)] leading-[1.25] tracking-[-0.03em] text-foreground/80">
               {body}
             </p>
@@ -366,6 +372,7 @@ function ServicesHero({
 }
 
 export function ServicesSection({ section }: { section: ServiceSection }) {
+  const dir = useDirection();
   return (
     <section
       id={section.id}
@@ -374,13 +381,13 @@ export function ServicesSection({ section }: { section: ServiceSection }) {
       <div className="mx-auto grid max-w-[1450px] gap-y-10 px-6 md:px-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16 lg:px-16">
         <EditorialReveal
           className="flex items-start justify-center pt-3 lg:justify-start"
-          x={-36}
+          x={-36 * dir}
           y={12}
         >
           <ServicesIllustration illustration={section.illustration} />
         </EditorialReveal>
 
-        <EditorialReveal className="space-y-8" x={34} y={18} delay={0.06}>
+        <EditorialReveal className="space-y-8" x={34 * dir} y={18} delay={0.06}>
           <div className="space-y-5">
             <EditorialReveal delay={0.04} y={18}>
               <p className="text-[0.78rem] leading-none text-secondary/75">
@@ -456,11 +463,12 @@ function ShinyThingsSection({
   awardColumns: [AwardStat[], AwardStat[]];
   shinyThings: ServicesPageViewProps["shinyThings"];
 }) {
+  const dir = useDirection();
   return (
     <section id="shiny-things" className="scroll-mt-20 py-18 md:py-24">
       <div className="mx-auto max-w-[1450px] px-6 md:px-10 lg:grid lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16 lg:px-16">
         <div />
-        <EditorialReveal className="space-y-10" x={22} y={20}>
+        <EditorialReveal className="space-y-10" x={22 * dir} y={20}>
           <div className="space-y-5">
             <EditorialReveal delay={0.04} y={18}>
               <p className="text-[0.78rem] leading-none text-secondary/75">

@@ -1,9 +1,14 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import LiquidCard from "@/components/LiquidCard";
 import AboutCodeOfHonor from "@/components/about/AboutCodeOfHonor";
 import {
   EditorialReveal,
   EditorialWordReveal,
 } from "@/components/editorial/EditorialMotion";
+import { useDirection } from "@/hooks/useDirection";
 import type {
   AboutJumpLink,
   CodeOfHonorItem,
@@ -33,9 +38,10 @@ type AboutPageViewProps = {
 };
 
 function JumpAhead({ links }: { links: AboutJumpLink[] }) {
+  const t = useTranslations("about");
   return (
     <div className="flex flex-col gap-1 text-[0.84rem] leading-[1.2] text-accent">
-      <p className="pr-6 text-secondary/80">Jump ahead:</p>
+      <p className="pe-6 text-secondary/80">{t("jumpAheadLabel")}</p>
       {links.map((link) => (
         <a
           key={link.href}
@@ -120,7 +126,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
         <div className="absolute inset-x-[22%] top-[16%] h-[44%] rounded-[2.5rem] border border-accent/15 bg-white/75" />
         <div className="absolute left-1/2 top-[48%] h-[38%] w-[38%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_50%_40%,#ffffff_0%,rgba(255,255,255,0.88)_24%,rgba(228,236,248,0.65)_48%,rgba(27,53,104,0.92)_100%)]" />
         <div className="absolute left-1/2 top-[23%] h-[24%] w-[24%] -translate-x-1/2 rounded-full border border-secondary/50" />
-        <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
+        <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
           {accentLabel}
         </p>
       </div>
@@ -134,7 +140,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
         <div className="absolute left-[22%] top-[12%] h-[72%] w-[18%] rounded-full bg-white/18 blur-[2px]" />
         <div className="absolute left-[44%] top-[8%] h-[80%] w-[14%] rounded-full bg-secondary/45" />
         <div className="absolute right-[18%] top-[16%] h-[68%] w-[16%] rounded-full bg-white/20" />
-        <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
+        <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
           {accentLabel}
         </p>
       </div>
@@ -148,7 +154,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
         <div className="absolute left-[28%] top-[28%] h-[18%] w-[44%] rounded-full border-[10px] border-accent/85" />
         <div className="absolute left-[36%] top-[44%] h-[14%] w-[28%] rounded-full border-[8px] border-secondary/90" />
         <div className="absolute left-1/2 top-[62%] h-[14%] w-[10px] -translate-x-1/2 rounded-full bg-accent/85" />
-        <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
+        <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
           {accentLabel}
         </p>
       </div>
@@ -163,7 +169,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
         <div className="absolute left-1/2 top-1/2 h-[74%] w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/22" />
         <div className="absolute left-[24%] top-[34%] h-5 w-5 rounded-full bg-white/84" />
         <div className="absolute right-[22%] top-[58%] h-4 w-4 rounded-full bg-white/72" />
-        <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
+        <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
           {accentLabel}
         </p>
       </div>
@@ -182,7 +188,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
             />
           ))}
         </div>
-        <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
+        <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-accent/70">
           {accentLabel}
         </p>
       </div>
@@ -195,7 +201,7 @@ function MondayteerArt({ art, accentLabel }: Pick<Mondayteer, "art" | "accentLab
       <div className="absolute left-1/2 top-[26%] h-[40%] w-[40%] -translate-x-1/2 rounded-full bg-white/12" />
       <div className="absolute left-1/2 top-[42%] h-[26%] w-[10px] -translate-x-1/2 rounded-full bg-white/90" />
       <div className="absolute left-1/2 top-[36%] h-[8px] w-[32%] -translate-x-1/2 rounded-full bg-secondary" />
-      <p className="absolute bottom-6 left-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
+      <p className="absolute bottom-6 start-6 text-[0.8rem] uppercase tracking-[0.18em] text-white/74">
         {accentLabel}
       </p>
     </div>
@@ -235,12 +241,13 @@ function AboutHero({
   jumpLinks: AboutJumpLink[];
   title: string;
 }) {
+  const dir = useDirection();
   return (
     <section className="border-b border-border/55">
       <div className="mx-auto max-w-[1450px] px-6 pb-20 pt-[8.6rem] md:px-10 md:pb-28 md:pt-40 lg:px-16 lg:pt-[10.5rem]">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_13rem_15rem] lg:gap-x-12">
           <div className="hidden lg:block" />
-          <EditorialReveal delay={0.08} x={24} y={0}>
+          <EditorialReveal delay={0.08} x={24 * dir} y={0}>
             <JumpAhead links={jumpLinks} />
           </EditorialReveal>
           <div />
@@ -252,7 +259,7 @@ function AboutHero({
             text={title}
             className="font-serif text-[clamp(4.8rem,9vw,8.2rem)] leading-[0.9] tracking-[-0.07em] text-accent"
           />
-          <EditorialReveal delay={0.16} x={30} y={18}>
+          <EditorialReveal delay={0.16} x={30 * dir} y={18}>
             <p className="max-w-[38rem] pb-2 text-[clamp(1.35rem,2.2vw,2.05rem)] leading-[1.28] tracking-[-0.03em] text-foreground/80">
               {body}
             </p>
@@ -264,6 +271,7 @@ function AboutHero({
 }
 
 function ContactSection({ locations }: { locations: StudioLocation[] }) {
+  const dir = useDirection();
   return (
     <section
       id="contact"
@@ -272,7 +280,7 @@ function ContactSection({ locations }: { locations: StudioLocation[] }) {
       <div className="mx-auto grid max-w-[1450px] gap-y-12 px-6 md:px-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-x-16 lg:px-16">
         <EditorialReveal
           className="flex items-start justify-center pt-2 lg:justify-start"
-          x={-36}
+          x={-36 * dir}
           y={12}
         >
           <ContactIllustration />

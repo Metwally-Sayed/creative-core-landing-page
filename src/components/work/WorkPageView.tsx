@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/navigation";
 import LiquidCard from "@/components/LiquidCard";
 import { cn } from "@/lib/utils";
 import type { WorkFilter, WorkProject } from "@/lib/work-catalog";
@@ -35,7 +36,7 @@ function FilterButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "text-left text-[0.82rem] leading-none transition-colors duration-200",
+        "text-start text-[0.82rem] leading-none transition-colors duration-200",
         active ? "text-[#151515]" : "text-[#8f8a80] hover:text-[#151515]",
       )}
     >
@@ -155,6 +156,7 @@ export default function WorkPageView({
   projects,
   onFilterChange,
 }: WorkPageViewProps) {
+  const t = useTranslations("work");
   const canUseFeaturedLayout = projects.length >= 5;
   const featuredProjects = canUseFeaturedLayout ? projects.slice(0, 5) : [];
   const remainingProjects = canUseFeaturedLayout ? projects.slice(5) : projects;
@@ -170,7 +172,7 @@ export default function WorkPageView({
         <div className="mb-14 grid gap-5 md:mb-[4.5rem] md:grid-cols-[6rem_1fr] md:items-start lg:grid-cols-[minmax(0,1fr)_6rem_15rem]">
           <div className="hidden lg:block" />
 
-          <p className="text-[0.76rem] leading-none text-[#999286]">Filter:</p>
+          <p className="text-[0.76rem] leading-none text-[#999286]">{t("filterLabel")}</p>
 
           <div className="flex flex-col items-start gap-2">
             {filters.map((filter) => (

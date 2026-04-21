@@ -240,7 +240,7 @@ function HonorItemCard({
     >
       <CollapsibleTrigger
         className={cn(
-          "flex w-full items-start justify-between gap-4 text-left outline-none transition-colors",
+          "flex w-full items-start justify-between gap-4 text-start outline-none transition-colors",
           "focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background",
           open ? "text-accent" : "text-accent/92 hover:text-secondary",
         )}

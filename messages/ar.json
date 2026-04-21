@@ -56,6 +56,16 @@
     "closeMenu": "[AR] Close menu",
     "menuLabel": "[AR] Menu"
   },
+  "about": {
+    "jumpAheadLabel": "[AR] Jump ahead:"
+  },
+  "services": {
+    "jumpAheadLabel": "[AR] Jump ahead:",
+    "shinyThingsLink": "[AR] Shiny Things"
+  },
+  "work": {
+    "filterLabel": "[AR] Filter:"
+  },
   "footer": {
     "collaborateLabel": "[AR] Want to collaborate?",
     "collaborateSublabel": "[AR] Work with us",

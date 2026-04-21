@@ -56,6 +56,16 @@
     "closeMenu": "Close menu",
     "menuLabel": "Menu"
   },
+  "about": {
+    "jumpAheadLabel": "Jump ahead:"
+  },
+  "services": {
+    "jumpAheadLabel": "Jump ahead:",
+    "shinyThingsLink": "Shiny Things"
+  },
+  "work": {
+    "filterLabel": "Filter:"
+  },
   "footer": {
     "collaborateLabel": "Want to collaborate?",
     "collaborateSublabel": "Work with us",

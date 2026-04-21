@@ -103,7 +103,7 @@ export function EditorialWordReveal({
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}
-          className="inline-block overflow-hidden pb-[0.06em] pr-[0.17em]"
+          className="inline-block overflow-hidden pb-[0.06em] pe-[0.17em]"
         >
           <motion.span
             className="inline-block"
