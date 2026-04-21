@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import {
@@ -65,6 +66,7 @@ const FAQ_ITEMS: FaqItem[] = [
 ];
 
 export default function FaqQuoteSection() {
+  const t = useTranslations("faq");
   const [activeFaqId, setActiveFaqId] = useState<string>(FAQ_ITEMS[0]?.id ?? "");
   const [openFaq, setOpenFaq] = useState<string | undefined>(FAQ_ITEMS[0]?.id);
 
@@ -77,10 +79,10 @@ export default function FaqQuoteSection() {
     <section id="faq" className="site-section px-5 lg:px-20 pb-32">
       <div className="site-shell max-w-[1400px] px-0">
         <div className="mb-20 space-y-6">
-          <p className="eyebrow text-secondary">Common Inquiries</p>
+          <p className="eyebrow text-secondary">{t("eyebrow")}</p>
           <h2 className="max-w-4xl text-5xl leading-[1.05] text-accent md:text-6xl lg:text-7xl">
-            Curated for the curious. <br />
-            <span className="text-muted-foreground/40 italic">Answered for the committed.</span>
+            {t("title")} <br />
+            <span className="text-muted-foreground/40 italic">{t("titleItalic")}</span>
           </h2>
         </div>
 
@@ -118,7 +120,7 @@ export default function FaqQuoteSection() {
                     }}
                     className={cn(
                       "site-card-solid px-6 transition-all duration-500",
-                      isActive ? "ring-1 ring-accent/10 shadow-xl translate-x-2" : "opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
+                      isActive ? "ring-1 ring-accent/10 shadow-xl ltr:translate-x-2 rtl:-translate-x-2" : "opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
                     )}
                   >
                     <AccordionItem value={item.id} className="border-0">
@@ -146,7 +148,7 @@ export default function FaqQuoteSection() {
             transition={{ duration: 0.6 }}
             className="site-card-navy sticky top-32 overflow-hidden p-8 lg:p-12 rounded-[2.5rem]"
           >
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/5 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 start-0 w-24 bg-gradient-to-e from-white/5 to-transparent" />
             
             <AnimatePresence mode="wait">
               <motion.div
@@ -193,7 +195,7 @@ export default function FaqQuoteSection() {
                     "We value clarity and outcomes over billable hours."
                   </p>
                   <QuoteBriefDialog
-                    triggerLabel="Start your discovery sprint"
+                    triggerLabel={t("ctaButton")}
                     triggerClassName="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-bold uppercase tracking-widest hover:scale-105 transition-transform"
                   />
                 </div>

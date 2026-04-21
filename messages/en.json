@@ -17,7 +17,33 @@
     "heroHeadlineLine1": "Ideas That",
     "heroHeadlineLine2": "Orbit Your",
     "heroHighlight": "Core.",
-    "heroBody": "Brand strategy, identity, content, and 3D visuals that convert."
+    "heroBody": "Brand strategy, identity, content, and 3D visuals that convert.",
+    "projectsEyebrow": "Selected Work",
+    "projectsTitle": "Same motion system, now wrapped in the Creative visual language.",
+    "projectsBody": "The layout stays editorial and kinetic, but the surfaces, color temperature, and typography now follow the softer premium theme from the reference site.",
+    "projectsFilterAll": "All",
+    "projectsFilterDesign": "Design",
+    "projectsFilterStrategy": "Strategy",
+    "projectsFilterExperience": "Experience",
+    "projectsFilterDigital": "Digital"
+  },
+  "product": {
+    "eyebrow": "Product Acceleration",
+    "title": "A booster rocket for digital product teams",
+    "body": "We collaborate with startups and product departments around the world to invent and reinvent the products of tomorrow.",
+    "statGlobalReachLabel": "Global Reach",
+    "statGlobalReachValue": "120M+",
+    "statProvenImpactLabel": "Proven Impact",
+    "statProvenImpactValue": "23+",
+    "statClientSuccessLabel": "Client Success",
+    "statClientSuccessValue": "94%",
+    "cta": "Discover our methodology"
+  },
+  "faq": {
+    "eyebrow": "Common Inquiries",
+    "title": "Curated for the curious.",
+    "titleItalic": "Answered for the committed.",
+    "ctaButton": "Start your discovery sprint"
   },
   "locale": {
     "switchAria": "Switch language"

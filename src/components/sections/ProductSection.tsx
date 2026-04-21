@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 
 export default function ProductSection() {
+  const t = useTranslations("product");
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
   
@@ -51,7 +53,7 @@ export default function ProductSection() {
 
           <div className="relative px-6 pb-20 md:px-10 lg:px-16 lg:pb-32">
             <div className="-mt-48 mx-auto max-w-[1000px] rounded-[2.5rem] border border-white/12 bg-white/5 p-8 text-center backdrop-blur-2xl md:p-16">
-              <p className="eyebrow mb-6 text-secondary/80">Product Acceleration</p>
+              <p className="eyebrow mb-6 text-secondary/80">{t("eyebrow")}</p>
               <motion.h2
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +61,7 @@ export default function ProductSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="mb-10 font-serif text-5xl leading-[1.1] text-white md:text-6xl lg:text-7xl"
               >
-                A booster rocket for digital product teams
+                {t("title")}
               </motion.h2>
 
               <motion.p
@@ -69,16 +71,15 @@ export default function ProductSection() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="mx-auto mb-16 max-w-2xl text-lg leading-relaxed text-white/70 md:text-xl"
               >
-                We collaborate with startups and product departments around the world
-                to invent and reinvent the products of tomorrow.
+                {t("body")}
               </motion.p>
 
               {/* Impact Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-t border-white/10 pt-16">
                 {[
-                  { label: "Global Reach", val: "120M+", sub: "Users affected by our work" },
-                  { label: "Proven Impact", val: "23+", sub: "Dynamic case studies" },
-                  { label: "Client Success", val: "94%", sub: "Repeat business rate" },
+                  { labelKey: "statGlobalReachLabel", valKey: "statGlobalReachValue" },
+                  { labelKey: "statProvenImpactLabel", valKey: "statProvenImpactValue" },
+                  { labelKey: "statClientSuccessLabel", valKey: "statClientSuccessValue" },
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
@@ -87,9 +88,8 @@ export default function ProductSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.6 + i * 0.1 }}
                   >
-                    <p className="text-4xl md:text-5xl font-serif text-white mb-2">{stat.val}</p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-secondary/80 mb-1">{stat.label}</p>
-                    <p className="text-sm text-white/50">{stat.sub}</p>
+                    <p className="text-4xl md:text-5xl font-serif text-white mb-2">{t(stat.valKey as Parameters<typeof t>[0])}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-secondary/80 mb-1">{t(stat.labelKey as Parameters<typeof t>[0])}</p>
                   </motion.div>
                 ))}
               </div>
@@ -104,7 +104,7 @@ export default function ProductSection() {
                   href="/product"
                   className="btn-primary"
                 >
-                  Discover our methodology
+                  {t("cta")}
                 </Link>
               </motion.div>
             </div>

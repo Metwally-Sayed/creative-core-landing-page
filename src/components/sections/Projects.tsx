@@ -3,8 +3,10 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import LiquidCard from '@/components/LiquidCard';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useDirection } from '@/hooks/useDirection';
 import { projects, type ProjectSummary } from '@/lib/project-catalog';
 
 // Liquid blob card component
@@ -137,7 +139,17 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummary; index:
 const categories = ["All", "Design", "Strategy", "Experience", "Digital"] as const;
 type Category = (typeof categories)[number];
 
+const categoryTranslationKeys: Record<Category, string> = {
+  All: "projectsFilterAll",
+  Design: "projectsFilterDesign",
+  Strategy: "projectsFilterStrategy",
+  Experience: "projectsFilterExperience",
+  Digital: "projectsFilterDigital",
+};
+
 export default function Projects() {
+  const t = useTranslations("home");
+  const dir = useDirection();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
@@ -154,11 +166,11 @@ export default function Projects() {
   const yUpPx = useMotionTemplate`${yUp}px`;
   const yDownPx = useMotionTemplate`${yDown}px`;
 
-  const filteredProjects = activeCategory === "All" 
-    ? projects 
+  const filteredProjects = activeCategory === "All"
+    ? projects
     : projects.filter(p => p.tags.includes(activeCategory));
 
-  const headingText = "Same motion system, now wrapped in the Creative visual language.";
+  const headingText = t("projectsTitle");
 
   return (
     <motion.section 
@@ -174,16 +186,16 @@ export default function Projects() {
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
         <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-6">
-            <motion.p 
-              initial={{ opacity: 0, x: -20 }}
+            <motion.p
+              initial={{ opacity: 0, x: -20 * dir }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               className="eyebrow"
             >
-              Selected Work
+              {t("projectsEyebrow")}
             </motion.p>
             <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
               {headingText.split(" ").map((word, i) => (
-                <span key={i} className="inline-block overflow-hidden mr-[0.2em] py-1">
+                <span key={i} className="inline-block overflow-hidden me-[0.2em] py-1">
                   <motion.span
                     initial={{ y: "100%" }}
                     animate={isInView ? { y: 0 } : {}}
@@ -202,14 +214,13 @@ export default function Projects() {
           </div>
           
           <div className="lg:max-w-md">
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-balance text-sm leading-relaxed text-muted-foreground md:text-base"
             >
-              The layout stays editorial and kinetic, but the surfaces, color temperature,
-              and typography now follow the softer premium theme from the reference site.
+              {t("projectsBody")}
             </motion.p>
           </div>
         </div>
@@ -223,7 +234,7 @@ export default function Projects() {
               className="group relative px-6 py-2 text-xs font-semibold uppercase tracking-widest"
             >
               <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
-                {cat}
+                {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
               </span>
               {activeCategory === cat && (
                 <motion.div
