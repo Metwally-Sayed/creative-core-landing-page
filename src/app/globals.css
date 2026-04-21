@@ -85,6 +85,11 @@
   }
 }
 
+[dir="rtl"] {
+  --font-sans: var(--font-plex-arabic), system-ui, sans-serif;
+  --font-serif: var(--font-noto-naskh), Georgia, serif;
+}
+
 @layer base {
   *,
   ::after,
