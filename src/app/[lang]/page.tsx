@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { getFaqItems } from "@/lib/faq-data";
 import CreativeHero from "@/components/sections/CreativeHero";
 import Projects from "@/components/sections/Projects";
 import ProductSection from "@/components/sections/ProductSection";
@@ -8,6 +9,7 @@ import type { CreativeHeroConfig } from "@/lib/hero-types";
 export default async function Home() {
   const t = await getTranslations("home");
   const tCommon = await getTranslations("common");
+  const faqItems = await getFaqItems();
 
   const heroConfig: CreativeHeroConfig = {
     headline: `${t("heroHeadlineLine1")}\n${t("heroHeadlineLine2")}`,
@@ -23,7 +25,7 @@ export default async function Home() {
         <CreativeHero config={heroConfig} />
         <Projects />
         <ProductSection />
-        <FaqQuoteSection />
+        <FaqQuoteSection faqItems={faqItems} />
       </main>
     </div>
   );

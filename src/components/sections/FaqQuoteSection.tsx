@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
+import type { FaqItemDb } from "@/lib/faq-data";
 import {
   Accordion,
   AccordionContent,
@@ -14,65 +15,14 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
-type FaqItem = {
-  id: string;
-  question: string;
-  answer: string;
-  preview: string;
-  deliverables?: string[];
-};
-
-const FAQ_ITEMS: FaqItem[] = [
-  {
-    id: "engagement",
-    question: "What does a typical engagement look like?",
-    answer:
-      "Most projects begin with a focused discovery sprint, then move into strategy, design, and implementation. We align around checkpoints early so the handoff is clear and launch-ready.",
-    preview: "A short discovery sprint, then production with clear review cadence.",
-    deliverables: ["Discovery Notes", "Roadmap", "Weekly Review Rhythm"],
-  },
-  {
-    id: "product-teams",
-    question: "Do you work with product teams as well as brands?",
-    answer:
-      "Yes. We support product organizations, marketing teams, and brand leads. The shape of the project changes, but the core collaboration model stays the same.",
-    preview: "The process adapts to both product organizations and brand teams.",
-    deliverables: ["UX Direction", "Launch System"],
-  },
-  {
-    id: "single-scope",
-    question: "Can you take on a focused scope instead of a full redesign?",
-    answer:
-      "Absolutely. We can quote single-scope projects like a launch page, design system work, or a campaign experience while keeping room to expand later.",
-    preview: "Focused scopes are fine as long as the output is clearly defined.",
-    deliverables: ["Scope Plan", "Execution Milestones"],
-  },
-  {
-    id: "pricing",
-    question: "How do you price projects?",
-    answer:
-      "We quote by scope and outcomes, not hourly tracking. Once we understand goals, timeline, and deliverables, we can put together a tighter project estimate.",
-    preview: "Outcome-based pricing with a clearer estimate after discovery.",
-    deliverables: ["Proposal", "Milestone Estimate"],
-  },
-  {
-    id: "timelines",
-    question: "How quickly can a project start?",
-    answer:
-      "Smaller scopes can usually start quickly. Larger programs may need a short lead-in for discovery, content collection, or technical planning.",
-    preview: "Fast-start for focused work, short runway for broader programs.",
-    deliverables: ["Availability Window", "Kickoff Plan"],
-  },
-];
-
-export default function FaqQuoteSection() {
+export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] }) {
   const t = useTranslations("faq");
-  const [activeFaqId, setActiveFaqId] = useState<string>(FAQ_ITEMS[0]?.id ?? "");
-  const [openFaq, setOpenFaq] = useState<string | undefined>(FAQ_ITEMS[0]?.id);
+  const [activeFaqId, setActiveFaqId] = useState<string>(faqItems[0]?.id ?? "");
+  const [openFaq, setOpenFaq] = useState<string | undefined>(faqItems[0]?.id);
 
   const activeFaq = useMemo(
-    () => FAQ_ITEMS.find((item) => item.id === activeFaqId) ?? FAQ_ITEMS[0],
-    [activeFaqId]
+    () => faqItems.find((item) => item.id === activeFaqId) ?? faqItems[0],
+    [activeFaqId, faqItems]
   );
 
   return (
@@ -105,7 +55,7 @@ export default function FaqQuoteSection() {
               }}
               className="space-y-4"
             >
-              {FAQ_ITEMS.map((item, index) => {
+              {faqItems.map((item, index) => {
                 const isActive = activeFaqId === item.id;
 
                 return (

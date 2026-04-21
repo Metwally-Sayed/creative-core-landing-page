@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Check, ArrowUp } from 'lucide-react';
 import { usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { studioLocations, type StudioLocation } from '@/lib/studio-locations';
+import type { Location } from '@/lib/locations-data';
 import LocaleSwitch from '@/components/LocaleSwitch';
 
 interface ContactItem {
@@ -41,12 +41,12 @@ function AnimatedLink({ href, children, className = "" }: { href: string; childr
   );
 }
 
-function LocationCard({ location }: { location: StudioLocation }) {
+function LocationCard({ location }: { location: Location }) {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   return (
     <a
-      href={location.href}
+      href={location.map_url || undefined}
       target="_blank"
       rel="noopener noreferrer"
       className="group flex flex-col"
@@ -65,10 +65,10 @@ function LocationCard({ location }: { location: StudioLocation }) {
           className="inline-block h-2.5 rounded-full bg-[hsl(var(--secondary))] origin-left"
         />
         <h4 className="font-serif text-lg text-[color:var(--footer-fg)] transition-opacity group-hover:opacity-80">
-          {location.city}
+          {location.name}
         </h4>
       </div>
-      {location.address.map((line, i) => (
+      {(location.address_lines ?? []).map((line, i) => (
         <p key={i} className="text-sm text-[color:var(--footer-muted)]">
           {line}
         </p>
@@ -131,7 +131,7 @@ function ContactCard({ item }: { item: ContactItem }) {
   );
 }
 
-export default function Footer() {
+export default function Footer({ locations }: { locations: Location[] }) {
   const tFooter = useTranslations("footer");
   const pathname = usePathname() || '';
   const isProductPage = pathname.startsWith('/product');
@@ -269,9 +269,9 @@ export default function Footer() {
               >
                 <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase tracking-[0.2em]">{tFooter("ourWorlds")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 lg:gap-x-24">
-                  {studioLocations.map((location) => (
+                  {locations.map((location) => (
                     <motion.div
-                      key={location.city}
+                      key={location.id}
                       variants={{
                         hidden: { opacity: 0, y: 20 },
                         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
