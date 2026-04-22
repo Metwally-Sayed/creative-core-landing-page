@@ -264,7 +264,9 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
   const renderFields = () => {
     if (lang === "ar") {
       switch (section.type) {
-        case "hero":
+        case "hero": {
+          const mediaItems = (section.content.media_items as SphereItem[] | undefined) ?? [];
+          const arAlts = ((section.translations?.ar as Record<string, unknown> | undefined)?.media_items_alts ?? []) as string[];
           return (
             <div className="space-y-3">
               <p className="text-xs text-[hsl(var(--admin-text-muted))]">
@@ -274,8 +276,47 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               <Field label="Highlight word (AR)" dir="rtl" value={ar(section, "highlight")} onChange={(v) => setAr("highlight", v)} />
               <Field label="Body text (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
               <Field label="CTA Label (AR)" dir="rtl" value={ar(section, "cta_label")} onChange={(v) => setAr("cta_label", v)} />
+
+              {mediaItems.length > 0 ? (
+                <div className="border-t border-[hsl(var(--admin-border))] pt-3 space-y-2">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                    Sphere Media — Alt Text (AR)
+                  </span>
+                  {mediaItems.map((item, index) => {
+                    const thumbSrc = item.type === "image" ? item.url : item.posterUrl;
+                    return (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="h-8 w-8 shrink-0 overflow-hidden rounded border border-[hsl(var(--admin-border))]">
+                          {thumbSrc ? (
+                            <img src={thumbSrc} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-[hsl(var(--admin-bg))]">
+                              <span className="text-[0.5rem] text-[hsl(var(--admin-text-muted))]">
+                                {item.type === "video" ? "VID" : "IMG"}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                          placeholder={item.alt || "Alt text (AR)"}
+                          value={arAlts[index] ?? ""}
+                          onChange={(e) => {
+                            const updated = [...arAlts];
+                            updated[index] = e.target.value;
+                            setAr("media_items_alts", updated);
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
           );
+        }
         case "text_image":
           return (
             <div className="space-y-3">
