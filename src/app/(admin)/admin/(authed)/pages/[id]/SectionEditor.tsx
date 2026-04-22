@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useCallback } from "react";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 import type { PageSectionInput } from "@/lib/page-data";
 
 interface Props {
@@ -56,6 +58,190 @@ function c(section: PageSectionInput, key: string): string {
 function ar(section: PageSectionInput, key: string): string {
   const arObj = (section.translations?.ar ?? {}) as Record<string, unknown>;
   return String(arObj[key] ?? "");
+}
+
+type SphereItem = {
+  type: "image" | "video";
+  url: string;
+  posterUrl?: string;
+  alt: string;
+};
+
+function SphereMediaEditor({
+  items,
+  onChange,
+}: {
+  items: SphereItem[];
+  onChange: (items: SphereItem[]) => void;
+}) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerTarget, setPickerTarget] = useState<{
+    index: number;
+    field: "url" | "posterUrl";
+    fileType: "image" | "video";
+  } | null>(null);
+
+  const openPicker = useCallback(
+    (index: number, field: "url" | "posterUrl", fileType: "image" | "video") => {
+      setPickerTarget({ index, field, fileType });
+      setPickerOpen(true);
+    },
+    []
+  );
+
+  const handleSelect = useCallback(
+    (url: string) => {
+      if (!pickerTarget) return;
+      const updated = items.map((item, i) =>
+        i === pickerTarget.index
+          ? { ...item, [pickerTarget.field]: url }
+          : item
+      );
+      onChange(updated);
+    },
+    [items, onChange, pickerTarget]
+  );
+
+  const setField = (index: number, field: keyof SphereItem, value: string) => {
+    onChange(items.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
+  };
+
+  const setType = (index: number, type: "image" | "video") => {
+    onChange(
+      items.map((item, i) =>
+        i === index ? { ...item, type, url: "", posterUrl: undefined } : item
+      )
+    );
+  };
+
+  const removeItem = (index: number) => {
+    onChange(items.filter((_, i) => i !== index));
+  };
+
+  const addItem = () => {
+    onChange([...items, { type: "image", url: "", alt: "" }]);
+  };
+
+  const inputCls =
+    "w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]";
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          Sphere Media
+        </span>
+        <span className="text-[0.65rem] text-[hsl(var(--admin-text-muted))]">
+          Max 8 shown (padded with defaults)
+        </span>
+      </div>
+
+      {items.length === 0 ? (
+        <p className="rounded-md border border-dashed border-[hsl(var(--admin-border))] px-3 py-3 text-center text-xs text-[hsl(var(--admin-text-muted))]">
+          No media added — defaults will show in the sphere.
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface,var(--admin-bg)))] p-3 space-y-2"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))]">
+                  {item.type === "image" && item.url ? (
+                    <img src={item.url} alt="" className="h-full w-full object-cover" />
+                  ) : item.type === "video" && item.posterUrl ? (
+                    <img src={item.posterUrl} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[hsl(var(--admin-text-muted))]">
+                      <span className="text-[0.6rem]">{item.type === "video" ? "VID" : "IMG"}</span>
+                    </div>
+                  )}
+                </div>
+
+                <select
+                  className="rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-2 py-1.5 text-xs text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                  value={item.type}
+                  onChange={(e) => setType(index, e.target.value as "image" | "video")}
+                >
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="ml-auto rounded-md border border-[hsl(var(--admin-border))] px-2 py-1 text-xs text-[hsl(var(--admin-text-muted))] hover:bg-red-50 hover:text-red-600 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="url"
+                  className={`${inputCls} flex-1`}
+                  placeholder={item.type === "video" ? "Video URL" : "Image URL"}
+                  value={item.url}
+                  onChange={(e) => setField(index, "url", e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => openPicker(index, "url", item.type)}
+                  className="shrink-0 rounded-md border border-[hsl(var(--admin-border))] px-2.5 py-2 text-xs font-medium text-[hsl(var(--admin-text))] hover:bg-[hsl(var(--admin-surface,var(--admin-bg)))] transition-colors"
+                >
+                  Pick
+                </button>
+              </div>
+
+              {item.type === "video" ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="url"
+                    className={`${inputCls} flex-1`}
+                    placeholder="Poster image URL (optional)"
+                    value={item.posterUrl ?? ""}
+                    onChange={(e) => setField(index, "posterUrl", e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => openPicker(index, "posterUrl", "image")}
+                    className="shrink-0 rounded-md border border-[hsl(var(--admin-border))] px-2.5 py-2 text-xs font-medium text-[hsl(var(--admin-text))] hover:bg-[hsl(var(--admin-surface,var(--admin-bg)))] transition-colors"
+                  >
+                    Pick
+                  </button>
+                </div>
+              ) : null}
+
+              <input
+                type="text"
+                className={inputCls}
+                placeholder="Alt text (EN)"
+                value={item.alt}
+                onChange={(e) => setField(index, "alt", e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={addItem}
+        className="w-full rounded-md border border-dashed border-[hsl(var(--admin-border))] py-2 text-xs font-medium text-[hsl(var(--admin-text-muted))] hover:border-[hsl(var(--admin-accent))] hover:text-[hsl(var(--admin-accent))] transition-colors"
+      >
+        + Add media
+      </button>
+
+      <MediaPickerModal
+        isOpen={pickerOpen}
+        onClose={() => { setPickerOpen(false); setPickerTarget(null); }}
+        onSelect={handleSelect}
+        fileType={pickerTarget?.fileType ?? "image"}
+      />
+    </div>
+  );
 }
 
 export default function SectionEditor({ section, onChange, lang }: Props) {
@@ -307,6 +493,12 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
             <Field label="Body text" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
             <Field label="CTA Label" value={c(section, "cta_label")} onChange={(v) => set("cta_label", v)} />
             <Field label="CTA URL" value={c(section, "cta_url")} onChange={(v) => set("cta_url", v)} type="url" />
+            <div className="border-t border-[hsl(var(--admin-border))] pt-3">
+              <SphereMediaEditor
+                items={(section.content.media_items as SphereItem[] | undefined) ?? []}
+                onChange={(items) => set("media_items", items)}
+              />
+            </div>
           </div>
         );
       case "text_image":
