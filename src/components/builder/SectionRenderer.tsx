@@ -65,12 +65,29 @@ export default async function SectionRenderer({
 
         switch (section.type) {
           case "hero": {
+            const rawItems = Array.isArray(section.content.media_items)
+              ? (section.content.media_items as Array<{ type: "image" | "video"; url: string; posterUrl?: string; alt: string }>)
+              : [];
+            const arAlts = isAr
+              ? ((section.translations?.ar as Record<string, unknown> | undefined)?.media_items_alts ?? []) as string[]
+              : [];
+
             const config: CreativeHeroConfig = {
               headline: String(c.headline ?? ""),
               highlight: String(c.highlight ?? ""),
               body: String(c.body ?? ""),
               primaryCta: c.cta_label
                 ? { label: String(c.cta_label), href: String(c.cta_url ?? "#") }
+                : undefined,
+              media: rawItems.length > 0
+                ? {
+                    items: rawItems.map((item, i) => ({
+                      type: item.type,
+                      url: item.url,
+                      posterUrl: item.posterUrl,
+                      alt: isAr ? (arAlts[i] || item.alt) : item.alt,
+                    })),
+                  }
                 : undefined,
             };
             return <CreativeHero key={section.id} config={config} />;
