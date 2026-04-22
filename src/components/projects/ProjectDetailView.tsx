@@ -46,9 +46,14 @@ function Preloader({ title, skip = false }: { title: string; skip?: boolean }) {
   const t = useTranslations("projectDetail");
   const [isVisible, setIsVisible] = useState(!skip);
 
-  // The preloader lasts 2 seconds (desktop only — skipped on mobile for perf)
+  // The preloader lasts 2 seconds (desktop only — skipped on mobile for perf).
+  // `skip` flips after mount when the media query resolves, so we must
+  // explicitly hide here — otherwise the earlier state (isVisible=true) sticks.
   useEffect(() => {
-    if (skip) return;
+    if (skip) {
+      setIsVisible(false);
+      return;
+    }
     const timer = setTimeout(() => setIsVisible(false), 2000);
     return () => clearTimeout(timer);
   }, [skip]);
@@ -764,12 +769,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
   return (
     <>
       <Preloader title={project.title} skip={isMobile} />
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: isMobile ? 0 : 2.2 }} // Wait for preloader (desktop only)
-        className="pb-0 bg-background text-foreground relative"
-      >
+      <main className="pb-0 bg-background text-foreground relative">
         {!isMobile && <NoiseOverlay />}
         <TableOfContents count={project.sections.length + 3} />
         <FloatingNavPill title={project.title} progress={currentProgress} />
@@ -1037,7 +1037,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
           </div>
         </section>
         
-      </motion.main>
+      </main>
     </>
   );
 }
