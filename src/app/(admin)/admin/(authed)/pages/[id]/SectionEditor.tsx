@@ -186,6 +186,112 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               />
             </div>
           );
+        case "what_we_do":
+          return (
+            <div className="space-y-3">
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">
+                Translate text fields. Items JSON must mirror the EN structure.
+              </p>
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                  Items (AR — JSON: [{`{ "title": "...", "description": "..." }`}, ...])
+                </label>
+                <textarea
+                  dir="rtl"
+                  rows={6}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                  value={JSON.stringify(
+                    ((section.translations?.ar as Record<string, unknown> | undefined)?.items ?? section.content.items ?? []),
+                    null, 2
+                  )}
+                  onChange={(e) => {
+                    try { setAr("items", JSON.parse(e.target.value)); } catch { /* ignore invalid JSON mid-edit */ }
+                  }}
+                />
+              </div>
+            </div>
+          );
+        case "about_hero":
+        case "services_hero":
+          return (
+            <div className="space-y-3">
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+            </div>
+          );
+        case "about_content":
+          return (
+            <div className="space-y-3">
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+            </div>
+          );
+        case "about_mission":
+          return (
+            <div className="space-y-3">
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Quote (AR)" dir="rtl" value={ar(section, "quote")} onChange={(v) => setAr("quote", v)} type="textarea" />
+            </div>
+          );
+        case "about_process":
+          return (
+            <div className="space-y-3">
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                  Steps (AR — JSON: [{`{ "num": "01", "title": "...", "body": "..." }`}, ...])
+                </label>
+                <textarea dir="rtl" rows={8}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                  value={JSON.stringify(((section.translations?.ar as Record<string, unknown> | undefined)?.steps ?? section.content.steps ?? []), null, 2)}
+                  onChange={(e) => { try { setAr("steps", JSON.parse(e.target.value)); } catch { /**/ } }}
+                />
+              </div>
+            </div>
+          );
+        case "services_section":
+          return (
+            <div className="space-y-3">
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+              <Field label="Link Label (AR)" dir="rtl" value={ar(section, "link_label")} onChange={(v) => setAr("link_label", v)} />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                  Cards (AR — JSON: [{`{ "title": "...", "subtitle": "...", "image_url": "...", "slug": "..." }`}, ...])
+                </label>
+                <textarea dir="rtl" rows={8}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                  value={JSON.stringify(((section.translations?.ar as Record<string, unknown> | undefined)?.cards ?? section.content.cards ?? []), null, 2)}
+                  onChange={(e) => { try { setAr("cards", JSON.parse(e.target.value)); } catch { /**/ } }}
+                />
+              </div>
+            </div>
+          );
+        case "services_credentials":
+          return (
+            <div className="space-y-3">
+              <Field label="Eyebrow (AR)" dir="rtl" value={ar(section, "eyebrow")} onChange={(v) => setAr("eyebrow", v)} />
+              <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
+              <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                  Stats (AR — JSON: [{`{ "label": "...", "value": "120+" }`}, ...])
+                </label>
+                <textarea dir="rtl" rows={6}
+                  className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                  value={JSON.stringify(((section.translations?.ar as Record<string, unknown> | undefined)?.stats ?? section.content.stats ?? []), null, 2)}
+                  onChange={(e) => { try { setAr("stats", JSON.parse(e.target.value)); } catch { /**/ } }}
+                />
+              </div>
+            </div>
+          );
         default:
           return <p className="text-xs text-[hsl(var(--admin-text-muted))]">Unknown section type.</p>;
       }
@@ -289,6 +395,111 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               value={c(section, "html")}
               onChange={(e) => set("html", e.target.value)}
             />
+          </div>
+        );
+      case "what_we_do":
+        return (
+          <div className="space-y-3">
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                Items (JSON array)
+              </label>
+              <p className="text-xs text-[hsl(var(--admin-text-muted))]">
+                Each item: <code className="bg-[hsl(var(--admin-border)/0.4)] px-1 rounded">{`{ "icon": "palette", "title": "...", "description": "..." }`}</code>.{" "}
+                Icons: palette, zap, layout, file_text, camera, globe, star, layers, megaphone, bar_chart, code, sparkles, pen_tool, video, shopping_bag, lightbulb.
+              </p>
+              <textarea
+                rows={8}
+                className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                value={JSON.stringify(section.content.items ?? [], null, 2)}
+                onChange={(e) => {
+                  try { set("items", JSON.parse(e.target.value)); } catch { /* ignore invalid JSON mid-edit */ }
+                }}
+              />
+            </div>
+          </div>
+        );
+      case "about_hero":
+      case "services_hero":
+        return (
+          <div className="space-y-3">
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+          </div>
+        );
+      case "about_content":
+        return (
+          <div className="space-y-3">
+            <Field label="Section ID (anchor)" value={c(section, "section_id")} onChange={(v) => set("section_id", v)} />
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+          </div>
+        );
+      case "about_mission":
+        return (
+          <div className="space-y-3">
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Quote" value={c(section, "quote")} onChange={(v) => set("quote", v)} type="textarea" />
+          </div>
+        );
+      case "about_process":
+        return (
+          <div className="space-y-3">
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                Steps (JSON — [{`{ "num": "01", "title": "...", "body": "..." }`}, ...])
+              </label>
+              <textarea rows={10}
+                className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                value={JSON.stringify(section.content.steps ?? [], null, 2)}
+                onChange={(e) => { try { set("steps", JSON.parse(e.target.value)); } catch { /**/ } }}
+              />
+            </div>
+          </div>
+        );
+      case "services_section":
+        return (
+          <div className="space-y-3">
+            <Field label="Section ID (anchor)" value={c(section, "section_id")} onChange={(v) => set("section_id", v)} />
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+            <Field label="Link Label" value={c(section, "link_label")} onChange={(v) => set("link_label", v)} />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                Cards (JSON — [{`{ "title": "...", "subtitle": "...", "image_url": "...", "slug": "..." }`}, ...])
+              </label>
+              <textarea rows={10}
+                className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                value={JSON.stringify(section.content.cards ?? [], null, 2)}
+                onChange={(e) => { try { set("cards", JSON.parse(e.target.value)); } catch { /**/ } }}
+              />
+            </div>
+          </div>
+        );
+      case "services_credentials":
+        return (
+          <div className="space-y-3">
+            <Field label="Eyebrow" value={c(section, "eyebrow")} onChange={(v) => set("eyebrow", v)} />
+            <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
+            <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                Stats (JSON — [{`{ "label": "Happy Clients", "value": "120+" }`}, ...])
+              </label>
+              <textarea rows={8}
+                className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm font-mono text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
+                value={JSON.stringify(section.content.stats ?? [], null, 2)}
+                onChange={(e) => { try { set("stats", JSON.parse(e.target.value)); } catch { /**/ } }}
+              />
+            </div>
           </div>
         );
       default:

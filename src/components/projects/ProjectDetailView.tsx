@@ -1,16 +1,17 @@
 "use client";
 
-import { useRef, useState, useEffect, useSyncExternalStore } from "react";
+import { useRef, useState, useEffect, useLayoutEffect, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
-import { ArrowUpRight, Plus, Minus, Copy, Check } from "lucide-react";
+import { ArrowUpRight, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 
-import type { ProjectDetail, ProjectSummary, ProjectSection } from "@/lib/project-catalog";
+import type { ProjectColor, ProjectDetail, ProjectSummary, ProjectSection } from "@/lib/project-catalog";
+import { COLOR_TOKENS, buildProjectThemeTokens } from "@/lib/project-theme";
 import LiquidCard from "@/components/LiquidCard";
 
 type ProjectDetailViewProps = {
@@ -27,12 +28,13 @@ const DEFAULT_PROCESS_EN = [
   { phase: "04", label: "Launch", desc: "Performance optimization, accessibility audits, scaling, and final deployment." }
 ];
 
-const DEFAULT_COLORS = [
-  { hex: "#0a1b3f", name: "Deep Navy" },
-  { hex: "#8ea2ff", name: "Periwinkle" },
-  { hex: "#ffc39b", name: "Warm Peach" },
-  { hex: "#f6f7ff", name: "Cloud White" }
+const DEFAULT_COLORS: ProjectColor[] = [
+  { hex: "#0a1b3f", name: "Deep Navy", themeRole: null },
+  { hex: "#8ea2ff", name: "Periwinkle", themeRole: null },
+  { hex: "#ffc39b", name: "Warm Peach", themeRole: null },
+  { hex: "#f6f7ff", name: "Cloud White", themeRole: null }
 ];
+const EMPTY_COLORS: ProjectColor[] = [];
 
 // ---------------------------------------------------
 
@@ -68,8 +70,8 @@ function Preloader({ title }: { title: string }) {
             transition={{ duration: 0.8, ease: transitionEase }}
             className="text-center"
           >
-            <p className="eyebrow text-white/50 mb-6">{t("loadingCaseStudy")}</p>
-            <h1 className="font-serif text-5xl md:text-7xl overflow-hidden">
+            <p className="eyebrow text-[hsl(var(--accent-foreground))/60] mb-6">{t("loadingCaseStudy")}</p>
+            <h1 className="font-serif text-5xl md:text-7xl overflow-hidden text-[hsl(var(--accent-foreground))]">
               <span className="block">{title}</span>
             </h1>
           </motion.div>
@@ -103,14 +105,14 @@ function FloatingNavPill({ title, progress }: { title: string, progress: number 
           transition={{ duration: 0.5, ease: transitionEase }}
           className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="flex items-center gap-4 bg-black/80 dark:bg-white/90 backdrop-blur-md rounded-full px-6 py-3 shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-white/10 dark:border-black/10">
-            <div className="size-2 rounded-full relative overflow-hidden bg-white/20 dark:bg-black/20 shrink-0">
+          <div className="flex items-center gap-4 rounded-full border border-[hsl(var(--accent-foreground))/0.22] bg-[hsl(var(--accent))/0.88] px-6 py-3 text-[hsl(var(--accent-foreground))] shadow-[0_10px_40px_hsl(var(--accent)/0.35)] backdrop-blur-md">
+            <div className="relative size-2 shrink-0 overflow-hidden rounded-full bg-[hsl(var(--accent-foreground))/0.22]">
                <motion.div 
                  className="absolute bottom-0 left-0 right-0 bg-secondary" 
                  style={{ height: `${progress * 100}%` }} 
                />
             </div>
-            <span className="text-white dark:text-black font-medium text-sm tracking-wide whitespace-nowrap">
+            <span className="whitespace-nowrap text-sm font-medium tracking-wide">
               {title}
             </span>
           </div>
@@ -386,7 +388,6 @@ function StaggeredText({ text, className }: { text: string; className?: string }
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const words = text.split(" ");
-  const direction = isArabicText(text) ? "rtl" : "ltr";
 
   const container = {
     hidden: { opacity: 0 },
@@ -436,57 +437,23 @@ function StaggeredText({ text, className }: { text: string; className?: string }
   );
 }
 
-function ExpandableCard({ title, items }: { title: string, items: string[] }) {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <div className="border border-border/60 rounded-xl overflow-hidden mt-8 transition-colors hover:border-border">
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className="w-full flex items-center justify-between p-6 text-start"
-      >
-        <span className="font-medium text-[1.1rem] tracking-tight">{title}</span>
-        {isOpen ? <Minus className="size-5" /> : <Plus className="size-5" />}
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: transitionEase }}
-            className="overflow-hidden"
-          >
-            <div className="p-6 pt-0 flex flex-wrap gap-3">
-              {items.map((item, i) => (
-                <span key={i} className="px-4 py-2 rounded-full bg-secondary/10 text-secondary-foreground text-sm font-medium">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 function StoryChapter({ section, index }: { section: ProjectSection; index: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
   const isLeft = section.imageLayout === "left";
   const isNavy = section.tone === "navy";
-  
-  const content = (
-    <div className={`grid md:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-start ${isNavy ? 'p-8 md:p-16 lg:p-20' : ''}`}>
-      
+
+  // ── Desktop 2-col grid (hidden on mobile) ────────────────────────────────
+  const desktopContent = (
+    <div className={`hidden md:grid md:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-start ${isNavy ? 'p-8 md:p-16 lg:p-20' : ''}`}>
+
       {/* Sticky Label (Desktop) */}
       <div className={`hidden lg:block absolute top-[20vh] ${isLeft ? 'end-full me-12' : 'start-full ms-12'} whitespace-nowrap opacity-20 origin-left -rotate-90 select-none`}>
         <span className="font-serif text-8xl font-black">0{index + 1}</span>
       </div>
-      
+
       {/* Text Content */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: isLeft ? 40 : -40 }}
         animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: isLeft ? 40 : -40 }}
         transition={{ duration: 0.8, delay: 0.1, ease: transitionEase }}
@@ -503,11 +470,6 @@ function StoryChapter({ section, index }: { section: ProjectSection; index: numb
             </p>
           ))}
         </div>
-        
-        {/* Mock Expandable Tech Details for testing the new feature */}
-        {!isNavy && index % 2 === 0 && (
-           <ExpandableCard title="Technical Specs & Tools" items={["React", "Three.js", "Framer Motion", "GSAP", "TailwindCSS", "Lenis"]} />
-        )}
       </motion.div>
 
       {/* Media with SCROLL STACKING (sticky top) */}
@@ -516,7 +478,6 @@ function StoryChapter({ section, index }: { section: ProjectSection; index: numb
           <RevealImage src={section.image} alt={section.imageAlt} sizes="(max-width: 768px) 100vw, 50vw" />
         </LiquidCard>
       </div>
-      
     </div>
   );
 
@@ -524,15 +485,56 @@ function StoryChapter({ section, index }: { section: ProjectSection; index: numb
     <>
       {index === 1 && <PullQuote />}
       {index > 0 && index !== 1 && <AnimatedDivider />}
-      {/* Added extra tall padding-bottom so the sticky image effect is more pronounced */}
+
       <section ref={ref} className={`relative site-shell ${index === 0 ? "pb-32 md:pb-64" : "py-16 md:pb-64 md:pt-32"} px-4 md:px-8`}>
+
+        {/* ── MOBILE LAYOUT ─────────────────────────────────────────────────
+            Image pins to the top of the viewport while the text card scrolls
+            up over it. Uses a negative margin + rounded top to "slide over".   */}
+        <div className="md:hidden -mx-4">
+          {/* Sticky image — full bleed, stays fixed as text scrolls over */}
+          <div className="sticky top-0 overflow-hidden" style={{ height: "65vw", minHeight: "240px", maxHeight: "420px" }}>
+            <RevealImage src={section.image} alt={section.imageAlt} sizes="100vw" />
+          </div>
+
+          {/* Text card — pulls up with -mt and slides over the fixed image */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.65, ease: transitionEase }}
+            className={`relative z-10 -mt-7 rounded-t-[1.75rem] px-5 pt-8 pb-10 space-y-5 ${
+              isNavy
+                ? 'bg-[hsl(var(--accent))]'
+                : 'bg-background'
+            }`}
+          >
+            {section.eyebrow && (
+              <p className={`eyebrow ${isNavy ? 'text-[hsl(var(--secondary))]' : 'text-muted-foreground'}`}>
+                {section.eyebrow}
+              </p>
+            )}
+            <h3 className={`font-serif text-[1.9rem] leading-[1.08] tracking-tight ${isNavy ? 'text-white' : 'text-[hsl(var(--accent))]'}`}>
+              {section.title}
+            </h3>
+            <div className="space-y-4 pt-1">
+              {section.body.map((p, i) => (
+                <p key={i} className={`text-[0.975rem] font-light leading-relaxed ${isNavy ? 'text-white/75' : 'text-[hsl(var(--accent))]/80'}`}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── DESKTOP LAYOUT ──────────────────────────────────────────────── */}
         {isNavy ? (
-          <div className="site-card-navy overflow-hidden">
-            {content}
+          <div className="hidden md:block site-card-navy overflow-hidden">
+            {desktopContent}
           </div>
         ) : (
-          content
+          desktopContent
         )}
+
       </section>
     </>
   );
@@ -622,13 +624,15 @@ function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS_EN }) {
   );
 }
 
-function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
+function ColorPaletteShowcase({ colors }: { colors: ProjectColor[] }) {
   const t = useTranslations("projectDetail");
   const locale = useLocale();
   const isRtl = locale === "ar";
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const [copied, setCopied] = useState<string | null>(null);
+  const displayColors = colors.filter((color) => color.hex.trim() && color.name.trim());
+  const swatches = displayColors.length > 0 ? displayColors : DEFAULT_COLORS;
 
   const copyToClipboard = (hex: string) => {
     navigator.clipboard.writeText(hex);
@@ -646,7 +650,7 @@ function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-        {colors.map((color, idx) => (
+        {swatches.map((color, idx) => (
           <motion.button 
             key={idx}
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -680,8 +684,36 @@ function ColorPaletteShowcase({ colors }: { colors: typeof DEFAULT_COLORS }) {
 
 export default function ProjectDetailView({ project, relatedProjects }: ProjectDetailViewProps) {
   const t = useTranslations("projectDetail");
+  const projectThemeColors = project.colors ?? EMPTY_COLORS;
   const projectColors = project.colors?.length ? project.colors : DEFAULT_COLORS;
   const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS_EN;
+
+  useLayoutEffect(() => {
+    if (!project.inheritThemeFromPalette) return;
+
+    const tokens = buildProjectThemeTokens(projectThemeColors);
+    if (!tokens) return;
+
+    const root = document.documentElement;
+    const previous = new Map<string, string>();
+
+    for (const token of COLOR_TOKENS) {
+      previous.set(token, root.style.getPropertyValue(token));
+      root.style.setProperty(token, tokens[token]);
+    }
+
+    return () => {
+      for (const token of COLOR_TOKENS) {
+        const priorValue = previous.get(token) ?? "";
+        if (priorValue.trim()) {
+          root.style.setProperty(token, priorValue);
+        } else {
+          root.style.removeProperty(token);
+        }
+      }
+    };
+  }, [project.inheritThemeFromPalette, projectThemeColors]);
+
   const { scrollYProgress } = useScroll();
 
   const heroRef = useRef(null);
@@ -741,8 +773,9 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 text-white min-h-[90vh]">
           {/* Animated Gradient Mesh Base */}
           <div className="absolute inset-0 bg-[#050811]">
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#1a3280] rounded-full blur-[120px] mix-blend-screen opacity-50 animate-pulse" style={{ animationDuration: '8s' }} />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#4b6a9e] rounded-full blur-[150px] mix-blend-screen opacity-30 animate-pulse" style={{ animationDuration: '10s' }} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,hsl(var(--primary)/0.36),transparent_34%),radial-gradient(circle_at_82%_84%,hsl(var(--secondary)/0.26),transparent_36%)]" />
+            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[hsl(var(--primary))] rounded-full blur-[120px] mix-blend-screen opacity-35 animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[hsl(var(--secondary))] rounded-full blur-[150px] mix-blend-screen opacity-24 animate-pulse" style={{ animationDuration: '10s' }} />
           </div>
           
           <motion.div style={{ y: heroLayer2Y, opacity: heroOpacity }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
@@ -789,7 +822,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               className="w-[12rem] h-[16rem] md:w-[16rem] md:h-[20rem] mt-20 md:mt-28 relative rounded-t-full overflow-hidden border border-white/10 shadow-2xl z-10"
             >
                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-60 mix-blend-luminosity" priority />
-               <div className="absolute inset-0 bg-gradient-to-t from-[#050811] via-transparent to-transparent" />
+               <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
             </motion.div>
           </div>
         </section>

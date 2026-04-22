@@ -51,9 +51,9 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
   const headlineLines = headline.split("\n").map((line) => line.trim()).filter(Boolean);
 
   return (
-    <section id={id} className="relative overflow-hidden pt-20 pb-16 md:pt-30 md:pb-24">
+    <section id={id} className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-32 pb-16 md:py-0">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,hsl(var(--background))_0%,hsl(var(--background)/0.85)_45%,transparent_100%)]" />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-5 md:grid-cols-2 md:px-20">
+      <div className="mx-auto grid max-w-7xl w-full grid-cols-1 items-center gap-12 px-5 md:grid-cols-2 md:px-20 md:py-32">
         <div>
           <h1 className="mb-6 text-[42px] font-bold leading-[1.15] text-primary md:text-[72px] md:leading-[1.1]">
             {headlineLines.length > 0 ? (
@@ -92,29 +92,11 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
                 </Link>
               </Magnetic>
             ) : null}
-            {secondaryLabel ? (
-              <Magnetic intensity={0.1} range={100}>
-                <Link
-                  href={secondaryHref}
-                  className={cn(
-                    buttonVariants({ variant: "outline", size: "lg" }),
-                    "h-auto rounded-xl border-primary px-8 py-3.5 text-base font-semibold text-primary hover:bg-primary/5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  )}
-                >
-                  {secondaryLabel}
-                </Link>
-              </Magnetic>
-            ) : null}
           </div>
         </div>
 
-        <div className="mt-10 flex items-center justify-center md:mt-0">
-          <div className="hidden md:block">
-            <ImageSphere items={items} sphereRadius={180} containerSize={400} autoRotate={true} />
-          </div>
-          <div className="block md:hidden">
-            <ImageSphere items={items} sphereRadius={130} containerSize={300} autoRotate={true} />
-          </div>
+        <div className="hidden md:flex items-center justify-center">
+          <ImageSphere items={items} sphereRadius={180} containerSize={400} autoRotate={true} />
         </div>
       </div>
     </section>

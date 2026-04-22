@@ -1,4 +1,10 @@
 export type ProjectAspectRatio = "portrait" | "landscape" | "square";
+export type ProjectThemeRole =
+  | "accent"
+  | "secondary"
+  | "background"
+  | "foreground"
+  | "showcase";
 
 export type ProjectSummary = {
   id: string;
@@ -45,6 +51,7 @@ export type ProjectIntroMeta = {
 export type ProjectColor = {
   hex: string;
   name: string;
+  themeRole: ProjectThemeRole | null;
 };
 
 export type ProjectProcess = {
@@ -58,6 +65,7 @@ export type ProjectDetail = ProjectSummary & {
   heroTitle: string;
   heroSubtitle: string;
   heroSummary: string;
+  inheritThemeFromPalette: boolean;
   introMeta: ProjectIntroMeta;
   overview: ProjectFact[];
   intro: string[];
@@ -269,6 +277,7 @@ function buildDefaultDetail(project: ProjectSummary): ProjectDetail {
     heroTitle: displayTitle,
     heroSubtitle: project.tags.join(" / "),
     heroSummary: `A themed project story for ${displayTitle.toLowerCase()}, built to feel cinematic, tactile, and editorial while staying inside the softer visual system of this site.`,
+    inheritThemeFromPalette: false,
     introMeta: {
       launchLabel: "Launch project",
       type: project.tags.join(", "),

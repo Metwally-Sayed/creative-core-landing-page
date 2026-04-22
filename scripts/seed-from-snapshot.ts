@@ -538,6 +538,7 @@ async function main() {
 
     // ── Theme palette ────────────────────────────────────────────────────────
     const themePalette = p.themePalette ?? {};
+    const themePreferenceConfigured = typeof p.inheritThemeFromPalette === "boolean";
 
     // ── Insert main project row ──────────────────────────────────────────────
     const { data: row, error: rowErr } = await supabase
@@ -553,7 +554,8 @@ async function main() {
         service_type:               p.serviceType ?? "",
         work_filters:               p.workFilters ?? [],
         featured_aspect_ratio:      p.featuredAspectRatio ?? p.cardAspectRatio,
-        inherit_theme_from_palette: p.inheritThemeFromPalette ?? false,
+        inherit_theme_from_palette: Boolean(p.inheritThemeFromPalette),
+        theme_preference_configured: themePreferenceConfigured,
         theme_palette:              themePalette,
         hero_label:                 copy.heroLabel,
         hero_title:                 copy.heroTitle,

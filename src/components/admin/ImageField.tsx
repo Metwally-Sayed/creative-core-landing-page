@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import AssetPicker from "@/components/admin/AssetPicker";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
 interface ImageFieldProps {
   value: string;
@@ -54,11 +54,11 @@ export default function ImageField({ value, onChange, label }: ImageFieldProps) 
         {mode === "picker" ? "Use URL instead" : "Use media library"}
       </button>
 
-      <AssetPicker
-        open={pickerOpen}
-        onOpenChange={setPickerOpen}
-        onSelect={(asset) => {
-          onChange(asset.public_url);
+      <MediaPickerModal
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url) => {
+          onChange(url);
           setPickerOpen(false);
         }}
       />

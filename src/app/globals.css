@@ -143,6 +143,24 @@
     --admin-accent: var(--primary);
   }
 
+  /*
+    Dedicated portal root for admin modals.
+    position:fixed + top/left:0 + 100vw/100vh so it always covers the full
+    viewport even when Radix scroll-lock sets body { position: relative }.
+    pointer-events:none by default — modal content sets pointer-events:auto.
+    isolation:isolate creates a new stacking context for z-index containment.
+  */
+  #admin-modal-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    isolation: isolate;
+  }
+
   .dark {
     --background: 218 65% 18%;
     --foreground: 0 0% 91%;
@@ -228,10 +246,10 @@
 @layer utilities {
   .site-ambient {
     background:
-      radial-gradient(74% 70% at 10% 42%, rgba(157, 172, 255, 0.24) 0%, rgba(157, 172, 255, 0) 72%),
-      radial-gradient(62% 58% at 86% 90%, rgba(255, 181, 123, 0.18) 0%, rgba(255, 181, 123, 0) 74%),
-      radial-gradient(68% 48% at 52% 44%, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.16) 60%, rgba(235, 239, 245, 0.08) 100%),
-      linear-gradient(135deg, #e7ebf2 0%, #f8fafc 42%, #eef2f6 100%);
+      radial-gradient(74% 70% at 10% 42%, hsl(var(--primary) / 0.24) 0%, hsl(var(--primary) / 0) 72%),
+      radial-gradient(62% 58% at 86% 90%, hsl(var(--secondary) / 0.18) 0%, hsl(var(--secondary) / 0) 74%),
+      radial-gradient(68% 48% at 52% 44%, hsl(var(--background) / 0.84) 0%, hsl(var(--background) / 0.16) 60%, hsl(var(--card) / 0.08) 100%),
+      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 42%, hsl(var(--muted)) 100%);
     background-size: 200% 200%;
     animation: mesh-breathing 20s ease infinite alternate;
   }

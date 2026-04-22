@@ -10,7 +10,15 @@ export type SectionType =
   | "faq"
   | "product_feature"
   | "metrics"
-  | "rich_text";
+  | "rich_text"
+  | "what_we_do"
+  | "about_hero"
+  | "about_content"
+  | "about_mission"
+  | "about_process"
+  | "services_hero"
+  | "services_section"
+  | "services_credentials";
 
 export interface PageSectionDb {
   id: string;
@@ -49,6 +57,9 @@ export interface PageSummaryDb {
 
 export interface SiteSettings {
   id: number;
+  logo_url: string;
+  logo_dark_url: string;
+  logo_icon_url: string;
   site_name: string;
   tagline: string;
   contact_email: string;
@@ -86,6 +97,9 @@ export interface PageFullInput {
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   id: 1,
+  logo_url: "",
+  logo_dark_url: "",
+  logo_icon_url: "",
   site_name: "Hello Monday",
   tagline: "",
   contact_email: "hello@hellomonday.com",
@@ -130,6 +144,21 @@ export const getPage = unstable_cache(
       .order("sort_order");
 
     return { ...row, sections: sections ?? [] } as PageFullDb;
+  },
+  ["pages"],
+  { revalidate: 60, tags: ["pages"] }
+);
+
+export const getPageTranslations = unstable_cache(
+  async (slug: string): Promise<{ en: Record<string, string>; ar: Record<string, string> }> => {
+    const { data, error } = await supabase
+      .from("pages")
+      .select("translations")
+      .eq("slug", slug)
+      .single();
+    if (error || !data) return { en: {}, ar: {} };
+    const t = data.translations as Record<string, Record<string, string>>;
+    return { en: t.en ?? {}, ar: t.ar ?? {} };
   },
   ["pages"],
   { revalidate: 60, tags: ["pages"] }

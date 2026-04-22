@@ -4,14 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ADMIN_NAV_ITEMS } from "./admin-nav-items";
 import { cn } from "@/lib/utils";
+import BrandLogo from "@/components/BrandLogo";
+import type { SiteSettings } from "@/lib/page-data";
 
-export default function Sidebar() {
+export default function Sidebar({ settings }: { settings?: SiteSettings }) {
   const pathname = usePathname();
 
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col border-r bg-[hsl(var(--admin-surface))] border-[hsl(var(--admin-border))]">
-      <div className="flex h-14 items-center px-5 font-semibold text-[hsl(var(--admin-text))]">
-        Hello Monday
+      <div className="flex h-36 items-center px-5">
+        <BrandLogo logoUrl={settings?.logo_url} siteName={settings?.site_name} neutral />
       </div>
       <nav className="flex-1 px-2 py-2">
         <ul className="flex flex-col gap-1">

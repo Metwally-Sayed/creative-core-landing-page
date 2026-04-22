@@ -6,6 +6,18 @@ import ProductSection from "@/components/sections/ProductSection";
 import TextImageSection from "@/components/builder/sections/TextImageSection";
 import MetricsSection from "@/components/builder/sections/MetricsSection";
 import RichTextSection from "@/components/builder/sections/RichTextSection";
+import WhatWeDoSection from "@/components/builder/sections/WhatWeDoSection";
+import AboutHeroSection from "@/components/builder/sections/AboutHeroSection";
+import AboutContentSection from "@/components/builder/sections/AboutContentSection";
+import AboutMissionSection from "@/components/builder/sections/AboutMissionSection";
+import AboutProcessSection from "@/components/builder/sections/AboutProcessSection";
+import ServicesHeroSection from "@/components/builder/sections/ServicesHeroSection";
+import ServicesSectionBlock from "@/components/builder/sections/ServicesSectionBlock";
+import ServicesCredentialsSection from "@/components/builder/sections/ServicesCredentialsSection";
+import type { WhatWeDoItem } from "@/components/builder/sections/WhatWeDoSection";
+import type { ProcessStep } from "@/components/builder/sections/AboutProcessSection";
+import type { ServiceCard } from "@/components/builder/sections/ServicesSectionBlock";
+import type { CredentialStat } from "@/components/builder/sections/ServicesCredentialsSection";
 import type { PageSectionDb } from "@/lib/page-data";
 import type { ProjectSummaryDb } from "@/lib/project-data";
 import type { FaqItemDb } from "@/lib/faq-data";
@@ -102,6 +114,96 @@ export default async function SectionRenderer({
 
           case "rich_text":
             return <RichTextSection key={section.id} html={String(c.html ?? "")} />;
+
+          case "what_we_do":
+            return (
+              <WhatWeDoSection
+                key={section.id}
+                eyebrow={String(c.eyebrow ?? "")}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+                items={Array.isArray(c.items) ? (c.items as WhatWeDoItem[]) : []}
+              />
+            );
+
+          case "about_hero":
+            return (
+              <AboutHeroSection
+                key={section.id}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+              />
+            );
+
+          case "about_content":
+            return (
+              <AboutContentSection
+                key={section.id}
+                eyebrow={String(c.eyebrow ?? "")}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+                sectionId={String(c.section_id ?? "")}
+              />
+            );
+
+          case "about_mission":
+            return (
+              <AboutMissionSection
+                key={section.id}
+                eyebrow={String(c.eyebrow ?? "")}
+                quote={String(c.quote ?? "")}
+              />
+            );
+
+          case "about_process":
+            return (
+              <AboutProcessSection
+                key={section.id}
+                eyebrow={String(c.eyebrow ?? "")}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+                steps={Array.isArray(c.steps) ? (c.steps as ProcessStep[]) : []}
+              />
+            );
+
+          case "services_hero":
+            return (
+              <ServicesHeroSection
+                key={section.id}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+              />
+            );
+
+          case "services_section": {
+            // Track index across services_section instances
+            const svcIdx = sections
+              .slice(0, sections.indexOf(section))
+              .filter((s) => s.type === "services_section").length;
+            return (
+              <ServicesSectionBlock
+                key={section.id}
+                index={svcIdx}
+                sectionId={String(c.section_id ?? "")}
+                eyebrow={String(c.eyebrow ?? "")}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+                link_label={String(c.link_label ?? "")}
+                cards={Array.isArray(c.cards) ? (c.cards as ServiceCard[]) : []}
+              />
+            );
+          }
+
+          case "services_credentials":
+            return (
+              <ServicesCredentialsSection
+                key={section.id}
+                eyebrow={String(c.eyebrow ?? "")}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+                stats={Array.isArray(c.stats) ? (c.stats as CredentialStat[]) : []}
+              />
+            );
 
           default:
             return null;

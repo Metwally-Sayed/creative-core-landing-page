@@ -8,7 +8,9 @@ import { useTranslations, useLocale } from "next-intl";
 import { useDirection } from "@/hooks/useDirection";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import LocaleSwitch from "@/components/LocaleSwitch";
+import BrandLogo from "@/components/BrandLogo";
 import type { NavLink } from "@/lib/nav-data";
+import type { SiteSettings } from "@/lib/page-data";
 
 const transitionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -57,7 +59,7 @@ function LogoMark({
   );
 }
 
-export default function Header({ navLinks = [] }: { navLinks?: NavLink[] }) {
+export default function Header({ navLinks = [], settings }: { navLinks?: NavLink[]; settings?: SiteSettings }) {
   const tCommon = useTranslations("common");
   const tHeader = useTranslations("header");
   const locale = useLocale();
@@ -161,13 +163,13 @@ export default function Header({ navLinks = [] }: { navLinks?: NavLink[] }) {
             transition={{ duration: 0.5, ease: transitionEase }}
             className="pointer-events-none fixed inset-x-0 top-0 z-50"
           >
-            <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-start justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
+            <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-center justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
               <Link href="/" aria-label={tHeader("homeAriaLabel")}>
-                <LogoMark inverted={forceInvert} neutral={useNeutralHeader} />
+                <BrandLogo logoUrl={settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-12 min-w-0 max-w-[10rem]" />
               </Link>
 
               <div className="flex items-center gap-3">
-                <LocaleSwitch />
+                <LocaleSwitch inverted={forceInvert} />
                 {!hideQuoteCta ? (
                   <>
                     <QuoteBriefDialog
@@ -326,7 +328,7 @@ export default function Header({ navLinks = [] }: { navLinks?: NavLink[] }) {
                 className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
                 aria-label={tHeader("homeAriaLabel")}
               >
-                <LogoMark inverted className="opacity-92" />
+                <BrandLogo logoUrl={settings?.logo_url} siteName={settings?.site_name} inverted className="opacity-[0.92] h-12 min-w-0 max-w-[10rem]" />
               </Link>
 
               <motion.button
@@ -434,7 +436,7 @@ export default function Header({ navLinks = [] }: { navLinks?: NavLink[] }) {
                     {platform}
                   </a>
                 ))}
-                <LocaleSwitch className="text-white" />
+                <LocaleSwitch inverted />
               </motion.div>
             </motion.div>
           </div>

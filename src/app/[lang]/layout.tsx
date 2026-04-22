@@ -48,10 +48,16 @@ const notoNaskh = Noto_Naskh_Arabic({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Hello Monday / Dept.",
-  description: "Brand strategy, identity, content, and 3D visuals that convert.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return {
+    title: settings.seo_title || settings.site_name || "Hello Monday",
+    description: settings.seo_description || "Brand strategy, identity, content, and 3D visuals that convert.",
+    openGraph: settings.seo_og_image_url
+      ? { images: [settings.seo_og_image_url] }
+      : undefined,
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -90,7 +96,7 @@ export default async function LocaleLayout({
             </Suspense>
             <div aria-hidden className="site-ambient fixed inset-0 -z-10 overflow-hidden" />
             <div className="relative z-10 flex min-h-full flex-col">
-              <Header navLinks={navLinks} />
+              <Header navLinks={navLinks} settings={settings} />
               <main className="flex-1 flex flex-col">
                 <AnimatePresence mode="wait">
                   <PageTransition>

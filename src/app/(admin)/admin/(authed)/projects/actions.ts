@@ -148,6 +148,7 @@ export async function updateProject(
       featured_aspect_ratio: input.featured_aspect_ratio,
       inherit_theme_from_palette: input.inherit_theme_from_palette,
       theme_palette: input.theme_palette,
+      theme_preference_configured: input.theme_preference_configured,
       hero_label: input.hero_label,
       hero_title: input.hero_title,
       hero_subtitle: input.hero_subtitle,

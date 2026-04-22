@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useTransition } from "react";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getSignedUploadUrl,
   saveMediaAsset,
   deleteMediaAsset,
+  listMediaAssets,
+  countMediaAssets,
 } from "./actions";
 import {
   mimeTypeToFileType,
@@ -64,17 +66,55 @@ function uploadFileDirectly(
 
 interface Props {
   initialAssets: MediaAsset[];
+  initialTotal: number;
+  pageSize: number;
 }
 
-export default function MediaLibrary({ initialAssets }: Props) {
+export default function MediaLibrary({ initialAssets, initialTotal, pageSize }: Props) {
   const [assets, setAssets] = useState<MediaAsset[]>(initialAssets);
+  const [total, setTotal] = useState(initialTotal);
+  const [currentPage, setCurrentPage] = useState(1);
   const [uploadItems, setUploadItems] = useState<UploadItem[]>([]);
   const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [pendingSearch, setPendingSearch] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isPaging, startPaging] = useTransition();
   const dragCounterRef = useRef(0);
   const activeXhrsRef = useRef<XMLHttpRequest[]>([]);
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const fetchPage = useCallback(
+    (page: number, filter: FilterTab, search: string) => {
+      startPaging(async () => {
+        const [newAssets, newTotal] = await Promise.all([
+          listMediaAssets({ page, fileType: filter, search }),
+          countMediaAssets({ fileType: filter, search }),
+        ]);
+        setAssets(newAssets);
+        setTotal(newTotal);
+        setCurrentPage(page);
+      });
+    },
+    []
+  );
+
+  const handleFilterChange = (f: FilterTab) => {
+    setActiveFilter(f);
+    fetchPage(1, f, searchQuery);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setPendingSearch(value);
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => {
+      setSearchQuery(value);
+      fetchPage(1, activeFilter, value);
+    }, 350);
+  };
 
   useEffect(() => {
     return () => {
@@ -186,17 +226,8 @@ export default function MediaLibrary({ initialAssets }: Props) {
     }
   }
 
-  const filteredAssets = assets.filter((a) => {
-    if (activeFilter !== "all" && a.file_type !== activeFilter) return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return (
-        a.title.toLowerCase().includes(q) ||
-        a.tags.some((t) => t.toLowerCase().includes(q))
-      );
-    }
-    return true;
-  });
+  // Assets are already filtered server-side; local filter kept as identity
+  const filteredAssets = assets;
 
   return (
     <div
@@ -246,7 +277,7 @@ export default function MediaLibrary({ initialAssets }: Props) {
           {FILTER_TABS.map((tab) => (
             <button
               key={tab.value}
-              onClick={() => setActiveFilter(tab.value)}
+              onClick={() => handleFilterChange(tab.value)}
               className={cn(
                 "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                 activeFilter === tab.value
@@ -261,21 +292,25 @@ export default function MediaLibrary({ initialAssets }: Props) {
         <input
           type="search"
           placeholder="Search…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={pendingSearch}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="ml-auto w-48 rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-[hsl(var(--admin-accent))]"
         />
       </div>
 
       {/* Asset grid */}
-      {filteredAssets.length === 0 ? (
+      {isPaging ? (
+        <div className="flex items-center justify-center py-24">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[hsl(var(--admin-accent))] border-t-transparent" />
+        </div>
+      ) : filteredAssets.length === 0 ? (
         <p className="py-16 text-center text-sm text-[hsl(var(--admin-text-muted))]">
-          {assets.length === 0
+          {total === 0
             ? "No assets yet. Upload files or import from a URL."
             : "No assets match your filters."}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className={cn("grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5", isPaging && "opacity-50 pointer-events-none")}>
           {filteredAssets.map((asset) => (
             <AssetCard
               key={asset.id}
@@ -284,6 +319,59 @@ export default function MediaLibrary({ initialAssets }: Props) {
               onDelete={handleDelete}
             />
           ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-between text-sm">
+          <p className="text-[hsl(var(--admin-text-muted))]">
+            {total} assets · page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => fetchPage(currentPage - 1, activeFilter, searchQuery)}
+              disabled={currentPage === 1 || isPaging}
+              className="rounded-md px-3 py-1.5 font-medium transition-colors text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-[hsl(var(--admin-text))] disabled:opacity-30 disabled:pointer-events-none"
+            >
+              ←
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+              .reduce<(number | "…")[]>((acc, p, idx, arr) => {
+                if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((item, i) =>
+                item === "…" ? (
+                  <span key={`ellipsis-${i}`} className="px-2 text-[hsl(var(--admin-text-muted))]">…</span>
+                ) : (
+                  <button
+                    key={item}
+                    onClick={() => fetchPage(item as number, activeFilter, searchQuery)}
+                    disabled={isPaging}
+                    className={cn(
+                      "min-w-[2rem] rounded-md px-2.5 py-1.5 font-medium transition-colors disabled:pointer-events-none",
+                      currentPage === item
+                        ? "bg-[hsl(var(--admin-accent))] text-white"
+                        : "text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-[hsl(var(--admin-text))]"
+                    )}
+                  >
+                    {item}
+                  </button>
+                )
+              )}
+
+            <button
+              onClick={() => fetchPage(currentPage + 1, activeFilter, searchQuery)}
+              disabled={currentPage === totalPages || isPaging}
+              className="rounded-md px-3 py-1.5 font-medium transition-colors text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-bg))] hover:text-[hsl(var(--admin-text))] disabled:opacity-30 disabled:pointer-events-none"
+            >
+              →
+            </button>
+          </div>
         </div>
       )}
 

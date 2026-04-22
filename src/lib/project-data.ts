@@ -7,21 +7,15 @@ import type {
   ProjectGalleryImage as LegacyGallery,
   ProjectFact as LegacyFact,
 } from "@/lib/project-catalog";
+import {
+  buildProjectPaletteColors,
+  resolveThemeInheritance,
+  type ThemePalette,
+} from "@/lib/project-theme";
+
+export type { ThemePaletteColor, ThemePalette } from "@/lib/project-theme";
 
 // ─── DB types ────────────────────────────────────────────────────────────────
-
-export interface ThemePaletteColor {
-  hex: string;
-  name: string;
-}
-
-export interface ThemePalette {
-  accent: ThemePaletteColor;
-  secondary: ThemePaletteColor;
-  background: ThemePaletteColor;
-  foreground: ThemePaletteColor;
-  supporting: ThemePaletteColor[];
-}
 
 export interface ProjectTranslationsAr {
   title?: string;
@@ -30,6 +24,7 @@ export interface ProjectTranslationsAr {
   hero_title?: string;
   hero_subtitle?: string;
   hero_summary?: string;
+  launch_label?: string;
   client?: string;
   project_type?: string;
   deliverables?: string;
@@ -57,7 +52,7 @@ export interface ProjectSummaryDb {
   work_filters: string[];
   featured_aspect_ratio: string;
   inherit_theme_from_palette: boolean;
-  theme_palette: ThemePalette | Record<string, never>;
+  theme_palette: ThemePalette;
   translations: { ar?: ProjectTranslationsAr };
 }
 
@@ -104,6 +99,7 @@ export interface ProjectFactDb {
 }
 
 export interface ProjectFullDb extends ProjectSummaryDb {
+  theme_preference_configured: boolean;
   hero_label: string;
   hero_title: string;
   hero_subtitle: string;
@@ -183,7 +179,8 @@ export interface ProjectFullInput {
   work_filters: string[];
   featured_aspect_ratio: string;
   inherit_theme_from_palette: boolean;
-  theme_palette: ThemePalette | Record<string, never>;
+  theme_palette: ThemePalette;
+  theme_preference_configured: boolean;
   hero_label: string;
   hero_title: string;
   hero_subtitle: string;
@@ -333,6 +330,7 @@ export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail 
   // For English, always use the base English fields — never touch translations.ar.
   const isAr = locale === "ar";
   const ar: ProjectTranslationsAr = isAr ? (db.translations?.ar ?? {}) : {};
+  const colors = buildProjectPaletteColors(db.theme_palette);
 
   return {
     id: db.slug,
@@ -344,6 +342,11 @@ export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail 
     heroTitle: ar.hero_title || db.hero_title,
     heroSubtitle: ar.hero_subtitle || db.hero_subtitle,
     heroSummary: ar.hero_summary || db.hero_summary,
+    inheritThemeFromPalette: resolveThemeInheritance(
+      db.inherit_theme_from_palette,
+      db.theme_preference_configured,
+      db.theme_palette,
+    ),
     introMeta: {
       launchLabel: ar.launch_label || db.launch_label,
       type: ar.project_type || db.project_type,
@@ -390,21 +393,11 @@ export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail 
       value: isAr ? (c.translations?.ar?.value || ar.credits?.[i]?.value || c.value) : c.value,
     })) as LegacyFact[],
     relatedIds: db.related_ids,
-    colors: buildColors(db.theme_palette),
+    colors: colors.length ? colors : undefined,
     process: db.process.map((p) => ({
       phase: p.phase,
       label: isAr ? (p.translations?.ar?.label || p.label) : p.label,
       desc: isAr ? (p.translations?.ar?.description || p.description) : p.description,
     })),
   };
-}
-
-function buildColors(palette: ProjectFullDb["theme_palette"]) {
-  if (!palette || !("accent" in palette)) return undefined;
-  const p = palette as ThemePalette;
-  const colors = [p.accent, p.secondary, p.background, p.foreground, ...p.supporting];
-  const seen = new Set<string>();
-  return colors
-    .filter((c) => c?.hex && !seen.has(c.hex) && seen.add(c.hex))
-    .map((c) => ({ hex: c.hex, name: c.name }));
 }

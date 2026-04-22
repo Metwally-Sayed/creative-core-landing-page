@@ -1,20 +1,9 @@
-import { studioLocations, type StudioLocation } from "@/lib/studio-locations";
+export type Bilingual = { en: string; ar: string };
 
-export type AboutJumpLink = {
-  label: string;
-  href: "#contact" | "#code-of-honor" | "#mondayteers";
-};
-
+// Legacy types kept for AboutCodeOfHonor.tsx compilation
 export type CodeOfHonorArtKey =
-  | "be-nice"
-  | "powers-for-good"
-  | "try-the-truth"
-  | "enjoy-the-ride"
-  | "speak-up-and-listen"
-  | "solve-the-problem"
-  | "help-each-other"
-  | "team-up";
-
+  | "be-nice" | "powers-for-good" | "try-the-truth" | "enjoy-the-ride"
+  | "speak-up-and-listen" | "solve-the-problem" | "help-each-other" | "team-up";
 export type CodeOfHonorItem = {
   id: string;
   index: string;
@@ -23,160 +12,111 @@ export type CodeOfHonorItem = {
   art: CodeOfHonorArtKey;
 };
 
-export type MondayteerArtKey =
-  | "halo"
-  | "ribbons"
-  | "signals"
-  | "orbit"
-  | "grid"
-  | "beacon";
-
-export type Mondayteer = {
-  name: string;
-  city: string;
-  role: string;
-  art: MondayteerArtKey;
-  accentLabel: string;
+export type ProcessStep = {
+  num: string;
+  title: Bilingual;
+  body: Bilingual;
 };
 
-export const aboutHero = {
-  title: "Who we are",
-  body:
-    "HELLO MONDAY/DEPT is a creative studio that turns digital ideas into warm, memorable experiences. We mix strategy, product thinking, and playful craft so brands can feel sharper, friendlier, and more human wherever they show up.",
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+
+export const aboutHero: { title: Bilingual; body: Bilingual } = {
+  title: { en: "Who we are", ar: "من نحن" },
+  body: {
+    en: "We believe every successful brand starts with a strong core: a clear vision, a distinct personality, and a system that works across every touchpoint. That is where we come in. We combine creative thinking with practical execution to help businesses launch, grow, rebrand, and stand out in competitive markets.",
+    ar: "نؤمن بأن كل علامة تجارية ناجحة تبدأ بجوهر قوي: رؤية واضحة، وشخصية مميزة، ونظام يعمل عبر كل نقطة تواصل. هنا يأتي دورنا. نجمع بين التفكير الإبداعي والتنفيذ العملي لمساعدة الشركات على الإطلاق والنمو وإعادة التسمية والتميز في الأسواق التنافسية.",
+  },
 };
 
-export const aboutJumpLinks: AboutJumpLink[] = [
-  { label: "Contact", href: "#contact" },
-  { label: "Code of Honor", href: "#code-of-honor" },
-  { label: "Mondayteers", href: "#mondayteers" },
-];
+// ─── Who Are We ───────────────────────────────────────────────────────────────
 
-export const aboutLocations: StudioLocation[] = studioLocations.filter((location) =>
-  ["New York", "Copenhagen", "Aarhus"].includes(location.city),
-);
-
-export const codeOfHonorIntro = {
-  eyebrow: "Yes, we have a Code of Honor",
-  title: "Code of Honor",
-  body:
-    "The better the collaboration, the more useful it is to be explicit about how we work together. These eight rules keep the studio kind, ambitious, honest, and fun even when the brief gets messy.",
+export const whoAreWe: {
+  eyebrow: Bilingual;
+  title: Bilingual;
+  body: Bilingual;
+} = {
+  eyebrow: { en: "Our Story", ar: "قصتنا" },
+  title: { en: "Who Are We?", ar: "من نحن؟" },
+  body: {
+    en: "Creative Core is a full-service creative agency founded on the belief that great design is more than aesthetics — it is strategy made visible. We partner with brands across industries to build identities, campaigns, and digital experiences that are rooted in purpose and built to last. From startups finding their voice to established businesses ready to evolve, we bring clarity to complexity and craft to every detail.",
+    ar: "Creative Core وكالة إبداعية متكاملة أُسِّست على الإيمان بأن التصميم الجيد يتجاوز الجماليات — إنه استراتيجية مرئية. نشارك العلامات التجارية في مختلف القطاعات لبناء هويات وحملات وتجارب رقمية متجذّرة في الهدف ومبنية لتدوم. من الشركات الناشئة التي تبحث عن صوتها إلى الشركات الراسخة المستعدة للتطور، نجلب الوضوح للتعقيد والحرفية لكل تفصيلة.",
+  },
 };
 
-export const codeOfHonorItems: CodeOfHonorItem[] = [
-  {
-    id: "be-nice",
-    index: "01",
-    title: "Be nice",
-    body:
-      "Curiosity travels further than ego. We assume good intent, give generous feedback, and remember that a difficult conversation can still be a respectful one.",
-    art: "be-nice",
-  },
-  {
-    id: "powers-for-good",
-    index: "02",
-    title: "Use our powers for good",
-    body:
-      "Creative work changes behavior. We would rather build ideas that help people feel more capable, more informed, or more connected than work that is only clever for five minutes.",
-    art: "powers-for-good",
-  },
-  {
-    id: "try-the-truth",
-    index: "03",
-    title: "Try the truth",
-    body:
-      "Honesty is almost always the fastest route forward. We say what is working, what is not, and what still needs proof, then use that clarity to make better decisions.",
-    art: "try-the-truth",
-  },
-  {
-    id: "enjoy-the-ride",
-    index: "04",
-    title: "Enjoy the ride",
-    body:
-      "Ambition should still leave room for delight. We celebrate progress, stay open to the unexpected, and keep enough humor in the room to survive the hard parts.",
-    art: "enjoy-the-ride",
-  },
-  {
-    id: "speak-up-and-listen",
-    index: "05",
-    title: "Speak up and listen",
-    body:
-      "Strong opinions are useful when they come with equal attention. We bring a point of view, make space for others, and stay willing to change our minds.",
-    art: "speak-up-and-listen",
-  },
-  {
-    id: "solve-the-problem",
-    index: "06",
-    title: "Solve the problem",
-    body:
-      "Pretty surfaces are not enough. We keep asking what the challenge actually is so the final idea feels clear, useful, and worth shipping.",
-    art: "solve-the-problem",
-  },
-  {
-    id: "help-each-other",
-    index: "07",
-    title: "Help each other",
-    body:
-      "The best studios feel like a team sport. We share context early, unblock each other quickly, and make time to support the work beyond our own swim lane.",
-    art: "help-each-other",
-  },
-  {
-    id: "team-up",
-    index: "08",
-    title: "Team up",
-    body:
-      "Our favorite work happens when different disciplines sharpen one another. Strategy, design, motion, writing, and technology all get better when they move together.",
-    art: "team-up",
-  },
-];
+// ─── Why Us ───────────────────────────────────────────────────────────────────
 
-export const mondayteersIntro = {
-  eyebrow: "We are the",
-  title: "Mondayteers",
-  body:
-    "A few dummy studio portraits to make the page feel alive. Each card leans into the app's color system and keeps the editorial energy of the reference without pretending these are real team bios.",
+export const whyUs: {
+  eyebrow: Bilingual;
+  title: Bilingual;
+  body: Bilingual;
+} = {
+  eyebrow: { en: "Why Creative Core", ar: "لماذا Creative Core" },
+  title: { en: "Why Us?", ar: "لماذا نحن؟" },
+  body: {
+    en: "We do not believe in one-size-fits-all branding. Every business has a different story, different audience, and different goals — and your creative work should reflect that. We take the time to understand your brand from the inside out before we ever pick up a pencil. The result is work that feels distinctly yours: intentional, consistent, and built to perform.",
+    ar: "لا نؤمن بنموذج واحد يناسب الجميع في العلامة التجارية. لكل شركة قصة مختلفة وجمهور مختلف وأهداف مختلفة — ويجب أن يعكس عملك الإبداعي ذلك. نأخذ الوقت الكافي لفهم علامتك التجارية من الداخل إلى الخارج قبل أن نرفع القلم. النتيجة عمل يبدو مميزاً بطابعك: مقصود ومتسق ومبني للأداء.",
+  },
 };
 
-export const mondayteers: Mondayteer[] = [
-  {
-    name: "Saskia",
-    city: "Copenhagen",
-    role: "Design Director",
-    art: "halo",
-    accentLabel: "Calm systems",
+// ─── Mission ──────────────────────────────────────────────────────────────────
+
+export const missionSection: {
+  eyebrow: Bilingual;
+  quote: Bilingual;
+} = {
+  eyebrow: { en: "Our Mission", ar: "مهمتنا" },
+  quote: {
+    en: "We exist to give every brand a core worth orbiting.",
+    ar: "نحن هنا لنمنح كل علامة تجارية جوهراً يستحق أن تدور حوله.",
   },
-  {
-    name: "Fallon",
-    city: "New York",
-    role: "Creative Technologist",
-    art: "ribbons",
-    accentLabel: "Prototype wizardry",
+};
+
+// ─── Process ──────────────────────────────────────────────────────────────────
+
+export const processSection: {
+  eyebrow: Bilingual;
+  title: Bilingual;
+  body: Bilingual;
+  steps: ProcessStep[];
+} = {
+  eyebrow: { en: "See the Work", ar: "شاهد الأعمال" },
+  title: { en: "Our Process", ar: "طريقة عملنا" },
+  body: {
+    en: "Every great outcome starts with a clear process. Here is how we turn ambition into execution.",
+    ar: "كل نتيجة رائعة تبدأ بمنهج واضح. هكذا نحوّل الطموح إلى تنفيذ.",
   },
-  {
-    name: "Chelsea",
-    city: "New York",
-    role: "Brand Strategist",
-    art: "signals",
-    accentLabel: "Sharp narratives",
-  },
-  {
-    name: "Mads",
-    city: "Aarhus",
-    role: "Motion Designer",
-    art: "orbit",
-    accentLabel: "Movement studies",
-  },
-  {
-    name: "Noor",
-    city: "Copenhagen",
-    role: "Experience Designer",
-    art: "grid",
-    accentLabel: "System thinker",
-  },
-  {
-    name: "Elias",
-    city: "Amsterdam",
-    role: "Product Designer",
-    art: "beacon",
-    accentLabel: "Interface detail",
-  },
-];
+  steps: [
+    {
+      num: "01",
+      title: { en: "Discover", ar: "الاكتشاف" },
+      body: {
+        en: "We immerse ourselves in your world — your market, competitors, audience, and goals — to uncover what makes your brand worth noticing.",
+        ar: "نغمر أنفسنا في عالمك — سوقك ومنافسيك وجمهورك وأهدافك — لاكتشاف ما يجعل علامتك التجارية تستحق الانتباه.",
+      },
+    },
+    {
+      num: "02",
+      title: { en: "Strategy", ar: "الاستراتيجية" },
+      body: {
+        en: "We build the strategic foundation: positioning, voice, and a creative direction that gives every decision a north star.",
+        ar: "نبني الأساس الاستراتيجي: التموضع والصوت والتوجه الإبداعي الذي يمنح كل قرار نجماً شمالياً.",
+      },
+    },
+    {
+      num: "03",
+      title: { en: "Design", ar: "التصميم" },
+      body: {
+        en: "Strategy becomes form. We craft the visual and verbal systems that carry your brand consistently across every medium.",
+        ar: "تتحوّل الاستراتيجية إلى شكل. نصنع الأنظمة البصرية واللفظية التي تحمل علامتك التجارية باتساق عبر كل وسيلة.",
+      },
+    },
+    {
+      num: "04",
+      title: { en: "Launch", ar: "الإطلاق" },
+      body: {
+        en: "We deliver production-ready assets, guide implementation, and make sure the work lands the way it was designed to.",
+        ar: "نسلّم الأصول الجاهزة للإنتاج ونوجّه التنفيذ ونتأكد من أن العمل ينطلق كما صُمِّم له.",
+      },
+    },
+  ],
+};

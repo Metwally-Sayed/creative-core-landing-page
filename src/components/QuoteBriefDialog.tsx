@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDirection } from "@/hooks/useDirection";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type StepId = "goals" | "scope" | "timeline" | "contact";
 type ContactMethod = "email" | "phone" | "whatsapp" | "";
@@ -51,68 +54,56 @@ type StepItem = {
   description: string;
 };
 
-function useStepItems(t: ReturnType<typeof useTranslations<"quote">>): StepItem[] {
-  return [
-    {
-      id: "goals",
-      index: "01",
-      label: t("step01Label"),
-      title: t("step01Title"),
-      description: t("step01Description"),
-    },
-    {
-      id: "scope",
-      index: "02",
-      label: t("step02Label"),
-      title: t("step02Title"),
-      description: t("step02Description"),
-    },
-    {
-      id: "timeline",
-      index: "03",
-      label: t("step03Label"),
-      title: t("step03Title"),
-      description: t("step03Description"),
-    },
-    {
-      id: "contact",
-      index: "04",
-      label: t("step04Label"),
-      title: t("step04Title"),
-      description: t("step04Description"),
-    },
-  ];
-}
+// ─── Option maps (value → translation key) ───────────────────────────────────
 
-const GOAL_OPTIONS = [
-  "Product Design",
-  "Brand Refresh",
-  "Website Launch",
-  "Campaign Experience",
-  "Design System",
-] as const;
+const GOAL_OPTIONS: { value: string; tKey: string }[] = [
+  { value: "Product Design",      tKey: "goalProductDesign" },
+  { value: "Brand Refresh",       tKey: "goalBrandRefresh" },
+  { value: "Website Launch",      tKey: "goalWebsiteLaunch" },
+  { value: "Campaign Experience", tKey: "goalCampaignExperience" },
+  { value: "Design System",       tKey: "goalDesignSystem" },
+];
 
-const SERVICE_OPTIONS = [
-  "Strategy",
-  "Branding",
-  "Web Design",
-  "Development",
-  "Content",
-  "Motion",
-] as const;
+const SERVICE_OPTIONS: { value: string; tKey: string }[] = [
+  { value: "Strategy",    tKey: "serviceStrategy" },
+  { value: "Branding",    tKey: "serviceBranding" },
+  { value: "Web Design",  tKey: "serviceWebDesign" },
+  { value: "Development", tKey: "serviceDevelopment" },
+  { value: "Content",     tKey: "serviceContent" },
+  { value: "Motion",      tKey: "serviceMotion" },
+];
 
-const DELIVERABLE_OPTIONS = [
-  "Landing Page",
-  "Prototype",
-  "Visual Identity",
-  "Motion Toolkit",
-  "Design System",
-  "Launch Assets",
-] as const;
+const DELIVERABLE_OPTIONS: { value: string; tKey: string }[] = [
+  { value: "Landing Page",     tKey: "deliverableLandingPage" },
+  { value: "Prototype",        tKey: "deliverablePrototype" },
+  { value: "Visual Identity",  tKey: "deliverableVisualIdentity" },
+  { value: "Motion Toolkit",   tKey: "deliverableMotionToolkit" },
+  { value: "Design System",    tKey: "deliverableDesignSystem" },
+  { value: "Launch Assets",    tKey: "deliverableLaunchAssets" },
+];
 
-const TIMELINE_OPTIONS = ["2-3 weeks", "4-6 weeks", "6-10 weeks", "Flexible"] as const;
-const BUDGET_OPTIONS = ["< $5k", "$5-15k", "$15-30k", "$30k+", "Not sure"] as const;
-const CONTACT_OPTIONS = ["email", "phone", "whatsapp"] as const;
+const TIMELINE_OPTIONS: { value: string; tKey: string }[] = [
+  { value: "2-3 weeks",  tKey: "timelineTwoThree" },
+  { value: "4-6 weeks",  tKey: "timelineFourSix" },
+  { value: "6-10 weeks", tKey: "timelineSixTen" },
+  { value: "Flexible",   tKey: "timelineFlexible" },
+];
+
+const BUDGET_OPTIONS: { value: string; tKey: string }[] = [
+  { value: "< $5k",    tKey: "budgetUnder5k" },
+  { value: "$5-15k",   tKey: "budget5_15k" },
+  { value: "$15-30k",  tKey: "budget15_30k" },
+  { value: "$30k+",    tKey: "budgetOver30k" },
+  { value: "Not sure", tKey: "budgetNotSure" },
+];
+
+const CONTACT_OPTIONS: { value: ContactMethod; tKey: string }[] = [
+  { value: "email",    tKey: "contactEmail" },
+  { value: "phone",    tKey: "contactPhone" },
+  { value: "whatsapp", tKey: "contactWhatsapp" },
+];
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const INITIAL_DATA: BriefData = {
   goals: [],
@@ -131,29 +122,34 @@ const INITIAL_DATA: BriefData = {
 const STEP_ORDER: StepId[] = ["goals", "scope", "timeline", "contact"];
 const TRANSITION_EASE = [0.22, 1, 0.36, 1] as const;
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function toggleValue(items: string[], value: string) {
-  if (items.includes(value)) {
-    return items.filter((entry) => entry !== value);
-  }
-
-  return [...items, value];
+  return items.includes(value)
+    ? items.filter((e) => e !== value)
+    : [...items, value];
 }
 
-function formatList(items: string[]) {
-  if (items.length === 0) {
-    return "Not selected";
-  }
-
-  return items.join(", ");
+function formatList(items: string[], notSelectedText: string) {
+  return items.length === 0 ? notSelectedText : items.join(", ");
 }
+
+function useStepItems(t: ReturnType<typeof useTranslations<"quote">>): StepItem[] {
+  return [
+    { id: "goals",    index: "01", label: t("step01Label"), title: t("step01Title"), description: t("step01Description") },
+    { id: "scope",    index: "02", label: t("step02Label"), title: t("step02Title"), description: t("step02Description") },
+    { id: "timeline", index: "03", label: t("step03Label"), title: t("step03Title"), description: t("step03Description") },
+    { id: "contact",  index: "04", label: t("step04Label"), title: t("step04Title"), description: t("step04Description") },
+  ];
+}
+
+// ─── StepChip ─────────────────────────────────────────────────────────────────
 
 function StepChip({
   active = false,
   className,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  active?: boolean;
-}) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
   return (
     <button
       type="button"
@@ -163,61 +159,49 @@ function StepChip({
         active
           ? "border-transparent bg-[hsl(var(--primary))] text-white shadow-[var(--shadow-soft)]"
           : "border-[hsl(var(--border))]/60 bg-white/78 text-[hsl(var(--foreground))]/85 hover:bg-white",
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function SummaryCard({
-  data,
-  copied,
-  onCopy,
-}: {
-  data: BriefData;
-  copied: boolean;
-  onCopy: () => void;
-}) {
+// ─── SummaryCard ──────────────────────────────────────────────────────────────
+
+function SummaryCard({ data, copied, onCopy }: { data: BriefData; copied: boolean; onCopy: () => void }) {
+  const t = useTranslations("quote");
+  const notSelected = t("notSelected");
+
   return (
     <div className="site-card space-y-4 border-white/70 bg-white/82 p-4 md:p-5">
       <div>
-        <p className="eyebrow">Live Summary</p>
+        <p className="eyebrow">{t("liveSummaryEyebrow")}</p>
         <h4 className="mt-2 text-[28px] leading-[1.05] text-[hsl(var(--primary))]">
-          Quote Snapshot
+          {t("summaryHeading")}
         </h4>
       </div>
 
       <div className="site-divider" />
 
       <dl className="space-y-3 text-sm">
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Goals</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">{formatList(data.goals)}</dd>
-        </div>
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Services</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">{formatList(data.services)}</dd>
-        </div>
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Deliverables</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">{formatList(data.deliverables)}</dd>
-        </div>
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Timeline</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">{data.timeline || "Not selected"}</dd>
-        </div>
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Budget</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">{data.budget || "Not selected"}</dd>
-        </div>
-        <div>
-          <dt className="text-[hsl(var(--muted-foreground))]">Contact</dt>
-          <dd className="text-[hsl(var(--foreground))]/85">
-            {data.email || "No contact yet"}
-            {data.name ? ` (${data.name})` : ""}
-          </dd>
-        </div>
+        {[
+          { label: t("summaryGoals"),       value: formatList(data.goals, notSelected) },
+          { label: t("summaryServices"),    value: formatList(data.services, notSelected) },
+          { label: t("summaryDeliverables"),value: formatList(data.deliverables, notSelected) },
+          { label: t("summaryTimeline"),    value: data.timeline || notSelected },
+          { label: t("summaryBudget"),      value: data.budget || notSelected },
+          {
+            label: t("summaryContact"),
+            value: data.email
+              ? `${data.email}${data.name ? ` (${data.name})` : ""}`
+              : t("noContactYet"),
+          },
+        ].map(({ label, value }) => (
+          <div key={label}>
+            <dt className="text-[hsl(var(--muted-foreground))]">{label}</dt>
+            <dd className="text-[hsl(var(--foreground))]/85">{value}</dd>
+          </div>
+        ))}
       </dl>
 
       <Button
@@ -227,36 +211,32 @@ function SummaryCard({
         onClick={onCopy}
       >
         <Copy className="h-4 w-4" />
-        {copied ? "Copied" : "Copy Brief"}
+        {copied ? t("copied") : t("copyBrief")}
       </Button>
     </div>
   );
 }
 
-function GoalsStep({
-  data,
-  onUpdate,
-}: {
-  data: BriefData;
-  onUpdate: Dispatch<SetStateAction<BriefData>>;
-}) {
+// ─── GoalsStep ────────────────────────────────────────────────────────────────
+
+function GoalsStep({ data, onUpdate }: { data: BriefData; onUpdate: Dispatch<SetStateAction<BriefData>> }) {
+  const t = useTranslations("quote");
+
   return (
     <div className="space-y-4">
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Goal Focus
+          {t("goalFocusHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Select one or more outcomes for this project.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("goalFocusBody")}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {GOAL_OPTIONS.map((goal) => (
+          {GOAL_OPTIONS.map((opt) => (
             <StepChip
-              key={goal}
-              active={data.goals.includes(goal)}
-              onClick={() => onUpdate((prev) => ({ ...prev, goals: toggleValue(prev.goals, goal) }))}
+              key={opt.value}
+              active={data.goals.includes(opt.value)}
+              onClick={() => onUpdate((prev) => ({ ...prev, goals: toggleValue(prev.goals, opt.value) }))}
             >
-              {goal}
+              {t(opt.tKey as Parameters<typeof t>[0])}
             </StepChip>
           ))}
         </div>
@@ -264,16 +244,14 @@ function GoalsStep({
 
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Project Context
+          {t("projectContextHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Share the audience, challenge, or launch context behind the request.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("projectContextBody")}</p>
         <Textarea
           rows={4}
           value={data.context}
-          onChange={(event) => onUpdate((prev) => ({ ...prev, context: event.target.value }))}
-          placeholder="We need a premium launch site for a new product line..."
+          onChange={(e) => onUpdate((prev) => ({ ...prev, context: e.target.value }))}
+          placeholder={t("projectContextPlaceholder")}
           className="mt-3 resize-none rounded-2xl border-[hsl(var(--border))]/70 bg-white/78 placeholder:text-[hsl(var(--muted-foreground))]"
         />
       </section>
@@ -281,40 +259,35 @@ function GoalsStep({
   );
 }
 
-function ScopeStep({
-  data,
-  onUpdate,
-}: {
-  data: BriefData;
-  onUpdate: Dispatch<SetStateAction<BriefData>>;
-}) {
+// ─── ScopeStep ────────────────────────────────────────────────────────────────
+
+function ScopeStep({ data, onUpdate }: { data: BriefData; onUpdate: Dispatch<SetStateAction<BriefData>> }) {
+  const t = useTranslations("quote");
+
   return (
     <div className="space-y-4">
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Services
+          {t("servicesHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Choose the service lanes you want included in the quote.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("servicesBody")}</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {SERVICE_OPTIONS.map((service) => {
-            const active = data.services.includes(service);
-
+          {SERVICE_OPTIONS.map((opt) => {
+            const active = data.services.includes(opt.value);
             return (
               <button
-                key={service}
+                key={opt.value}
                 type="button"
-                onClick={() => onUpdate((prev) => ({ ...prev, services: toggleValue(prev.services, service) }))}
+                onClick={() => onUpdate((prev) => ({ ...prev, services: toggleValue(prev.services, opt.value) }))}
                 className={cn(
-                  "rounded-[1.3rem] border p-3 text-left transition-all",
+                  "rounded-[1.3rem] border p-3 text-start transition-all",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active
                     ? "border-transparent bg-[hsl(var(--primary))] text-white shadow-[var(--shadow-soft)]"
-                    : "border-[hsl(var(--border))]/60 bg-white/78 text-[hsl(var(--foreground))] hover:bg-white"
+                    : "border-[hsl(var(--border))]/60 bg-white/78 text-[hsl(var(--foreground))] hover:bg-white",
                 )}
               >
-                <span className="text-sm font-medium">{service}</span>
+                <span className="text-sm font-medium">{t(opt.tKey as Parameters<typeof t>[0])}</span>
               </button>
             );
           })}
@@ -323,24 +296,17 @@ function ScopeStep({
 
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Deliverables
+          {t("deliverablesHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Select the outputs you expect from this engagement.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("deliverablesBody")}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {DELIVERABLE_OPTIONS.map((deliverable) => (
+          {DELIVERABLE_OPTIONS.map((opt) => (
             <StepChip
-              key={deliverable}
-              active={data.deliverables.includes(deliverable)}
-              onClick={() =>
-                onUpdate((prev) => ({
-                  ...prev,
-                  deliverables: toggleValue(prev.deliverables, deliverable),
-                }))
-              }
+              key={opt.value}
+              active={data.deliverables.includes(opt.value)}
+              onClick={() => onUpdate((prev) => ({ ...prev, deliverables: toggleValue(prev.deliverables, opt.value) }))}
             >
-              {deliverable}
+              {t(opt.tKey as Parameters<typeof t>[0])}
             </StepChip>
           ))}
         </div>
@@ -349,30 +315,26 @@ function ScopeStep({
   );
 }
 
-function TimelineStep({
-  data,
-  onUpdate,
-}: {
-  data: BriefData;
-  onUpdate: Dispatch<SetStateAction<BriefData>>;
-}) {
+// ─── TimelineStep ─────────────────────────────────────────────────────────────
+
+function TimelineStep({ data, onUpdate }: { data: BriefData; onUpdate: Dispatch<SetStateAction<BriefData>> }) {
+  const t = useTranslations("quote");
+
   return (
     <div className="space-y-4">
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Timeline
+          {t("timelineHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Pick the rough delivery window you have in mind.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("timelineBody")}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {TIMELINE_OPTIONS.map((option) => (
+          {TIMELINE_OPTIONS.map((opt) => (
             <StepChip
-              key={option}
-              active={data.timeline === option}
-              onClick={() => onUpdate((prev) => ({ ...prev, timeline: option }))}
+              key={opt.value}
+              active={data.timeline === opt.value}
+              onClick={() => onUpdate((prev) => ({ ...prev, timeline: opt.value }))}
             >
-              {option}
+              {t(opt.tKey as Parameters<typeof t>[0])}
             </StepChip>
           ))}
         </div>
@@ -380,33 +342,33 @@ function TimelineStep({
 
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Budget Signal
+          {t("budgetHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          Optional, but useful for keeping the proposal realistic.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("budgetBody")}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {BUDGET_OPTIONS.map((option) => (
+          {BUDGET_OPTIONS.map((opt) => (
             <StepChip
-              key={option}
-              active={data.budget === option}
-              onClick={() => onUpdate((prev) => ({ ...prev, budget: option }))}
+              key={opt.value}
+              active={data.budget === opt.value}
+              onClick={() => onUpdate((prev) => ({ ...prev, budget: opt.value }))}
             >
-              {option}
+              {t(opt.tKey as Parameters<typeof t>[0])}
             </StepChip>
           ))}
         </div>
         <Textarea
           rows={3}
           value={data.notes}
-          onChange={(event) => onUpdate((prev) => ({ ...prev, notes: event.target.value }))}
-          placeholder="Launch dates, constraints, markets, or extra notes..."
+          onChange={(e) => onUpdate((prev) => ({ ...prev, notes: e.target.value }))}
+          placeholder={t("budgetPlaceholder")}
           className="mt-3 resize-none rounded-2xl border-[hsl(var(--border))]/70 bg-white/78 placeholder:text-[hsl(var(--muted-foreground))]"
         />
       </section>
     </div>
   );
 }
+
+// ─── ContactStep ──────────────────────────────────────────────────────────────
 
 function ContactStep({
   data,
@@ -421,40 +383,41 @@ function ContactStep({
   onSubmit: () => void;
   isSubmitting: boolean;
 }) {
+  const t = useTranslations("quote");
+
   return (
     <div className="space-y-4">
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Contact Details
+          {t("contactDetailsHeading")}
         </h5>
-        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-          We will prefill an email draft so your team can review it before sending.
-        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{t("contactDetailsBody")}</p>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <label className="space-y-1.5">
             <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
-              Name
+              {t("nameLabel")}
             </span>
             <Input
               value={data.name}
-              onChange={(event) => onUpdate((prev) => ({ ...prev, name: event.target.value }))}
-              placeholder="Your name"
+              onChange={(e) => onUpdate((prev) => ({ ...prev, name: e.target.value }))}
+              placeholder={t("namePlaceholder")}
               className="h-11 rounded-2xl border-[hsl(var(--border))]/70 bg-white/78"
             />
           </label>
 
           <label className="space-y-1.5">
             <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
-              Email
+              {t("emailLabel")}
             </span>
             <Input
+              type="email"
               value={data.email}
-              onChange={(event) => onUpdate((prev) => ({ ...prev, email: event.target.value }))}
-              placeholder="you@company.com"
+              onChange={(e) => onUpdate((prev) => ({ ...prev, email: e.target.value }))}
+              placeholder={t("emailPlaceholder")}
               className={cn(
                 "h-11 rounded-2xl border-[hsl(var(--border))]/70 bg-white/78",
-                emailError ? "border-red-400 ring-2 ring-red-200" : ""
+                emailError ? "border-red-400 ring-2 ring-red-200" : "",
               )}
             />
             {emailError ? <p className="text-xs text-red-500">{emailError}</p> : null}
@@ -462,12 +425,12 @@ function ContactStep({
 
           <label className="space-y-1.5 sm:col-span-2">
             <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
-              Company
+              {t("companyLabel")}
             </span>
             <Input
               value={data.company}
-              onChange={(event) => onUpdate((prev) => ({ ...prev, company: event.target.value }))}
-              placeholder="Company name"
+              onChange={(e) => onUpdate((prev) => ({ ...prev, company: e.target.value }))}
+              placeholder={t("companyPlaceholder")}
               className="h-11 rounded-2xl border-[hsl(var(--border))]/70 bg-white/78"
             />
           </label>
@@ -476,16 +439,16 @@ function ContactStep({
 
       <section className="site-card-solid p-4 md:p-5">
         <h5 className="text-base font-medium text-[hsl(var(--foreground))] md:text-lg">
-          Preferred Contact
+          {t("preferredContactHeading")}
         </h5>
         <div className="mt-3 flex flex-wrap gap-2">
-          {CONTACT_OPTIONS.map((option) => (
+          {CONTACT_OPTIONS.map((opt) => (
             <StepChip
-              key={option}
-              active={data.contactMethod === option}
-              onClick={() => onUpdate((prev) => ({ ...prev, contactMethod: option }))}
+              key={opt.value}
+              active={data.contactMethod === opt.value}
+              onClick={() => onUpdate((prev) => ({ ...prev, contactMethod: opt.value }))}
             >
-              {option}
+              {t(opt.tKey as Parameters<typeof t>[0])}
             </StepChip>
           ))}
         </div>
@@ -500,12 +463,12 @@ function ContactStep({
         {isSubmitting ? (
           <>
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            Preparing draft...
+            {t("submittingLabel")}
           </>
         ) : (
           <>
             <Mail className="h-4 w-4" />
-            Submit Brief
+            {t("submitButton")}
           </>
         )}
       </Button>
@@ -513,15 +476,14 @@ function ContactStep({
   );
 }
 
+// ─── Main dialog ──────────────────────────────────────────────────────────────
+
 export interface QuoteBriefDialogProps {
   triggerLabel?: string;
   triggerClassName?: string;
 }
 
-export default function QuoteBriefDialog({
-  triggerLabel = "Get Quote",
-  triggerClassName,
-}: QuoteBriefDialogProps) {
+export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: QuoteBriefDialogProps) {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState<StepId>("goals");
   const [data, setData] = useState<BriefData>(INITIAL_DATA);
@@ -531,18 +493,26 @@ export default function QuoteBriefDialog({
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const t = useTranslations("quote");
+  const tCommon = useTranslations("common");
+  const dir = useDirection();
   const STEP_ITEMS = useStepItems(t);
 
   const activeIndex = STEP_ORDER.indexOf(activeStep);
   const activeItem = STEP_ITEMS.find((item) => item.id === activeStep) ?? STEP_ITEMS[0];
 
+  const label = triggerLabel ?? tCommon("getQuote");
+
+  // Back / Next chevron direction respects RTL
+  const BackIcon  = dir === -1 ? ChevronRight : ChevronLeft;
+  const NextIcon  = dir === -1 ? ChevronLeft  : ChevronRight;
+
   const summaryText = useMemo(() => {
     return [
       "Hello Monday Quote Request",
-      `Goals: ${formatList(data.goals)}`,
+      `Goals: ${formatList(data.goals, "Not selected")}`,
       `Context: ${data.context || "Not provided"}`,
-      `Services: ${formatList(data.services)}`,
-      `Deliverables: ${formatList(data.deliverables)}`,
+      `Services: ${formatList(data.services, "Not selected")}`,
+      `Deliverables: ${formatList(data.deliverables, "Not selected")}`,
       `Timeline: ${data.timeline || "Not selected"}`,
       `Budget: ${data.budget || "Not selected"}`,
       `Notes: ${data.notes || "None"}`,
@@ -552,6 +522,16 @@ export default function QuoteBriefDialog({
       `Preferred Contact: ${data.contactMethod || "Not selected"}`,
     ].join("\n");
   }, [data]);
+
+  const hasData =
+    data.goals.length > 0 ||
+    data.context !== "" ||
+    data.services.length > 0 ||
+    data.deliverables.length > 0 ||
+    data.timeline !== "" ||
+    data.company !== "" ||
+    data.contactMethod !== "" ||
+    data.email !== "";
 
   const resetDialog = () => {
     setActiveStep("goals");
@@ -564,9 +544,7 @@ export default function QuoteBriefDialog({
 
   const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
-    if (!nextOpen) {
-      resetDialog();
-    }
+    if (!nextOpen) resetDialog();
   };
 
   const handleCopy = async () => {
@@ -582,18 +560,15 @@ export default function QuoteBriefDialog({
   const handleSubmit = async () => {
     const email = data.email.trim();
     if (!email) {
-      setEmailError("Email is required.");
+      setEmailError(t("emailError"));
       return;
     }
-
     setEmailError("");
     setIsSubmitting(true);
 
     try {
       await navigator.clipboard.writeText(summaryText);
-    } catch {
-      // Best-effort clipboard support only.
-    }
+    } catch { /* best-effort */ }
 
     const subject = encodeURIComponent(
       `Quote Request${data.company ? ` - ${data.company}` : data.name ? ` - ${data.name}` : ""}`
@@ -608,40 +583,19 @@ export default function QuoteBriefDialog({
   };
 
   const goBack = () => {
-    if (activeIndex <= 0) {
-      return;
-    }
-
-    const previousStep = STEP_ORDER[activeIndex - 1];
-    if (previousStep) {
-      setActiveStep(previousStep);
-    }
+    const prev = STEP_ORDER[activeIndex - 1];
+    if (prev) setActiveStep(prev);
   };
 
   const goNext = () => {
-    if (activeIndex >= STEP_ORDER.length - 1) {
-      return;
-    }
-
-    const nextStep = STEP_ORDER[activeIndex + 1];
-    if (nextStep) {
-      setActiveStep(nextStep);
-    }
+    const next = STEP_ORDER[activeIndex + 1];
+    if (next) setActiveStep(next);
   };
 
   const renderStepContent = () => {
-    if (activeStep === "goals") {
-      return <GoalsStep data={data} onUpdate={setData} />;
-    }
-
-    if (activeStep === "scope") {
-      return <ScopeStep data={data} onUpdate={setData} />;
-    }
-
-    if (activeStep === "timeline") {
-      return <TimelineStep data={data} onUpdate={setData} />;
-    }
-
+    if (activeStep === "goals")    return <GoalsStep    data={data} onUpdate={setData} />;
+    if (activeStep === "scope")    return <ScopeStep    data={data} onUpdate={setData} />;
+    if (activeStep === "timeline") return <TimelineStep data={data} onUpdate={setData} />;
     return (
       <ContactStep
         data={data}
@@ -657,79 +611,66 @@ export default function QuoteBriefDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <button type="button" className={cn("btn-primary", triggerClassName)}>
-          {triggerLabel}
+          {label}
         </button>
       </DialogTrigger>
+
       <DialogContent
+        dir={dir === -1 ? "rtl" : "ltr"}
         showCloseButton={false}
         className="w-[calc(100vw-1.5rem)] sm:w-full !max-w-[1040px] overflow-hidden rounded-[2rem] border border-[hsl(var(--border))]/45 bg-[hsl(var(--background))]/96 p-0 shadow-[var(--shadow-float)] backdrop-blur-2xl"
         onInteractOutside={(e) => {
-          const hasData =
-            data.goals.length > 0 ||
-            data.context !== "" ||
-            data.services.length > 0 ||
-            data.deliverables.length > 0 ||
-            data.timeline !== "" ||
-            data.company !== "" ||
-            data.contactMethod !== "" ||
-            data.email !== "";
-
           if (hasData) {
-            const confirmDiscard = window.confirm(
-              "Are you sure you want to close? Your quote request progress will be lost."
-            );
-            if (!confirmDiscard) {
-              e.preventDefault();
-            }
+            const confirmDiscard = window.confirm(t("discardConfirm"));
+            if (!confirmDiscard) e.preventDefault();
           }
         }}
       >
-        <DialogTitle className="sr-only">Get a Quote</DialogTitle>
-        <DialogDescription className="sr-only">
-          Multi-step project brief builder used to prepare a quote request.
-        </DialogDescription>
+        <DialogTitle className="sr-only">{t("dialogTitle")}</DialogTitle>
+        <DialogDescription className="sr-only">{t("dialogDescription")}</DialogDescription>
 
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(157,172,255,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,181,123,0.16),transparent_28%)]" />
 
         <div className="relative p-4 md:p-6">
+          {/* Header */}
           <header className="mb-5 border-b border-[hsl(var(--border))]/55 pb-4 md:mb-6 md:pb-5">
-            <p className="eyebrow">Hello Monday</p>
+            <p className="eyebrow">{t("brandEyebrow")}</p>
             <h3 className="mt-2 text-[34px] leading-[1.06] text-[hsl(var(--primary))] md:text-[46px]">
-              Get a Quote
+              {t("dialogTitle")}
             </h3>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[hsl(var(--foreground))]/80 md:text-base">
-              Shape a project brief in four short steps. On submit, we open a
-              prefilled email draft to `newbusiness@hellomonday.com`.
+              {t("headerIntro")}
             </p>
 
             <DialogClose asChild>
               <button
                 type="button"
-                aria-label="Close quote dialog"
-                className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(var(--border))]/60 bg-white/82 text-[hsl(var(--foreground))]/75 transition-colors hover:text-[hsl(var(--primary))]"
+                aria-label={t("closeAriaLabel")}
+                className="absolute end-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(var(--border))]/60 bg-white/82 text-[hsl(var(--foreground))]/75 transition-colors hover:text-[hsl(var(--primary))]"
               >
                 <X className="h-4 w-4" />
               </button>
             </DialogClose>
           </header>
 
+          {/* Body grid */}
           <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)_280px] lg:gap-5">
+            {/* Desktop step nav */}
             <aside className="hidden lg:block">
-              <nav aria-label="Quote steps" className="space-y-2">
+              <nav aria-label={t("quoteStepsNavLabel")} className="space-y-2">
                 {STEP_ITEMS.map((step) => {
                   const active = step.id === activeStep;
-
                   return (
                     <button
                       key={step.id}
                       type="button"
                       onClick={() => setActiveStep(step.id)}
                       className={cn(
-                        "w-full rounded-[1.4rem] border p-3 text-left transition-all",
+                        "w-full rounded-[1.4rem] border p-3 text-start transition-all",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         active
                           ? "border-transparent bg-[hsl(var(--primary))] text-white shadow-[var(--shadow-soft)]"
-                          : "border-[hsl(var(--border))]/60 bg-white/80 text-[hsl(var(--foreground))] hover:bg-white"
+                          : "border-[hsl(var(--border))]/60 bg-white/80 text-[hsl(var(--foreground))] hover:bg-white",
                       )}
                     >
                       <p className={cn("text-xs font-medium uppercase tracking-[0.14em]", active ? "text-white/65" : "text-[hsl(var(--muted-foreground))]")}>
@@ -742,7 +683,9 @@ export default function QuoteBriefDialog({
               </nav>
             </aside>
 
+            {/* Main content */}
             <main className="space-y-4">
+              {/* Mobile chip row */}
               <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
                 {STEP_ITEMS.map((step) => (
                   <StepChip
@@ -756,9 +699,10 @@ export default function QuoteBriefDialog({
                 ))}
               </div>
 
+              {/* Step header */}
               <section className="site-card-solid space-y-2 p-4 md:p-5">
                 <p className="eyebrow">
-                  Step {activeItem.index} of 0{STEP_ITEMS.length}
+                  {t("stepIndicator", { index: activeItem.index })}
                 </p>
                 <h4 className="text-[30px] leading-[1.06] text-[hsl(var(--primary))] md:text-[36px]">
                   {activeItem.title}
@@ -768,6 +712,7 @@ export default function QuoteBriefDialog({
                 </p>
               </section>
 
+              {/* Animated step body */}
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={activeStep}
@@ -780,6 +725,7 @@ export default function QuoteBriefDialog({
                 </motion.div>
               </AnimatePresence>
 
+              {/* Back / Next */}
               <div className="flex items-center justify-between gap-2">
                 <Button
                   type="button"
@@ -788,8 +734,8 @@ export default function QuoteBriefDialog({
                   onClick={goBack}
                   disabled={activeIndex === 0}
                 >
-                  <ChevronLeft className="h-4 w-4" />
-                  Back
+                  <BackIcon className="h-4 w-4" />
+                  {t("backButton")}
                 </Button>
 
                 {activeStep !== "contact" ? (
@@ -798,8 +744,8 @@ export default function QuoteBriefDialog({
                     className="rounded-2xl bg-[hsl(var(--secondary))] px-5 text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--secondary))]/90"
                     onClick={goNext}
                   >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
+                    {t("nextButton")}
+                    <NextIcon className="h-4 w-4" />
                   </Button>
                 ) : null}
               </div>
@@ -807,11 +753,12 @@ export default function QuoteBriefDialog({
               {submitSuccess ? (
                 <div className="inline-flex items-center gap-2 rounded-xl border border-[hsl(var(--border))]/60 bg-white/80 px-3 py-2 text-sm text-[hsl(var(--foreground))]/85">
                   <CheckCircle2 className="h-4 w-4 text-[hsl(var(--secondary))]" />
-                  <span>Email draft opened. The brief was also copied to your clipboard.</span>
+                  <span>{t("successMessage")}</span>
                 </div>
               ) : null}
             </main>
 
+            {/* Desktop summary */}
             <aside className="hidden lg:block">
               <div className="sticky top-3">
                 <SummaryCard data={data} copied={copied} onCopy={handleCopy} />
@@ -819,10 +766,11 @@ export default function QuoteBriefDialog({
             </aside>
           </div>
 
+          {/* Mobile summary accordion */}
           <div className="mt-4 lg:hidden">
             <details className="site-card border-white/70 bg-white/80 p-4">
               <summary className="cursor-pointer list-none text-sm font-medium text-[hsl(var(--foreground))]">
-                Review Summary
+                {t("reviewSummary")}
               </summary>
               <div className="mt-3">
                 <SummaryCard data={data} copied={copied} onCopy={handleCopy} />

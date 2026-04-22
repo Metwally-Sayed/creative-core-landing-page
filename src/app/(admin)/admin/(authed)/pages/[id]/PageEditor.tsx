@@ -25,6 +25,7 @@ import type { PageFullDb, PageSectionInput, SectionType } from "@/lib/page-data"
 
 const SECTION_TYPES: SectionType[] = [
   "hero",
+  "what_we_do",
   "text_image",
   "projects_grid",
   "faq",

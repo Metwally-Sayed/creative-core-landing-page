@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { updateSettings } from "./actions";
 import type { SiteSettings } from "@/lib/page-data";
+import LogoPicker from "@/components/admin/LogoPicker";
 
 interface Props {
   initialSettings: SiteSettings;
@@ -10,6 +11,9 @@ interface Props {
 
 export default function SettingsForm({ initialSettings }: Props) {
   const [form, setForm] = useState<Omit<SiteSettings, "id">>({
+    logo_url: initialSettings.logo_url,
+    logo_dark_url: initialSettings.logo_dark_url,
+    logo_icon_url: initialSettings.logo_icon_url,
     site_name: initialSettings.site_name,
     tagline: initialSettings.tagline,
     contact_email: initialSettings.contact_email,
@@ -62,10 +66,33 @@ export default function SettingsForm({ initialSettings }: Props) {
 
   return (
     <div className="max-w-2xl space-y-8">
-      <section className="space-y-4">
+      <section className="space-y-6">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
           Site Identity
         </h2>
+
+        <div className="grid gap-6 sm:grid-cols-3">
+          <LogoPicker
+            label="Primary Logo"
+            description="On light backgrounds (header)"
+            value={form.logo_url}
+            onChange={(url) => setForm((p) => ({ ...p, logo_url: url }))}
+          />
+          <LogoPicker
+            label="Logo on Dark"
+            description="On dark backgrounds (footer, menu)"
+            value={form.logo_dark_url}
+            onChange={(url) => setForm((p) => ({ ...p, logo_dark_url: url }))}
+            darkPreview
+          />
+          <LogoPicker
+            label="Logo Icon / Mark"
+            description="Compact icon or brandmark"
+            value={form.logo_icon_url}
+            onChange={(url) => setForm((p) => ({ ...p, logo_icon_url: url }))}
+          />
+        </div>
+
         {field("site_name", "Site Name")}
         {field("tagline", "Tagline")}
       </section>

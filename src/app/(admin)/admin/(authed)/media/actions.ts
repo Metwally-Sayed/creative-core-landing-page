@@ -9,6 +9,7 @@ import {
   type MediaAsset,
   type MediaAssetPatch,
   MAX_FILE_SIZES,
+  MEDIA_PAGE_SIZE,
 } from "@/lib/media-types";
 
 function isPrivateIp(ip: string): boolean {
@@ -34,24 +35,57 @@ function isPrivateIp(ip: string): boolean {
   return false;
 }
 
-export async function listMediaAssets(
-  filter?: { fileType?: string }
-): Promise<MediaAsset[]> {
+export async function listMediaAssets(filter?: {
+  fileType?: string;
+  page?: number;
+  search?: string;
+}): Promise<MediaAsset[]> {
   const session = await auth();
   if (!session) throw new Error("UNAUTHORIZED");
+
+  const page = filter?.page ?? 1;
+  const from = (page - 1) * MEDIA_PAGE_SIZE;
+  const to = from + MEDIA_PAGE_SIZE - 1;
 
   let query = supabase
     .from("media_assets")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   if (filter?.fileType && filter.fileType !== "all") {
     query = query.eq("file_type", filter.fileType);
+  }
+  if (filter?.search) {
+    query = query.ilike("title", `%${filter.search}%`);
   }
 
   const { data, error } = await query;
   if (error) throw new Error(`Failed to list assets: ${error.message}`);
   return (data ?? []) as MediaAsset[];
+}
+
+export async function countMediaAssets(filter?: {
+  fileType?: string;
+  search?: string;
+}): Promise<number> {
+  const session = await auth();
+  if (!session) throw new Error("UNAUTHORIZED");
+
+  let query = supabase
+    .from("media_assets")
+    .select("id", { count: "exact", head: true });
+
+  if (filter?.fileType && filter.fileType !== "all") {
+    query = query.eq("file_type", filter.fileType);
+  }
+  if (filter?.search) {
+    query = query.ilike("title", `%${filter.search}%`);
+  }
+
+  const { count, error } = await query;
+  if (error) throw new Error(`Failed to count assets: ${error.message}`);
+  return count ?? 0;
 }
 
 export async function getSignedUploadUrl(

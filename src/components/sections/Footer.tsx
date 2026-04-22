@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl';
 import type { Location } from '@/lib/locations-data';
 import type { SiteSettings } from "@/lib/page-data";
 import LocaleSwitch from '@/components/LocaleSwitch';
+import BrandLogo from '@/components/BrandLogo';
 
 interface ContactItem {
   label: string;
@@ -191,38 +192,20 @@ export default function Footer({
       >
         <div className="site-shell max-w-[1240px] mx-auto px-0 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
-            {/* Logo/Illustration */}
-            <div className="lg:col-span-4 flex items-center justify-center lg:items-start lg:pt-8 text-[color:var(--footer-fg)]">
+            {/* Logo */}
+            <div className="lg:col-span-4 flex items-center justify-center lg:items-start lg:pt-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <svg
-                viewBox="0 0 120 140"
-                className="w-24 h-auto"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {/* Person at computer illustration */}
-                <ellipse cx="60" cy="25" rx="15" ry="18" />
-                <path d="M45 20 Q45 5 60 5 Q75 5 75 20" fill="hsl(var(--secondary))" />
-                <line x1="60" y1="43" x2="60" y2="55" />
-                <path d="M40 55 Q35 80 40 100 L40 120" />
-                <path d="M80 55 Q85 80 80 100 L80 120" />
-                <ellipse cx="40" cy="125" rx="8" ry="5" />
-                <ellipse cx="80" cy="125" rx="8" ry="5" />
-                <path d="M35 70 Q25 85 30 95" />
-                <path d="M85 70 Q95 85 90 95" />
-                <rect x="45" y="50" width="30" height="25" rx="2" />
-                <line x1="50" y1="58" x2="70" y2="58" />
-                <line x1="50" y1="65" x2="65" y2="65" />
-                <rect x="35" y="75" width="50" height="8" rx="2" />
-              </svg>
+              <BrandLogo
+                logoUrl={settings?.logo_url}
+                siteName={settings?.site_name}
+                inverted={!isProductPage}
+                className="text-[color:var(--footer-fg)]"
+              />
             </motion.div>
           </div>
 

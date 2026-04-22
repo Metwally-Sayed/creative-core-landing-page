@@ -186,45 +186,32 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
       <div className="site-shell relative z-20 max-w-[1400px] px-0">
         {showHeader && (
           <>
-            <div className="mb-24 flex flex-col gap-12 lg:mb-32 lg:flex-row lg:items-end lg:justify-between">
-              <div className="space-y-6">
-                <motion.p
-                  initial={{ opacity: 0, x: -20 * dir }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  className="eyebrow"
-                >
-                  {t("projectsEyebrow")}
-                </motion.p>
-                <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
-                  {headingText.split(" ").map((word, i) => (
-                    <span key={i} className="inline-block overflow-hidden me-[0.2em] py-1">
-                      <motion.span
-                        initial={{ y: "100%" }}
-                        animate={isInView ? { y: 0 } : {}}
-                        transition={{
-                          duration: 0.8,
-                          delay: i * 0.04,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        className="inline-block"
-                      >
-                        {word}
-                      </motion.span>
-                    </span>
-                  ))}
-                </h2>
-              </div>
-
-              <div className="lg:max-w-md">
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.4 }}
-                  className="text-balance text-sm leading-relaxed text-muted-foreground md:text-base"
-                >
-                  {t("projectsBody")}
-                </motion.p>
-              </div>
+            <div className="mb-24 space-y-6 lg:mb-32">
+              <motion.p
+                initial={{ opacity: 0, x: -20 * dir }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                className="eyebrow"
+              >
+                {t("projectsEyebrow")}
+              </motion.p>
+              <h2 className="max-w-2xl text-4xl leading-[1.1] text-accent md:text-5xl lg:text-6xl">
+                {headingText.split(" ").map((word, i) => (
+                  <span key={i} className="inline-block overflow-hidden me-[0.2em] py-1">
+                    <motion.span
+                      initial={{ y: "100%" }}
+                      animate={isInView ? { y: 0 } : {}}
+                      transition={{
+                        duration: 0.8,
+                        delay: i * 0.04,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="inline-block"
+                    >
+                      {word}
+                    </motion.span>
+                  </span>
+                ))}
+              </h2>
             </div>
 
             {/* Category Filters */}

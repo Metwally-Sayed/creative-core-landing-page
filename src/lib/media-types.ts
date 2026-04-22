@@ -1,5 +1,7 @@
 export type FileType = "image" | "video" | "document";
 
+export const MEDIA_PAGE_SIZE = 24;
+
 export interface MediaAsset {
   id: string;
   storage_path: string;

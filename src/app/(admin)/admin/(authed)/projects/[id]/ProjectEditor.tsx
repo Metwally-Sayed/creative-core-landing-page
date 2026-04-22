@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Trash2, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, GripVertical, Pencil, Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,6 +34,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ImageField from "@/components/admin/ImageField";
+import {
+  resolveThemeInheritance,
+  type ThemePalette,
+  type ThemePaletteColor,
+} from "@/lib/project-theme";
 import { updateProject } from "../actions";
 import type {
   ProjectFullDb,
@@ -87,6 +92,252 @@ function ArDivider() {
       <div className="flex-1 border-t border-amber-400/30" />
       <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">العربية (Arabic)</span>
       <div className="flex-1 border-t border-amber-400/30" />
+    </div>
+  );
+}
+
+type ThemePaletteState = {
+  accent: ThemePaletteColor;
+  secondary: ThemePaletteColor;
+  background: ThemePaletteColor;
+  foreground: ThemePaletteColor;
+  supporting: ThemePaletteColor[];
+};
+
+const THEME_COLOR_HEX_PATTERN = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/;
+
+function emptyThemeColor(): ThemePaletteColor {
+  return { hex: "", name: "" };
+}
+
+function normalizeThemeColor(color?: ThemePaletteColor | null): ThemePaletteColor {
+  return {
+    hex: color?.hex?.trim() ?? "",
+    name: color?.name?.trim() ?? "",
+  };
+}
+
+function createThemePaletteState(palette: ThemePalette | null | undefined): ThemePaletteState {
+  return {
+    accent: normalizeThemeColor(palette?.accent),
+    secondary: normalizeThemeColor(palette?.secondary),
+    background: normalizeThemeColor(palette?.background),
+    foreground: normalizeThemeColor(palette?.foreground),
+    supporting: (palette?.supporting ?? []).map((color) => normalizeThemeColor(color)),
+  };
+}
+
+function serializeThemePaletteState(palette: ThemePaletteState): ThemePalette {
+  return {
+    accent: palette.accent,
+    secondary: palette.secondary,
+    background: palette.background,
+    foreground: palette.foreground,
+    supporting: palette.supporting
+      .map((color) => normalizeThemeColor(color))
+      .filter((color) => color.hex.trim() || color.name.trim()),
+  };
+}
+
+function isValidThemeColor(color: ThemePaletteColor) {
+  return THEME_COLOR_HEX_PATTERN.test(color.hex.trim()) && Boolean(color.name.trim());
+}
+
+function ThemeSwatchField({
+  label,
+  color,
+  onChange,
+  badge,
+}: {
+  label: string;
+  color: ThemePaletteColor;
+  onChange: (color: ThemePaletteColor) => void;
+  badge?: string;
+}) {
+  return (
+    <div className="rounded-xl border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] p-4 space-y-3">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-0.5">
+          <p className="font-medium text-[hsl(var(--admin-text))]">{label}</p>
+          {badge && <p className="text-xs text-[hsl(var(--admin-text-muted))]">{badge}</p>}
+        </div>
+        <div
+          className="size-10 shrink-0 rounded-lg border border-[hsl(var(--admin-border))]"
+          style={{ backgroundColor: isValidThemeColor(color) ? color.hex : "transparent" }}
+        />
+      </div>
+      <Field label="Hex">
+        <Input
+          dir="ltr"
+          value={color.hex}
+          onChange={(e) => onChange({ ...color, hex: e.target.value })}
+          placeholder="#D60523"
+        />
+      </Field>
+      <Field label="Name">
+        <Input
+          value={color.name}
+          onChange={(e) => onChange({ ...color, name: e.target.value })}
+          placeholder="Brand Red"
+        />
+      </Field>
+    </div>
+  );
+}
+
+function SupportingColorsEditor({
+  colors,
+  onChange,
+}: {
+  colors: ThemePaletteColor[];
+  onChange: (colors: ThemePaletteColor[]) => void;
+}) {
+  function updateColor(index: number, next: ThemePaletteColor) {
+    onChange(colors.map((color, currentIndex) => (currentIndex === index ? next : color)));
+  }
+
+  function moveColor(index: number, direction: -1 | 1) {
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= colors.length) return;
+    onChange(arrayMove(colors, index, nextIndex));
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-[hsl(var(--admin-text-muted))]">
+        Supporting colors stay display-only and keep their order in the Color Story section.
+      </p>
+      <div className="space-y-3">
+        {colors.map((color, index) => (
+          <div key={`${index}-${color.hex}-${color.name}`} className="rounded-xl border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] p-4 space-y-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-0.5">
+                <p className="font-medium text-[hsl(var(--admin-text))]">Supporting color {index + 1}</p>
+                <p className="text-xs text-[hsl(var(--admin-text-muted))]">Shown in the public color story only.</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => moveColor(index, -1)}
+                  disabled={index === 0}
+                  className="rounded p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-surface))] disabled:opacity-30"
+                  aria-label="Move supporting color up"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveColor(index, 1)}
+                  disabled={index === colors.length - 1}
+                  className="rounded p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-surface))] disabled:opacity-30"
+                  aria-label="Move supporting color down"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChange(colors.filter((_, currentIndex) => currentIndex !== index))}
+                  className="rounded p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-surface))] hover:text-red-500"
+                  aria-label="Remove supporting color"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Field label="Hex">
+                <Input
+                  dir="ltr"
+                  value={color.hex}
+                  onChange={(e) => updateColor(index, { ...color, hex: e.target.value })}
+                  placeholder="#71CAC8"
+                />
+              </Field>
+              <Field label="Name">
+                <Input
+                  value={color.name}
+                  onChange={(e) => updateColor(index, { ...color, name: e.target.value })}
+                  placeholder="Sea Glass"
+                />
+              </Field>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => onChange([...colors, emptyThemeColor()])}
+      >
+        <Plus className="h-3.5 w-3.5 mr-1" /> Add supporting color
+      </Button>
+    </div>
+  );
+}
+
+function ThemePaletteEditor({
+  inheritThemeFromPalette,
+  onInheritChange,
+  palette,
+  onPaletteChange,
+}: {
+  inheritThemeFromPalette: boolean;
+  onInheritChange: (value: boolean) => void;
+  palette: ThemePaletteState;
+  onPaletteChange: (palette: ThemePaletteState) => void;
+}) {
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start gap-3 rounded-xl border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] p-4">
+        <input
+          id="inherit-theme"
+          type="checkbox"
+          checked={inheritThemeFromPalette}
+          onChange={(e) => onInheritChange(e.target.checked)}
+          className="mt-1 h-4 w-4"
+        />
+        <div className="space-y-1">
+          <Label htmlFor="inherit-theme" className="text-sm font-semibold">
+            Inherit theme from palette
+          </Label>
+          <p className="text-xs text-[hsl(var(--admin-text-muted))]">
+            The first four swatches drive the project page and shared chrome. Supporting colors stay in the color story only.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-2">
+        <ThemeSwatchField
+          label="Accent"
+          badge="Required when inheritance is enabled."
+          color={palette.accent}
+          onChange={(color) => onPaletteChange({ ...palette, accent: color })}
+        />
+        <ThemeSwatchField
+          label="Secondary"
+          badge="Used for highlights and derived UI accents."
+          color={palette.secondary}
+          onChange={(color) => onPaletteChange({ ...palette, secondary: color })}
+        />
+        <ThemeSwatchField
+          label="Background"
+          badge="Base surface tone for the page."
+          color={palette.background}
+          onChange={(color) => onPaletteChange({ ...palette, background: color })}
+        />
+        <ThemeSwatchField
+          label="Foreground"
+          badge="Readable text color on light surfaces."
+          color={palette.foreground}
+          onChange={(color) => onPaletteChange({ ...palette, foreground: color })}
+        />
+      </div>
+
+      <SupportingColorsEditor
+        colors={palette.supporting}
+        onChange={(supporting) => onPaletteChange({ ...palette, supporting })}
+      />
     </div>
   );
 }
@@ -532,6 +783,14 @@ export default function ProjectEditor({ project, allProjects }: Props) {
   const [aspectRatio, setAspectRatio] = useState(project.aspect_ratio);
   const [coverImageUrl, setCoverImageUrl] = useState(project.cover_image_url);
   const [published, setPublished] = useState(project.published);
+  const [themePalette, setThemePalette] = useState<ThemePaletteState>(() => createThemePaletteState(project.theme_palette));
+  const [inheritThemeFromPalette, setInheritThemeFromPalette] = useState(() =>
+    resolveThemeInheritance(
+      project.inherit_theme_from_palette,
+      project.theme_preference_configured,
+      project.theme_palette,
+    )
+  );
 
   const [heroLabel, setHeroLabel] = useState(project.hero_label);
   const [heroTitle, setHeroTitle] = useState(project.hero_title);
@@ -581,12 +840,22 @@ export default function ProjectEditor({ project, allProjects }: Props) {
   // ── Save ───────────────────────────────────────────────────────────────────
   function handleSave() {
     if (!title.trim()) { setSaveError("Title is required."); return; }
+    if (inheritThemeFromPalette && !isValidThemeColor(themePalette.accent)) {
+      setSaveError("Accent color hex and name are required when theme inheritance is enabled.");
+      return;
+    }
     setSaveError("");
 
     const input: ProjectFullInput = {
       title: title.trim(), slug: slug.trim(),
       tags: tagsRaw.split(",").map((t) => t.trim()).filter(Boolean),
       aspect_ratio: aspectRatio, cover_image_url: coverImageUrl, published,
+      service_type: project.service_type,
+      work_filters: project.work_filters,
+      featured_aspect_ratio: project.featured_aspect_ratio,
+      inherit_theme_from_palette: inheritThemeFromPalette,
+      theme_palette: serializeThemePaletteState(themePalette),
+      theme_preference_configured: true,
       hero_label: heroLabel, hero_title: heroTitle, hero_subtitle: heroSubtitle,
       hero_summary: heroSummary, hero_image_url: heroImageUrl,
       client, project_type: projectType, deliverables,
@@ -705,6 +974,15 @@ export default function ProjectEditor({ project, allProjects }: Props) {
                 <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4" />
                 <Label htmlFor="published">Published (visible on public site)</Label>
               </div>
+            </Section>
+
+            <Section title="Theme / Palette">
+              <ThemePaletteEditor
+                inheritThemeFromPalette={inheritThemeFromPalette}
+                onInheritChange={setInheritThemeFromPalette}
+                palette={themePalette}
+                onPaletteChange={setThemePalette}
+              />
             </Section>
 
             <Section title="Hero">
