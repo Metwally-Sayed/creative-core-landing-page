@@ -15,6 +15,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (url: string) => void;
+  fileType?: "image" | "video";
 }
 
 interface UploadingFile {
@@ -70,7 +71,7 @@ const backdropStyle: React.CSSProperties = {
   WebkitBackdropFilter: "blur(4px)",
 };
 
-export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
+export default function MediaPickerModal({ isOpen, onClose, onSelect, fileType = "image" }: Props) {
   const [assets, setAssets] = useState<MediaAsset[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
@@ -97,21 +98,21 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
   const loadFirstPage = useCallback(async (q: string) => {
     setIsLoadingFirst(true);
     try {
-      const data = await listMediaAssets({ fileType: "image", page: 1, search: q });
+      const data = await listMediaAssets({ fileType, page: 1, search: q });
       setAssets(data);
       setPage(1);
       setHasMore(data.length === MEDIA_PAGE_SIZE);
     } finally {
       setIsLoadingFirst(false);
     }
-  }, []);
+  }, [fileType]);
 
   const loadNextPage = useCallback(async (currentPage: number, q: string) => {
     if (isLoadingMore) return;
     setIsLoadingMore(true);
     try {
       const nextPage = currentPage + 1;
-      const data = await listMediaAssets({ fileType: "image", page: nextPage, search: q });
+      const data = await listMediaAssets({ fileType, page: nextPage, search: q });
       if (data.length > 0) {
         setAssets((prev) => [...prev, ...data]);
         setPage(nextPage);
@@ -120,13 +121,13 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [isLoadingMore]);
+  }, [isLoadingMore, fileType]);
 
   // Load on open
   useEffect(() => {
     if (isOpen) loadFirstPage(search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, fileType]);
 
   // Debounced search
   useEffect(() => {
@@ -170,16 +171,18 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
   }, [isOpen, hasMore, page, search, isLoadingMore, isLoadingFirst, loadNextPage]);
 
   const handleFiles = async (files: File[]) => {
-    const imageFiles = files.filter((f) => f.type.startsWith("image/"));
-    if (!imageFiles.length) return;
+    const allowed = files.filter((f) =>
+      fileType === "video" ? f.type.startsWith("video/") : f.type.startsWith("image/")
+    );
+    if (!allowed.length) return;
 
-    const items: UploadingFile[] = imageFiles.map((f) => ({
+    const items: UploadingFile[] = allowed.map((f) => ({
       id: crypto.randomUUID(), name: f.name, progress: 0,
     }));
     setUploading((prev) => [...items, ...prev]);
 
     await Promise.allSettled(
-      imageFiles.map(async (file, i) => {
+      allowed.map(async (file, i) => {
         const id = items[i].id;
         const update = (patch: Partial<UploadingFile>) =>
           setUploading((prev) => prev.map((u) => (u.id === id ? { ...u, ...patch } : u)));
@@ -252,7 +255,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
 
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-[hsl(var(--admin-border))] px-5 py-3.5">
-          <h2 className="text-sm font-semibold text-[hsl(var(--admin-text))]">Media Library</h2>
+          <h2 className="text-sm font-semibold text-[hsl(var(--admin-text))]">{fileType === "video" ? "Video Library" : "Media Library"}</h2>
           <div className="flex items-center gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -260,7 +263,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
             >
               <Upload className="h-3 w-3" /> Upload
             </button>
-            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
+            <input ref={fileInputRef} type="file" accept={fileType === "video" ? "video/*" : "image/*"} multiple className="hidden"
               onChange={(e) => { if (e.target.files) handleFiles(Array.from(e.target.files)); e.target.value = ""; }} />
             <button onClick={onClose}
               className="rounded-md p-1.5 text-[hsl(var(--admin-text-muted))] hover:bg-[hsl(var(--admin-surface))] hover:text-[hsl(var(--admin-text))] transition-colors">
@@ -273,7 +276,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
         <div className="shrink-0 border-b border-[hsl(var(--admin-border))] px-5 py-3">
           <div className="relative">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[hsl(var(--admin-text-muted))]" />
-            <input type="text" placeholder="Search images…" value={search}
+            <input type="text" placeholder={fileType === "video" ? "Search videos…" : "Search images…"} value={search}
               onChange={(e) => setSearch(e.target.value)} autoFocus
               className="w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] py-1.5 ps-9 pe-3 text-sm text-[hsl(var(--admin-text))] placeholder:text-[hsl(var(--admin-text-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]"
             />
@@ -316,10 +319,10 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
           ) : assets.length === 0 ? (
             <div className="flex h-48 flex-col items-center justify-center gap-3 text-[hsl(var(--admin-text-muted))]">
               <ImageIcon className="h-8 w-8 opacity-30" />
-              <p className="text-sm">No images found</p>
+              <p className="text-sm">{fileType === "video" ? "No videos found" : "No images found"}</p>
               <button onClick={() => fileInputRef.current?.click()}
                 className="flex items-center gap-1.5 rounded-md border border-[hsl(var(--admin-border))] px-3 py-1.5 text-xs hover:bg-[hsl(var(--admin-surface))] transition-colors">
-                <Upload className="h-3 w-3" /> Upload an image
+                <Upload className="h-3 w-3" /> {fileType === "video" ? "Upload a video" : "Upload an image"}
               </button>
             </div>
           ) : (
@@ -365,7 +368,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
 
               {!hasMore && assets.length > MEDIA_PAGE_SIZE && (
                 <p className="py-4 text-center text-xs text-[hsl(var(--admin-text-muted))]">
-                  All {assets.length} images loaded
+                  All {assets.length} {fileType === "video" ? "videos" : "images"} loaded
                 </p>
               )}
             </>
@@ -375,7 +378,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
         {/* Footer */}
         <div className="flex shrink-0 items-center justify-between border-t border-[hsl(var(--admin-border))] px-5 py-3">
           <p className="text-xs text-[hsl(var(--admin-text-muted))]">
-            {selected ? "1 image selected" : `${assets.length} images · drag & drop to upload`}
+            {selected ? "1 item selected" : `${assets.length} ${fileType === "video" ? "videos" : "images"} · drag & drop to upload`}
           </p>
           <div className="flex gap-2">
             <button onClick={onClose}
@@ -386,7 +389,7 @@ export default function MediaPickerModal({ isOpen, onClose, onSelect }: Props) {
               onClick={() => { if (selected) { onSelect(selected); onClose(); } }}
               disabled={!selected}
               className="rounded-md bg-[hsl(var(--admin-accent))] px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40 transition-opacity">
-              Use Image
+              {fileType === "video" ? "Use Video" : "Use Image"}
             </button>
           </div>
         </div>
