@@ -42,15 +42,16 @@ const EMPTY_COLORS: ProjectColor[] = [];
 // Interactive & Visual Components
 // -------------------------------------------------------------
 
-function Preloader({ title }: { title: string }) {
+function Preloader({ title, skip = false }: { title: string; skip?: boolean }) {
   const t = useTranslations("projectDetail");
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(!skip);
 
-  // The preloader lasts 2 seconds
+  // The preloader lasts 2 seconds (desktop only — skipped on mobile for perf)
   useEffect(() => {
+    if (skip) return;
     const timer = setTimeout(() => setIsVisible(false), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [skip]);
 
   return (
     <AnimatePresence>
@@ -188,7 +189,7 @@ function SplitText({ text, className }: { text: string; className?: string }) {
       {chars.map((char, i) => (
         <motion.span
           key={i}
-          className="inline-block relative will-change-transform"
+          className="inline-block relative"
           variants={{
             hidden: { opacity: 0, y: 40, rotateX: -45, filter: "blur(6px)" },
             visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: transitionEase } }
@@ -688,6 +689,16 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
   const projectColors = project.colors?.length ? project.colors : DEFAULT_COLORS;
   const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS_EN;
 
+  // Mobile gets stripped-down effects — blur/mix-blend/parallax tank perf on phones.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   useLayoutEffect(() => {
     if (!project.inheritThemeFromPalette) return;
 
@@ -752,14 +763,14 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
 
   return (
     <>
-      <Preloader title={project.title} />
-      <motion.main 
+      <Preloader title={project.title} skip={isMobile} />
+      <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 2.2 }} // Wait for preloader
+        transition={{ duration: 0.5, delay: isMobile ? 0 : 2.2 }} // Wait for preloader (desktop only)
         className="pb-0 bg-background text-foreground relative"
       >
-        <NoiseOverlay />
+        {!isMobile && <NoiseOverlay />}
         <TableOfContents count={project.sections.length + 3} />
         <FloatingNavPill title={project.title} progress={currentProgress} />
         
@@ -774,26 +785,26 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
           {/* Animated Gradient Mesh Base */}
           <div className="absolute inset-0 bg-[#050811]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,hsl(var(--primary)/0.36),transparent_34%),radial-gradient(circle_at_82%_84%,hsl(var(--secondary)/0.26),transparent_36%)]" />
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[hsl(var(--primary))] rounded-full blur-[120px] mix-blend-screen opacity-35 animate-pulse" style={{ animationDuration: '8s' }} />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[hsl(var(--secondary))] rounded-full blur-[150px] mix-blend-screen opacity-24 animate-pulse" style={{ animationDuration: '10s' }} />
+            <div className="absolute top-[-20%] left-[-10%] hidden h-[50%] w-[50%] rounded-full bg-[hsl(var(--primary))] opacity-35 mix-blend-screen blur-[120px] animate-pulse md:block" style={{ animationDuration: '8s' }} />
+            <div className="absolute bottom-[-10%] right-[-10%] hidden h-[60%] w-[60%] rounded-full bg-[hsl(var(--secondary))] opacity-24 mix-blend-screen blur-[150px] animate-pulse md:block" style={{ animationDuration: '10s' }} />
           </div>
           
-          <motion.div style={{ y: heroLayer2Y, opacity: heroOpacity }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+          <motion.div style={isMobile ? undefined : { y: heroLayer2Y, opacity: heroOpacity }} className="absolute inset-0 z-0 hidden items-center justify-center pointer-events-none md:flex">
             <div className="size-160 border border-white/5 rounded-full absolute -left-40 top-40" />
             <div className="size-120 border border-white/5 rounded-full absolute -right-20 -top-20" />
           </motion.div>
 
-          <motion.div style={{ y: heroLayer1Y, opacity: heroOpacity }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+          <motion.div style={isMobile ? undefined : { y: heroLayer1Y, opacity: heroOpacity }} className="absolute inset-0 z-0 hidden items-center justify-center pointer-events-none md:flex">
             <div className="w-[120%] h-px bg-linear-to-r from-transparent via-white/10 to-transparent absolute top-1/3 rotate-[-15deg]" />
             <div className="w-[120%] h-px bg-linear-to-r from-transparent via-white/10 to-transparent absolute bottom-1/4 rotate-10" />
           </motion.div>
-          
+
           <div className="site-shell relative z-10 flex flex-col items-center justify-between text-center min-h-[50vh]">
-            <motion.div style={{ y: heroTextY, opacity: heroOpacity }} className="space-y-6 max-w-5xl pt-8 relative z-20">
-              <motion.p 
+            <motion.div style={isMobile ? undefined : { y: heroTextY, opacity: heroOpacity }} className="space-y-6 max-w-5xl pt-8 relative z-20">
+              <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 2.3, ease: transitionEase }}
+                transition={{ duration: 0.6, delay: isMobile ? 0.1 : 2.3, ease: transitionEase }}
                 className="eyebrow text-[hsl(var(--secondary))] opacity-90"
               >
                 {project.introMeta.client} {project.title.toLowerCase().includes("api") ? "API" : ""}
@@ -806,7 +817,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 2.8, ease: transitionEase }}
+                transition={{ duration: 0.6, delay: isMobile ? 0.3 : 2.8, ease: transitionEase }}
                 className="mx-auto max-w-2xl text-[1.15rem] md:text-[1.4rem] font-light text-white/70 leading-relaxed"
               >
                 {project.heroSubtitle}
@@ -814,14 +825,14 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
             </motion.div>
             
             {/* Parallax Artwork */}
-            <motion.div 
-              style={{ y: heroArtworkY, opacity: heroOpacity }}
+            <motion.div
+              style={isMobile ? undefined : { y: heroArtworkY, opacity: heroOpacity }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 3, ease: transitionEase }}
+              transition={{ duration: 1, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
               className="w-[12rem] h-[16rem] md:w-[16rem] md:h-[20rem] mt-20 md:mt-28 relative rounded-t-full overflow-hidden border border-white/10 shadow-2xl z-10"
             >
-               <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-60 mix-blend-luminosity" priority />
+               <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-60 md:mix-blend-luminosity" priority />
                <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
             </motion.div>
           </div>
@@ -832,7 +843,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={overviewInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-            transition={{ duration: 0.7, delay: 3, ease: transitionEase }}
+            transition={{ duration: 0.7, delay: isMobile ? 0.2 : 3, ease: transitionEase }}
             className="site-card p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10 md:gap-16"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 w-full">
@@ -965,7 +976,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         </section>
 
         {/* 8. Split-Screen Footer CTA & Related Projects */}
-        <section className="bg-white/40 dark:bg-black/20 pt-28 pb-40 border-t border-border/40 backdrop-blur-3xl relative z-20 overflow-hidden">
+        <section className="bg-white/40 dark:bg-black/20 pt-28 pb-40 border-t border-border/40 md:backdrop-blur-3xl relative z-20 overflow-hidden">
           <div className="site-shell px-6 md:px-12 lg:px-20 mb-32 md:mb-48">
             <div className="mb-14 md:mb-20">
               <h3 className="font-serif text-[2.75rem] md:text-[4rem] tracking-[-0.03em] text-accent">{t("relatedProjects")}</h3>
