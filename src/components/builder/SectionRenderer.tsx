@@ -65,6 +65,8 @@ export default async function SectionRenderer({
 
         switch (section.type) {
           case "hero": {
+            // Read media_items from section.content directly — resolveContent must not merge
+            // AR translations over the EN item array; AR alts are handled separately via arAlts.
             const rawItems = Array.isArray(section.content.media_items)
               ? (section.content.media_items as Array<{ type: "image" | "video"; url: string; posterUrl?: string; alt: string }>)
               : [];
