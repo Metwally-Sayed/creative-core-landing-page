@@ -400,7 +400,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="group flex items-center gap-6 text-[4rem] leading-[0.9] font-black tracking-[-0.02em] text-white md:text-[5.5rem] lg:text-[7.5rem]"
+                        className="group flex items-center gap-6 text-[2.4rem] leading-[0.9] font-black tracking-[-0.02em] text-white sm:text-[3rem] md:text-[5.5rem] lg:text-[7.5rem]"
                       >
                         <motion.div
                           animate={{
@@ -423,7 +423,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="absolute bottom-12 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-12 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30"
+                className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-6 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30 md:bottom-12 md:gap-12"
               >
                 {['Facebook', 'Instagram', 'Twitter', 'Vimeo', 'LinkedIn'].map((platform) => (
                   <a
