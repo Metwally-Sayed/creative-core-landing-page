@@ -32,7 +32,7 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
   const body =
     (config.body || "Brand strategy, identity, content, and 3D visuals that convert.").trim();
 
-  const cmsMedia = (config.media?.items ?? []).filter((item) => item.url && item.alt);
+  const cmsMedia = (config.media?.items ?? []).filter((item) => item.url);
   const combinedMedia = [...cmsMedia, ...DEFAULT_SPHERE_MEDIA].slice(0, 8);
   const items: SphereMediaItem[] = combinedMedia.map((item, index) => ({
     id: String(index + 1),

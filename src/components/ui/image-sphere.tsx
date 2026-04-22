@@ -412,92 +412,111 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         {selectedItem ? (
           <motion.div
             key="media-lightbox"
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] flex items-center justify-center"
+            style={{
+              background: "rgba(4,4,8,0.88)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.28 }}
             onClick={(event) => {
               if (event.target === event.currentTarget) closeModal();
             }}
           >
+            {/* Floating close button */}
+            <motion.button
+              ref={closeButtonRef}
+              type="button"
+              className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/75 backdrop-blur-sm transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40"
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.22, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              onClick={closeModal}
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </motion.button>
+
+            {/* Media frame */}
             <motion.div
               ref={modalRef}
               role="dialog"
               aria-modal="true"
               aria-label={selectedItem.alt}
-              className="relative w-full max-w-[1100px] overflow-hidden rounded-[1.75rem] border border-white/30 bg-white/95 shadow-[0_34px_110px_rgba(0,0,0,0.42)]"
-              initial={{ opacity: 0, y: 16, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="relative overflow-hidden rounded-2xl"
+              style={{ width: "min(92vw, 960px)", height: "min(90svh, 860px)" }}
+              initial={{ opacity: 0, scale: 0.91, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center justify-between gap-3 border-b border-accent/10 px-4 py-3">
-                <p className="truncate text-sm font-semibold text-accent">{selectedItem.alt}</p>
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-accent/10 bg-white text-accent shadow-sm transition hover:bg-accent/5 focus-visible:ring-2 focus-visible:ring-ring"
-                  onClick={closeModal}
-                  aria-label="Close"
+              {selectedItem.type === "image" ? (
+                <Image
+                  src={selectedItem.url}
+                  alt={selectedItem.alt}
+                  fill
+                  sizes="(max-width: 768px) 92vw, 960px"
+                  className="object-contain"
+                  onLoad={() => setIsExpandedLoading(false)}
+                  onError={() => {
+                    setIsExpandedLoading(false);
+                    setIsExpandedError(true);
+                  }}
+                />
+              ) : (
+                <video
+                  key={selectedItem.url}
+                  src={selectedItem.url}
+                  poster={selectedItem.posterUrl}
+                  className="h-full w-full bg-black object-contain"
+                  controls
+                  playsInline
+                  autoPlay
+                  onCanPlay={() => setIsExpandedLoading(false)}
+                  onError={() => {
+                    setIsExpandedLoading(false);
+                    setIsExpandedError(true);
+                  }}
+                />
+              )}
+
+              {/* Caption scrim */}
+              {selectedItem.alt ? (
+                <motion.div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 px-5 pb-4 pt-16"
+                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.62) 0%, transparent 100%)" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
                 >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+                  <p className="text-[0.7rem] font-medium uppercase tracking-[0.22em] text-white/70">
+                    {selectedItem.alt}
+                  </p>
+                </motion.div>
+              ) : null}
 
-              <div className="relative grid place-items-center bg-[radial-gradient(circle_at_50%_18%,rgba(11,30,56,0.06)_0%,rgba(11,30,56,0.02)_50%,rgba(255,255,255,0.0)_100%)] p-4 sm:p-6">
-                <div className="relative h-[min(76vh,760px)] w-full">
-                  {selectedItem.type === "image" ? (
-                    <Image
-                      src={selectedItem.url}
-                      alt={selectedItem.alt}
-                      fill
-                      sizes="(max-width: 768px) 92vw, 1100px"
-                      className="object-contain"
-                      onLoad={() => setIsExpandedLoading(false)}
-                      onError={() => {
-                        setIsExpandedLoading(false);
-                        setIsExpandedError(true);
-                      }}
-                    />
-                  ) : (
-                    <video
-                      key={selectedItem.url}
-                      src={selectedItem.url}
-                      poster={selectedItem.posterUrl}
-                      className="h-full w-full rounded-2xl bg-black object-contain"
-                      controls
-                      playsInline
-                      autoPlay
-                      onCanPlay={() => setIsExpandedLoading(false)}
-                      onError={() => {
-                        setIsExpandedLoading(false);
-                        setIsExpandedError(true);
-                      }}
-                    />
-                  )}
-
-                  {isExpandedLoading ? (
-                    <div className="absolute inset-0 grid place-items-center">
-                      <div className="flex items-center gap-3 rounded-full border border-accent/10 bg-white/90 px-4 py-2 text-sm font-medium text-accent shadow-sm">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Loading media…
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {isExpandedError ? (
-                    <div className="absolute inset-0 grid place-items-center">
-                      <div className="max-w-md rounded-2xl border border-accent/10 bg-white/95 p-5 text-center text-sm text-accent shadow-sm">
-                        <p className="font-semibold">This media failed to load.</p>
-                        <p className="mt-1 text-muted-foreground">
-                          Check the URL or upload a new file in the CMS and try again.
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
+              {isExpandedLoading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex items-center gap-2.5 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-medium text-white/70 backdrop-blur-sm">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Loading…
+                  </div>
                 </div>
-              </div>
+              ) : null}
+
+              {isExpandedError ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <div className="rounded-2xl border border-white/10 bg-black/60 px-6 py-5 text-center text-sm backdrop-blur-sm">
+                    <p className="font-semibold text-white/80">Failed to load</p>
+                    <p className="mt-1 text-white/40">Check the URL in the CMS and try again.</p>
+                  </div>
+                </div>
+              ) : null}
             </motion.div>
           </motion.div>
         ) : null}
