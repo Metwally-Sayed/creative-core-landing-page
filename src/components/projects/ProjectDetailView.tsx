@@ -758,7 +758,9 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
   // In RTL the track starts at the end (right), so it slides right (positive x).
   const locale = useLocale();
   const isRtl = locale === "ar";
-  const horizontalX = useTransform(horizontalScrollProgress, [0, 1], ["0%", isRtl ? "66.66%" : "-66.66%"]);
+  const galleryCount = project.gallery.length || 1;
+  const galleryEndPct = `${((galleryCount - 1) / galleryCount) * 100}%`;
+  const horizontalX = useTransform(horizontalScrollProgress, [0, 1], ["0%", isRtl ? galleryEndPct : `-${galleryEndPct}`]);
 
   // We need to pass the progress as a number to NavPill
   const [currentProgress, setCurrentProgress] = useState(0);
@@ -906,36 +908,39 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <ColorPaletteShowcase colors={projectColors} />
 
         {/* NEW: Pinned Horizontal Scroll Section */}
-        <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: "200vh" }}>
-          {/* Sticky wrapper that holds exactly 100vh and pins during scroll */}
-          <div className="sticky top-0 h-screen w-full flex flex-col justify-center">
-            <div className={`site-shell mb-8 md:mb-12 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
-              <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
-            </div>
-            {/* The horizontal track that translates based on vertical scroll */}
-            <div className="w-full overflow-hidden">
-              <motion.div
-                style={{ x: horizontalX }}
-                className="flex gap-6 md:gap-12 px-6 md:px-12 w-[300vw] items-center"
-                dir="ltr"
-              >
-                {project.gallery.slice(0, 3).map((image, idx) => (
-                  <div key={idx} className="w-[85vw] md:w-[60vw] shrink-0">
-                    <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
-                      <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(max-width: 768px) 85vw, 60vw" />
-                    </LiquidCard>
-                  </div>
-                ))}
-              </motion.div>
+        <section ref={showcaseContainerRef} className="relative w-full" style={{ height: `${galleryCount * 100}vh` }}>
+          {/* Sticky wrapper — pins at full viewport height during scroll */}
+          <div className="sticky top-0 h-screen w-full overflow-hidden">
+            {/* Title overlay */}
+            <div className={`absolute top-8 md:top-12 z-10 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
+              <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-white mix-blend-difference" />
             </div>
 
-            {/* Progress indicator for horizontal scroll */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-48 h-1.5 bg-accent/20 rounded-full overflow-hidden hidden md:block z-50">
-              <motion.div 
-                className="h-full bg-secondary origin-left"
+            {/* Horizontal track */}
+            <motion.div
+              style={{ x: horizontalX, width: `${galleryCount * 100}vw` }}
+              className="flex h-full"
+              dir="ltr"
+            >
+              {project.gallery.map((image, idx) => (
+                <div key={idx} className="w-screen h-screen shrink-0 relative">
+                  <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Progress indicator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/20 rounded-full overflow-hidden z-10">
+              <motion.div
+                className="h-full bg-white origin-left"
                 style={{ scaleX: horizontalScrollProgress }}
               />
             </div>
+
+            {/* Slide counter */}
+            <motion.div className="absolute bottom-8 right-8 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-white/50">
+              {galleryCount} frames
+            </motion.div>
           </div>
         </section>
 
