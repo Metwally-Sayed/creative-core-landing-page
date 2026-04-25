@@ -829,85 +829,64 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               </motion.p>
             </motion.div>
             
-            {/* Parallax Artwork — Crystal Gem */}
+            {/* Parallax Artwork — Layered Portrait Frame */}
             <motion.div
               style={isMobile ? undefined : { y: heroArtworkY, opacity: heroOpacity }}
-              initial={{ opacity: 0, scale: 0.82, rotate: -7 }}
-              animate={{ opacity: 1, scale: 1, rotate: -4 }}
-              transition={{ duration: 1.4, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
               className="mt-20 md:mt-28 relative z-10 select-none"
             >
-              {/* Pulsing glow halo */}
+              {/* Depth shadow layer — offset card behind */}
+              <div className="absolute top-3 left-3 w-full h-full rounded-sm bg-accent/20 blur-[2px]" />
+
+              {/* Ghost card (second layer, slightly offset) */}
               <motion.div
-                className="pointer-events-none absolute inset-0"
-                style={{ filter: "blur(52px)", background: "hsl(var(--accent) / 0.35)", clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)" }}
-                animate={{ opacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-2 -right-2 w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-sm border border-white/[0.08] bg-white/[0.03]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: isMobile ? 0.9 : 3.3 }}
               />
 
-              {/* Outer orbit rings */}
-              <div className="pointer-events-none absolute -inset-8 md:-inset-10 rounded-full border border-white/[0.04]" />
-              <motion.div
-                className="pointer-events-none absolute -inset-5 md:-inset-6 rounded-full border border-dashed border-white/[0.06]"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
-              />
+              {/* Main portrait card */}
+              <div className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-sm overflow-hidden border border-white/[0.14] z-10">
+                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover" priority />
 
-              {/* Gradient border shell (1px larger than image) */}
-              <div
-                className="pointer-events-none absolute -inset-[2px] z-0"
-                style={{
-                  clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)",
-                  background: "linear-gradient(145deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.14) 100%)",
-                }}
-              />
+                {/* Accent tint */}
+                <div className="pointer-events-none absolute inset-0 opacity-[0.14] mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
 
-              {/* Main gem-shaped image */}
-              <div
-                className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] z-10 overflow-hidden"
-                style={{ clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)" }}
-              >
-                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-85" priority />
-
-                {/* Accent tint wash */}
-                <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
-
-                {/* Specular facet — top face highlight */}
-                <div className="pointer-events-none absolute top-0 inset-x-0 h-[38%]"
-                  style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.16) 0%, transparent 100%)" }}
-                />
+                {/* Top vignette */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
 
                 {/* Animated scan line */}
                 <motion.div
                   className="pointer-events-none absolute inset-x-0 h-[1px]"
-                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)" }}
                   animate={{ y: [0, 336] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                 />
 
-                {/* Bottom fade */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))]/80 via-transparent to-transparent" />
+                {/* Corner tick marks */}
+                <div className="pointer-events-none absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-white/40" />
+                <div className="pointer-events-none absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-white/40" />
+                <div className="pointer-events-none absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-white/40" />
+                <div className="pointer-events-none absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-white/40" />
+
+                {/* Bottom label inside card */}
+                <div className="pointer-events-none absolute bottom-3 inset-x-0 flex items-center justify-center gap-2">
+                  <div className="h-px w-4 bg-white/25" />
+                  <span className="font-mono text-[0.45rem] uppercase tracking-[0.45em] text-white/40">Artwork</span>
+                  <div className="h-px w-4 bg-white/25" />
+                </div>
               </div>
 
-              {/* Hex corner dots */}
-              <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-1.5 h-1.5 rounded-full bg-white/40" />
-              <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-1.5 h-1.5 rounded-full bg-white/40" />
-              <div className="pointer-events-none absolute top-[18%] right-0 translate-x-1 w-1 h-1 rounded-full bg-white/25" />
-              <div className="pointer-events-none absolute top-[18%] left-0 -translate-x-1 w-1 h-1 rounded-full bg-white/25" />
-              <div className="pointer-events-none absolute bottom-[18%] right-0 translate-x-1 w-1 h-1 rounded-full bg-white/25" />
-              <div className="pointer-events-none absolute bottom-[18%] left-0 -translate-x-1 w-1 h-1 rounded-full bg-white/25" />
-
-              {/* Bottom label */}
+              {/* Pulsing glow beneath */}
               <motion.div
-                className="mt-5 flex items-center justify-center gap-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: isMobile ? 1 : 3.6 }}
-              >
-                <div className="h-px w-5 bg-white/20" />
-                <span className="font-mono text-[0.5rem] uppercase tracking-[0.45em] text-white/30">Artwork</span>
-                <div className="h-px w-5 bg-white/20" />
-              </motion.div>
+                className="pointer-events-none absolute -inset-4 -z-10 rounded-sm"
+                style={{ filter: "blur(32px)", background: "hsl(var(--accent) / 0.22)" }}
+                animate={{ opacity: [0.4, 0.8, 0.4] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
             </motion.div>
           </div>
         </section>
