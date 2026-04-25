@@ -923,9 +923,19 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               dir="ltr"
             >
               {project.gallery.map((image, idx) => (
-                <div key={idx} className="w-screen h-screen shrink-0 relative">
-                  <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
-                </div>
+                isMobile ? (
+                  <div key={idx} className="w-screen h-full shrink-0 flex items-center justify-center px-6">
+                    <div className="w-[85vw]">
+                      <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
+                        <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="85vw" />
+                      </LiquidCard>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={idx} className="w-screen h-screen shrink-0 relative">
+                    <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
+                  </div>
+                )
               ))}
             </motion.div>
 
