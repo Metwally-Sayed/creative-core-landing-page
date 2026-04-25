@@ -907,29 +907,11 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* NEW: Color Palette Showcase */}
         <ColorPaletteShowcase colors={projectColors} />
 
-        {/* Mobile: simple swipeable card row — no pinning */}
-        <section className="md:hidden relative w-full bg-black/5 dark:bg-white/5 py-12">
-          <div className={`mb-8 px-6 ${isRtl ? "text-right" : ""}`}>
-            <SplitText text={t("visualExploration")} className="font-serif text-3xl text-accent" />
-          </div>
-          <div className="overflow-x-auto pb-6">
-            <div className="flex gap-6 px-6" style={{ width: `max-content` }}>
-              {project.gallery.map((image, idx) => (
-                <div key={idx} className="w-[85vw] shrink-0">
-                  <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
-                    <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="85vw" />
-                  </LiquidCard>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Desktop: pinned full-screen horizontal scroll */}
-        <section ref={showcaseContainerRef} className="hidden md:block relative w-full" style={{ height: `${galleryCount * 100}vh` }}>
+        {/* Pinned horizontal scroll — cards on mobile, full-screen on desktop */}
+        <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: `${galleryCount * 100}vh` }}>
           <div className="sticky top-0 h-screen w-full overflow-hidden">
-            <div className={`absolute top-12 z-10 w-full px-12 ${isRtl ? "text-right" : ""}`}>
-              <SplitText text={t("visualExploration")} className="font-serif text-5xl text-white mix-blend-difference" />
+            <div className={`absolute top-8 md:top-12 z-10 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
+              <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
             </div>
 
             <motion.div
@@ -938,16 +920,26 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               dir="ltr"
             >
               {project.gallery.map((image, idx) => (
-                <div key={idx} className="w-screen h-screen shrink-0 relative">
-                  <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
-                </div>
+                isMobile ? (
+                  <div key={idx} className="w-screen h-screen shrink-0 flex items-center justify-center px-6">
+                    <div className="w-[85vw]">
+                      <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
+                        <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="85vw" />
+                      </LiquidCard>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={idx} className="w-screen h-screen shrink-0 relative">
+                    <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
+                  </div>
+                )
               ))}
             </motion.div>
 
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/20 rounded-full overflow-hidden z-10">
-              <motion.div className="h-full bg-white origin-left" style={{ scaleX: horizontalScrollProgress }} />
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-accent/20 rounded-full overflow-hidden z-10">
+              <motion.div className="h-full bg-accent origin-left" style={{ scaleX: horizontalScrollProgress }} />
             </div>
-            <div className="absolute bottom-8 right-12 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-white/50">
+            <div className="absolute bottom-8 right-6 md:right-12 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-accent/40">
               {galleryCount} frames
             </div>
           </div>
