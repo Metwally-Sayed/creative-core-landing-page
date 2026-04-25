@@ -24,16 +24,15 @@ export default function BrandLogo({
 
   if (logoUrl) {
     return (
-      <div className={cn("relative h-32 w-auto min-w-[14rem] max-w-[28rem]", className)}>
-        <Image
-          src={logoUrl}
-          alt={siteName}
-          fill
-          sizes="224px"
-          className="object-contain object-left"
-          style={{ filter: inverted ? "brightness(0) invert(1)" : undefined }}
-        />
-      </div>
+      <Image
+        src={logoUrl}
+        alt={siteName}
+        width={400}
+        height={120}
+        sizes="224px"
+        className={cn("h-32 w-auto max-w-[28rem] object-contain object-left", className)}
+        style={{ filter: inverted ? "brightness(0) invert(1)" : undefined }}
+      />
     );
   }
 
