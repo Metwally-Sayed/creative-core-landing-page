@@ -829,68 +829,73 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               </motion.p>
             </motion.div>
             
-            {/* Parallax Artwork — Framed Artifact */}
+            {/* Parallax Artwork — Crystal Gem */}
             <motion.div
               style={isMobile ? undefined : { y: heroArtworkY, opacity: heroOpacity }}
               initial={{ opacity: 0, scale: 0.82, rotate: -7 }}
-              animate={{ opacity: 1, scale: 1, rotate: -3 }}
+              animate={{ opacity: 1, scale: 1, rotate: -4 }}
               transition={{ duration: 1.4, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
               className="mt-20 md:mt-28 relative z-10 select-none"
             >
               {/* Pulsing glow halo */}
               <motion.div
-                className="pointer-events-none absolute inset-0 rounded-t-full"
-                style={{ filter: "blur(48px)", background: "hsl(var(--accent) / 0.3)", borderRadius: "50% 50% 0 0 / 50% 50% 0 0" }}
-                animate={{ opacity: [0.35, 0.75, 0.35] }}
+                className="pointer-events-none absolute inset-0"
+                style={{ filter: "blur(52px)", background: "hsl(var(--accent) / 0.35)", clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)" }}
+                animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               />
 
               {/* Outer orbit rings */}
-              <div className="pointer-events-none absolute -inset-8 md:-inset-10 rounded-full border border-white/[0.045]" />
+              <div className="pointer-events-none absolute -inset-8 md:-inset-10 rounded-full border border-white/[0.04]" />
               <motion.div
-                className="pointer-events-none absolute -inset-5 md:-inset-6 rounded-full border border-dashed border-white/[0.07]"
+                className="pointer-events-none absolute -inset-5 md:-inset-6 rounded-full border border-dashed border-white/[0.06]"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
               />
-              <div className="pointer-events-none absolute -inset-2 md:-inset-3 rounded-full border border-white/[0.06]" />
 
-              {/* Frame shell — gradient border effect */}
-              <div className="absolute -inset-[2px] rounded-t-full pointer-events-none z-0"
-                style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.10) 100%)", borderRadius: "50% 50% 0 0 / 50% 50% 0 0" }}
+              {/* Gradient border shell (1px larger than image) */}
+              <div
+                className="pointer-events-none absolute -inset-[2px] z-0"
+                style={{
+                  clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)",
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.14) 100%)",
+                }}
               />
 
-              {/* Main arch image */}
-              <div className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-t-full overflow-hidden z-10">
-                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-80" priority />
+              {/* Main gem-shaped image */}
+              <div
+                className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] z-10 overflow-hidden"
+                style={{ clipPath: "polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%)" }}
+              >
+                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-85" priority />
 
                 {/* Accent tint wash */}
-                <div className="pointer-events-none absolute inset-0 opacity-20 mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
+                <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
 
-                {/* Specular highlight top */}
-                <div className="pointer-events-none absolute top-0 inset-x-0 h-[45%] rounded-t-full"
-                  style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.13) 0%, transparent 100%)" }}
+                {/* Specular facet — top face highlight */}
+                <div className="pointer-events-none absolute top-0 inset-x-0 h-[38%]"
+                  style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.16) 0%, transparent 100%)" }}
                 />
 
                 {/* Animated scan line */}
                 <motion.div
                   className="pointer-events-none absolute inset-x-0 h-[1px]"
-                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)" }}
-                  animate={{ y: [0, 240] }}
+                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+                  animate={{ y: [0, 336] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
                 />
 
                 {/* Bottom fade */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
-
-                {/* Inner inset ring */}
-                <div className="pointer-events-none absolute inset-[4px] rounded-t-full ring-1 ring-inset ring-white/10" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))]/80 via-transparent to-transparent" />
               </div>
 
-              {/* L-bracket corners */}
-              <div className="pointer-events-none absolute -top-2 -left-2 w-4 h-4 border-t-[1.5px] border-l-[1.5px] border-white/40" />
-              <div className="pointer-events-none absolute -top-2 -right-2 w-4 h-4 border-t-[1.5px] border-r-[1.5px] border-white/40" />
-              <div className="pointer-events-none absolute -bottom-2 -left-2 w-4 h-4 border-b-[1.5px] border-l-[1.5px] border-white/40" />
-              <div className="pointer-events-none absolute -bottom-2 -right-2 w-4 h-4 border-b-[1.5px] border-r-[1.5px] border-white/40" />
+              {/* Hex corner dots */}
+              <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-1.5 h-1.5 rounded-full bg-white/40" />
+              <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-1.5 h-1.5 rounded-full bg-white/40" />
+              <div className="pointer-events-none absolute top-[18%] right-0 translate-x-1 w-1 h-1 rounded-full bg-white/25" />
+              <div className="pointer-events-none absolute top-[18%] left-0 -translate-x-1 w-1 h-1 rounded-full bg-white/25" />
+              <div className="pointer-events-none absolute bottom-[18%] right-0 translate-x-1 w-1 h-1 rounded-full bg-white/25" />
+              <div className="pointer-events-none absolute bottom-[18%] left-0 -translate-x-1 w-1 h-1 rounded-full bg-white/25" />
 
               {/* Bottom label */}
               <motion.div
