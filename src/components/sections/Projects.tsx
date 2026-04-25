@@ -136,7 +136,7 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummaryDb; inde
   );
 }
 
-const categories = ["All", "Branding", "3D interior design", "social media", "photography"] as const;
+const categories = ["All", "Branding", "3D interior design", "social media", "photography", "Packaging & Print Design", "Content Creation"] as const;
 type Category = (typeof categories)[number];
 
 const categoryTranslationKeys: Record<Category, string> = {
@@ -145,6 +145,8 @@ const categoryTranslationKeys: Record<Category, string> = {
   "3D interior design": "projectsFilter3D",
   "social media": "projectsFilterSocialMedia",
   photography: "projectsFilterPhotography",
+  "Packaging & Print Design": "projectsFilterPackaging",
+  "Content Creation": "projectsFilterContentCreation",
 };
 
 export default function Projects({ projects, showHeader = true }: { projects: ProjectSummaryDb[]; showHeader?: boolean }) {
