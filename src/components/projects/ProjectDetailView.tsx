@@ -907,40 +907,44 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* NEW: Color Palette Showcase */}
         <ColorPaletteShowcase colors={projectColors} />
 
-        {/* Pinned horizontal scroll — cards on mobile, full-screen on desktop */}
-        <style>{`.vg-section{height:${galleryCount * 25}vh}@media(min-width:768px){.vg-section{height:${galleryCount * 100}vh}}`}</style>
-        <section ref={showcaseContainerRef} className="vg-section relative w-full bg-black/5 dark:bg-white/5">
-          <div className="sticky top-0 h-[45vh] md:h-screen w-full overflow-hidden">
-            <div className={`absolute top-8 md:top-12 z-10 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
-              <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
-            </div>
+        {/* Mobile: CSS snap scroll — natural height, no JS pinning */}
+        <section className="md:hidden w-full bg-black/5 dark:bg-white/5 py-10">
+          <div className={`mb-6 px-6 ${isRtl ? "text-right" : ""}`}>
+            <SplitText text={t("visualExploration")} className="font-serif text-3xl text-accent" />
+          </div>
+          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-6 gap-4 px-6">
+            {project.gallery.map((image, idx) => (
+              <div key={idx} className="snap-center shrink-0 w-[85vw]">
+                <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
+                  <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="85vw" />
+                </LiquidCard>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 px-6 font-mono text-[0.6rem] tracking-[0.3em] text-accent/40">{galleryCount} frames</div>
+        </section>
 
+        {/* Desktop: pinned full-screen horizontal scroll */}
+        <section ref={showcaseContainerRef} className="hidden md:block relative w-full" style={{ height: `${galleryCount * 100}vh` }}>
+          <div className="sticky top-0 h-screen w-full overflow-hidden">
+            <div className={`absolute top-12 z-10 w-full px-12 ${isRtl ? "text-right" : ""}`}>
+              <SplitText text={t("visualExploration")} className="font-serif text-5xl text-white mix-blend-difference" />
+            </div>
             <motion.div
               style={{ x: horizontalX, width: `${galleryCount * 100}vw` }}
               className="flex h-full"
               dir="ltr"
             >
               {project.gallery.map((image, idx) => (
-                isMobile ? (
-                  <div key={idx} className="w-screen h-full shrink-0 flex items-center justify-center px-6">
-                    <div className="w-[85vw]">
-                      <LiquidCard className="w-full shadow-2xl" aspectRatio="aspect-[16/9]">
-                        <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="85vw" />
-                      </LiquidCard>
-                    </div>
-                  </div>
-                ) : (
-                  <div key={idx} className="w-screen h-full shrink-0 relative">
-                    <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
-                  </div>
-                )
+                <div key={idx} className="w-screen h-full shrink-0 relative">
+                  <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="100vw" />
+                </div>
               ))}
             </motion.div>
-
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-accent/20 rounded-full overflow-hidden z-10">
-              <motion.div className="h-full bg-accent origin-left" style={{ scaleX: horizontalScrollProgress }} />
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/20 rounded-full overflow-hidden z-10">
+              <motion.div className="h-full bg-white origin-left" style={{ scaleX: horizontalScrollProgress }} />
             </div>
-            <div className="absolute bottom-8 right-6 md:right-12 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-accent/40">
+            <div className="absolute bottom-8 right-12 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-white/50">
               {galleryCount} frames
             </div>
           </div>
