@@ -784,9 +784,12 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 text-white min-h-[90vh]">
           {/* Animated Gradient Mesh Base */}
           <div className="absolute inset-0 bg-[hsl(var(--accent))]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,hsl(var(--accent-foreground)/0.12),transparent_34%),radial-gradient(circle_at_82%_84%,hsl(var(--secondary)/0.18),transparent_36%)]" />
-            <div className="absolute top-[-20%] left-[-10%] hidden h-[50%] w-[50%] rounded-full bg-[hsl(var(--primary))] opacity-35 mix-blend-screen blur-[120px] animate-pulse md:block" style={{ animationDuration: '8s' }} />
-            <div className="absolute bottom-[-10%] right-[-10%] hidden h-[60%] w-[60%] rounded-full bg-[hsl(var(--secondary))] opacity-24 mix-blend-screen blur-[150px] animate-pulse md:block" style={{ animationDuration: '10s' }} />
+            {/* Subtle white radial glow — keeps depth without pulling in black */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_30%_30%,rgba(255,255,255,0.10),transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_80%,rgba(255,255,255,0.05),transparent_70%)]" />
+            {/* Pulse blobs tinted white so they only ever lighten */}
+            <div className="absolute top-[-20%] left-[-10%] hidden h-[50%] w-[50%] rounded-full bg-white opacity-[0.07] blur-[120px] animate-pulse md:block" style={{ animationDuration: '8s' }} />
+            <div className="absolute bottom-[-10%] right-[-10%] hidden h-[60%] w-[60%] rounded-full bg-white opacity-[0.04] blur-[150px] animate-pulse md:block" style={{ animationDuration: '10s' }} />
           </div>
           
           <motion.div style={isMobile ? undefined : { y: heroLayer2Y, opacity: heroOpacity }} className="absolute inset-0 z-0 hidden items-center justify-center pointer-events-none md:flex">
