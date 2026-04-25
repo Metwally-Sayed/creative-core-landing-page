@@ -12,7 +12,6 @@ import AboutContentSection from "@/components/builder/sections/AboutContentSecti
 import AboutMissionSection from "@/components/builder/sections/AboutMissionSection";
 import AboutProcessSection from "@/components/builder/sections/AboutProcessSection";
 import ServicesHeroSection from "@/components/builder/sections/ServicesHeroSection";
-import ServicesFilterBar from "@/components/builder/sections/ServicesFilterBar";
 import ServicesSectionBlock from "@/components/builder/sections/ServicesSectionBlock";
 import ServicesCredentialsSection from "@/components/builder/sections/ServicesCredentialsSection";
 import type { WhatWeDoItem } from "@/components/builder/sections/WhatWeDoSection";
@@ -188,13 +187,11 @@ export default async function SectionRenderer({
 
           case "services_hero":
             return (
-              <div key={section.id}>
-                <ServicesHeroSection
-                  title={String(c.title ?? "")}
-                  body={String(c.body ?? "")}
-                />
-                <ServicesFilterBar />
-              </div>
+              <ServicesHeroSection
+                key={section.id}
+                title={String(c.title ?? "")}
+                body={String(c.body ?? "")}
+              />
             );
 
           case "services_section": {
