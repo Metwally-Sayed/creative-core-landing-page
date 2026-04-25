@@ -201,7 +201,7 @@ export default function Footer({
               transition={{ duration: 0.6 }}
             >
               <BrandLogo
-                logoUrl={settings?.logo_url}
+                logoUrl={isProductPage ? settings?.logo_url : (settings?.logo_dark_url || settings?.logo_url)}
                 siteName={settings?.site_name}
                 inverted={!isProductPage}
                 className="text-[color:var(--footer-fg)]"

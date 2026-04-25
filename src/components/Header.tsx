@@ -165,7 +165,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
           >
             <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-center justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
               <Link href="/" aria-label={tHeader("homeAriaLabel")}>
-                <BrandLogo logoUrl={settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-12 min-w-0 max-w-[10rem]" />
+                <BrandLogo logoUrl={forceInvert ? (settings?.logo_dark_url || settings?.logo_url) : settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-12 min-w-0 max-w-[10rem]" />
               </Link>
 
               <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
                 aria-label={tHeader("homeAriaLabel")}
               >
-                <BrandLogo logoUrl={settings?.logo_url} siteName={settings?.site_name} inverted className="opacity-[0.92] h-12 min-w-0 max-w-[10rem]" />
+                <BrandLogo logoUrl={settings?.logo_dark_url || settings?.logo_url} siteName={settings?.site_name} inverted className="opacity-[0.92] h-12 min-w-0 max-w-[10rem]" />
               </Link>
 
               <motion.button

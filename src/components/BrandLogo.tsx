@@ -31,7 +31,6 @@ export default function BrandLogo({
         height={120}
         sizes="224px"
         className={cn("h-32 w-auto max-w-[28rem] object-contain object-left", className)}
-        style={{ filter: inverted ? "brightness(0) invert(1)" : undefined }}
       />
     );
   }
