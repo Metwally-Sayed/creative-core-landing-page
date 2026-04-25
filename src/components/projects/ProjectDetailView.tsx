@@ -950,7 +950,9 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         ))}
 
         {/* NEW: Marquee Section */}
-        <MarqueeTicker words={project.tags} />
+        <div className="overflow-hidden w-full">
+          <MarqueeTicker words={project.tags} />
+        </div>
 
         {/* NEW: Color Palette Showcase */}
         <ColorPaletteShowcase colors={projectColors} />
