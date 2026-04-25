@@ -31,5 +31,5 @@ export async function updateSettings(
     .eq("id", 1);
   if (error) throw error;
 
-  revalidateTag("settings");
+  revalidateTag("settings", "max");
 }
