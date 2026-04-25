@@ -783,8 +783,8 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* 1. Cinematic Layered Parallax Hero */}
         <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 text-white min-h-[90vh]">
           {/* Animated Gradient Mesh Base */}
-          <div className="absolute inset-0 bg-[#050811]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,hsl(var(--primary)/0.36),transparent_34%),radial-gradient(circle_at_82%_84%,hsl(var(--secondary)/0.26),transparent_36%)]" />
+          <div className="absolute inset-0 bg-[hsl(var(--accent))]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,hsl(var(--accent-foreground)/0.12),transparent_34%),radial-gradient(circle_at_82%_84%,hsl(var(--secondary)/0.18),transparent_36%)]" />
             <div className="absolute top-[-20%] left-[-10%] hidden h-[50%] w-[50%] rounded-full bg-[hsl(var(--primary))] opacity-35 mix-blend-screen blur-[120px] animate-pulse md:block" style={{ animationDuration: '8s' }} />
             <div className="absolute bottom-[-10%] right-[-10%] hidden h-[60%] w-[60%] rounded-full bg-[hsl(var(--secondary))] opacity-24 mix-blend-screen blur-[150px] animate-pulse md:block" style={{ animationDuration: '10s' }} />
           </div>
