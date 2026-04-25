@@ -908,7 +908,8 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <ColorPaletteShowcase colors={projectColors} />
 
         {/* Pinned horizontal scroll — cards on mobile, full-screen on desktop */}
-        <section ref={showcaseContainerRef} className="relative w-full bg-black/5 dark:bg-white/5" style={{ height: `${galleryCount * (isMobile ? 25 : 100)}vh` }}>
+        <style>{`.vg-section{height:${galleryCount * 25}vh}@media(min-width:768px){.vg-section{height:${galleryCount * 100}vh}}`}</style>
+        <section ref={showcaseContainerRef} className="vg-section relative w-full bg-black/5 dark:bg-white/5">
           <div className="sticky top-0 h-[45vh] md:h-screen w-full overflow-hidden">
             <div className={`absolute top-8 md:top-12 z-10 w-full px-6 md:px-12 ${isRtl ? "text-right" : ""}`}>
               <SplitText text={t("visualExploration")} className="font-serif text-3xl md:text-5xl text-accent mix-blend-difference" />
