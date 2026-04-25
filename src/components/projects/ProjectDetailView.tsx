@@ -829,16 +829,80 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               </motion.p>
             </motion.div>
             
-            {/* Parallax Artwork */}
+            {/* Parallax Artwork — Framed Artifact */}
             <motion.div
               style={isMobile ? undefined : { y: heroArtworkY, opacity: heroOpacity }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
-              className="w-[12rem] h-[16rem] md:w-[16rem] md:h-[20rem] mt-20 md:mt-28 relative rounded-t-full overflow-hidden border border-white/10 shadow-2xl z-10"
+              initial={{ opacity: 0, scale: 0.82, rotate: -7 }}
+              animate={{ opacity: 1, scale: 1, rotate: -3 }}
+              transition={{ duration: 1.4, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
+              className="mt-20 md:mt-28 relative z-10 select-none"
             >
-               <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-60 md:mix-blend-luminosity" priority />
-               <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
+              {/* Pulsing glow halo */}
+              <motion.div
+                className="pointer-events-none absolute inset-0 rounded-t-full"
+                style={{ filter: "blur(48px)", background: "hsl(var(--accent) / 0.3)", borderRadius: "50% 50% 0 0 / 50% 50% 0 0" }}
+                animate={{ opacity: [0.35, 0.75, 0.35] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* Outer orbit rings */}
+              <div className="pointer-events-none absolute -inset-8 md:-inset-10 rounded-full border border-white/[0.045]" />
+              <motion.div
+                className="pointer-events-none absolute -inset-5 md:-inset-6 rounded-full border border-dashed border-white/[0.07]"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+              />
+              <div className="pointer-events-none absolute -inset-2 md:-inset-3 rounded-full border border-white/[0.06]" />
+
+              {/* Frame shell — gradient border effect */}
+              <div className="absolute -inset-[2px] rounded-t-full pointer-events-none z-0"
+                style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.10) 100%)", borderRadius: "50% 50% 0 0 / 50% 50% 0 0" }}
+              />
+
+              {/* Main arch image */}
+              <div className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-t-full overflow-hidden z-10">
+                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover opacity-80" priority />
+
+                {/* Accent tint wash */}
+                <div className="pointer-events-none absolute inset-0 opacity-20 mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
+
+                {/* Specular highlight top */}
+                <div className="pointer-events-none absolute top-0 inset-x-0 h-[45%] rounded-t-full"
+                  style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.13) 0%, transparent 100%)" }}
+                />
+
+                {/* Animated scan line */}
+                <motion.div
+                  className="pointer-events-none absolute inset-x-0 h-[1px]"
+                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)" }}
+                  animate={{ y: [0, 240] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Bottom fade */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
+
+                {/* Inner inset ring */}
+                <div className="pointer-events-none absolute inset-[4px] rounded-t-full ring-1 ring-inset ring-white/10" />
+              </div>
+
+              {/* L-bracket corners */}
+              <div className="pointer-events-none absolute -top-2 -left-2 w-4 h-4 border-t-[1.5px] border-l-[1.5px] border-white/40" />
+              <div className="pointer-events-none absolute -top-2 -right-2 w-4 h-4 border-t-[1.5px] border-r-[1.5px] border-white/40" />
+              <div className="pointer-events-none absolute -bottom-2 -left-2 w-4 h-4 border-b-[1.5px] border-l-[1.5px] border-white/40" />
+              <div className="pointer-events-none absolute -bottom-2 -right-2 w-4 h-4 border-b-[1.5px] border-r-[1.5px] border-white/40" />
+
+              {/* Bottom label */}
+              <motion.div
+                className="mt-5 flex items-center justify-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: isMobile ? 1 : 3.6 }}
+              >
+                <div className="h-px w-5 bg-white/20" />
+                <span className="font-mono text-[0.5rem] uppercase tracking-[0.45em] text-white/30">Artwork</span>
+                <div className="h-px w-5 bg-white/20" />
+              </motion.div>
             </motion.div>
           </div>
         </section>
