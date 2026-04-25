@@ -70,7 +70,7 @@ export default function AboutContentSection({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.56rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
               {eyebrow}
             </span>
           </div>
@@ -134,7 +134,7 @@ export default function AboutContentSection({
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.5rem] uppercase tracking-[0.4em] text-accent/28">
+                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-accent/28">
                   {eyebrow}
                 </span>
               </div>
@@ -164,7 +164,7 @@ export default function AboutContentSection({
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/20" />
-            <span className="font-mono text-[0.48rem] uppercase tracking-[0.42em] text-accent/18">
+            <span className="font-mono text-[0.6rem] uppercase tracking-[0.42em] text-accent/18">
               Create Core
             </span>
             <div className="h-1 w-1 rounded-full bg-accent/20" />

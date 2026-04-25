@@ -71,7 +71,7 @@ export default function AboutProcessSection({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.56rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
               {eyebrow}
             </span>
           </div>
@@ -134,7 +134,7 @@ export default function AboutProcessSection({
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.5rem] uppercase tracking-[0.4em] text-accent/28">
+                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-accent/28">
                   Process
                 </span>
               </div>
@@ -181,7 +181,7 @@ export default function AboutProcessSection({
                 {/* Step counter label */}
                 <div className="mb-5 flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-accent/40" />
-                  <span className="font-mono text-[0.5rem] uppercase tracking-[0.38em] text-accent/35">
+                  <span className="font-mono text-[0.65rem] uppercase tracking-[0.38em] text-accent/35">
                     Step {step.num}
                   </span>
                 </div>
@@ -203,7 +203,7 @@ export default function AboutProcessSection({
           <EditorialReveal delay={0.3} y={16}>
             <Link
               href="/work"
-              className="group flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.3em] text-accent/60 transition-colors hover:text-accent"
+              className="group flex items-center gap-3 font-mono text-[0.75rem] uppercase tracking-[0.3em] text-accent/60 transition-colors hover:text-accent"
             >
               <span className="h-px w-6 bg-accent/40 transition-all group-hover:w-10" />
               See our work
@@ -219,7 +219,7 @@ export default function AboutProcessSection({
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/20" />
-            <span className="font-mono text-[0.48rem] uppercase tracking-[0.42em] text-accent/18">
+            <span className="font-mono text-[0.6rem] uppercase tracking-[0.42em] text-accent/18">
               Create Core
             </span>
             <div className="h-1 w-1 rounded-full bg-accent/20" />

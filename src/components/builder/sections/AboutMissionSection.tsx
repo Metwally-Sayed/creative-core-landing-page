@@ -66,7 +66,7 @@ export default function AboutMissionSection({ eyebrow, quote }: { eyebrow: strin
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
-              <span className="font-mono text-[0.55rem] uppercase tracking-[0.42em] text-white/45">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.42em] text-white/45">
                 {eyebrow}
               </span>
             </div>
