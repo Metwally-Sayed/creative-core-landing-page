@@ -280,6 +280,7 @@ export default function Footer({
                     { label: "Instagram", url: settings?.social_instagram },
                     { label: "Twitter", url: settings?.social_twitter },
                     { label: "Vimeo", url: settings?.social_vimeo },
+                    { label: "TikTok", url: settings?.social_tiktok },
                   ]
                     .filter((s) => s.url)
                     .map(({ label, url }) => (
@@ -294,7 +295,7 @@ export default function Footer({
                       </a>
                     ))}
                 </div>
-                <div className="flex items-center gap-6">
+                {/* <div className="flex items-center gap-6">
                   <LocaleSwitch />
                   <AnimatedLink
                     href="https://www.deptagency.com/en-nl/privacy-policy/"
@@ -302,7 +303,7 @@ export default function Footer({
                   >
                     {tFooter("globalPrivacy")}
                   </AnimatedLink>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

@@ -165,7 +165,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
           >
             <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-center justify-between px-5 pt-5 lg:px-20 lg:pt-8 w-full">
               <Link href="/" aria-label={tHeader("homeAriaLabel")}>
-                <BrandLogo logoUrl={forceInvert ? (settings?.logo_dark_url || settings?.logo_url) : settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-16 min-w-0 max-w-[14rem]" />
+                <BrandLogo logoUrl={forceInvert ? (settings?.logo_dark_url || settings?.logo_url) : settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-20 min-w-0 max-w-[14rem]" />
               </Link>
 
               <div className="flex items-center gap-3">
@@ -425,15 +425,21 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-6 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30 md:bottom-12 md:gap-12"
               >
-                {['Facebook', 'Instagram', 'Twitter', 'Vimeo', 'LinkedIn'].map((platform) => (
+                {[
+                  { label: 'Instagram', url: settings?.social_instagram },
+                  { label: 'Twitter', url: settings?.social_twitter },
+                  { label: 'LinkedIn', url: settings?.social_linkedin },
+                  { label: 'Vimeo', url: settings?.social_vimeo },
+                  { label: 'TikTok', url: settings?.social_tiktok },
+                ].filter((s) => s.url).map(({ label, url }) => (
                   <a
-                    key={platform}
-                    href="#"
+                    key={label}
+                    href={url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="hover:text-white transition-colors"
                   >
-                    {platform}
+                    {label}
                   </a>
                 ))}
                 <LocaleSwitch inverted />
