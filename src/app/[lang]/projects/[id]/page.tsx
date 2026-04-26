@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const project = await getProject(id);
   if (!project) return { title: "Project Not Found" };
   return {
-    title: `${project.hero_title || project.title} | Hello Monday`,
+    title: `${project.hero_title || project.title} | Creative Core`,
     description: project.hero_summary,
   };
 }

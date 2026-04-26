@@ -51,7 +51,7 @@ const notoNaskh = Noto_Naskh_Arabic({
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   return {
-    title: settings.seo_title || settings.site_name || "Hello Monday",
+    title: settings.seo_title || settings.site_name || "Creative Core",
     description: settings.seo_description || "Brand strategy, identity, content, and 3D visuals that convert.",
     openGraph: settings.seo_og_image_url
       ? { images: [settings.seo_og_image_url] }
