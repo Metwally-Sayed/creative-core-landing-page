@@ -55,7 +55,7 @@
     "switchAria": "Switch language"
   },
   "header": {
-    "homeAriaLabel": "Hello Monday home",
+    "homeAriaLabel": "Creative Core home",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "menuLabel": "Menu"
@@ -109,7 +109,7 @@
   "quote": {
     "dialogTitle": "Get a Quote",
     "dialogDescription": "Multi-step project brief builder used to prepare a quote request.",
-    "brandEyebrow": "Hello Monday",
+    "brandEyebrow": "Creative Core",
     "headerIntro": "Shape a project brief in four short steps. On submit, we open a prefilled email draft to `newbusiness@hellomonday.com`.",
     "closeAriaLabel": "Close quote dialog",
     "step01Label": "Goals",
