@@ -148,14 +148,14 @@ export default function Footer({
     {
       label: tFooter("collaborateLabel"),
       sublabel: tFooter("collaborateSublabel"),
-      value: settings?.business_email ?? "newbusiness@hellomonday.com",
-      href: `mailto:${settings?.business_email ?? "newbusiness@hellomonday.com"}`,
+      value: settings?.business_email ?? "newbusiness@creativecore.com",
+      href: `mailto:${settings?.business_email ?? "newbusiness@creativecore.com"}`,
     },
     {
       label: tFooter("generalLabel"),
       sublabel: tFooter("generalSublabel"),
-      value: settings?.contact_email ?? "hello@hellomonday.com",
-      href: `mailto:${settings?.contact_email ?? "hello@hellomonday.com"}`,
+      value: settings?.contact_email ?? "hello@creativecore.com",
+      href: `mailto:${settings?.contact_email ?? "hello@creativecore.com"}`,
     },
     {
       label: tFooter("careersLabel"),

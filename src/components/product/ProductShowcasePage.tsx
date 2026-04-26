@@ -492,10 +492,10 @@ export default function ProductShowcasePage() {
               <div className="max-w-[34rem] space-y-5 text-[1.04rem] leading-[1.8] text-white/66">
                 <p>{t("contactBody")}</p>
                 <a
-                  href="mailto:product@hellomonday.com"
+                  href="mailto:product@creativecore.com"
                   className="inline-flex items-center gap-3 border-b border-white/22 pb-2 font-serif text-[1.5rem] text-white transition-colors hover:text-[#f6c38f]"
                 >
-                  product@hellomonday.com
+                  product@creativecore.com
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
               </div>
@@ -527,10 +527,10 @@ export default function ProductShowcasePage() {
                 <p className="font-serif text-[1.45rem]">Andreas Anderskou</p>
                 <p className="text-sm text-white/56">{t("managingPartnerTitle")}</p>
                 <a
-                  href="mailto:andreas@hellomonday.com"
+                  href="mailto:andreas@creativecore.com"
                   className="inline-flex items-center gap-2 pt-3 text-sm text-white/78 transition-colors hover:text-[#f6c38f]"
                 >
-                  andreas@hellomonday.com
+                  andreas@creativecore.com
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
               </div>

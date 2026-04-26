@@ -42,7 +42,7 @@ function LogoMark({
               : "text-[hsl(var(--accent))]"
         }`}
       >
-        Hello Monday
+        Creative Core
       </span>
       <span
         className={`mt-0.5 text-[0.92rem] font-black transition-colors duration-300 ${

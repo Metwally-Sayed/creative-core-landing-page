@@ -508,7 +508,7 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
 
   const summaryText = useMemo(() => {
     return [
-      "Hello Monday Quote Request",
+      "Creative Core Quote Request",
       `Goals: ${formatList(data.goals, "Not selected")}`,
       `Context: ${data.context || "Not provided"}`,
       `Services: ${formatList(data.services, "Not selected")}`,
@@ -578,7 +578,7 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
     window.setTimeout(() => {
       setIsSubmitting(false);
       setSubmitSuccess(true);
-      window.location.href = `mailto:newbusiness@hellomonday.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:newbusiness@creativecore.com?subject=${subject}&body=${body}`;
     }, 320);
   };
 

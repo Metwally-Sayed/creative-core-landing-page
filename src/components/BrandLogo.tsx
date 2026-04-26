@@ -11,7 +11,7 @@ type Props = {
 
 export default function BrandLogo({
   logoUrl,
-  siteName = "Hello Monday",
+  siteName = "Creative Core",
   inverted = false,
   neutral = false,
   className = "",
