@@ -258,7 +258,7 @@ function getDisplayTitle(project: ProjectSummary) {
 
 function getClientName(project: ProjectSummary) {
   const parts = project.title.split(" - ");
-  return parts.length > 1 ? parts[0] : "Hello Monday";
+  return parts.length > 1 ? parts[0] : "Creative Core";
 }
 
 function uniqueImages(...images: string[]) {

@@ -13,7 +13,7 @@ export const studioLocations: StudioLocation[] = [
       "New York, NY 10003",
       "Tel: +1 917 818-4282",
     ],
-    email: "hello@hellomonday.com",
+    email: "hello@creativecore.com",
     href: "https://www.google.com/maps/place/Hello+Monday/@40.7385487,-73.9908801,17z",
   },
   {
@@ -23,7 +23,7 @@ export const studioLocations: StudioLocation[] = [
       "1411 Copenhagen",
       "Tel: +45 3145 6035",
     ],
-    email: "hello@hellomonday.com",
+    email: "hello@creativecore.com",
     href: "https://www.google.com/maps/place/Hello+Monday/@55.6658995,12.5783361,17z",
   },
   {
@@ -33,7 +33,7 @@ export const studioLocations: StudioLocation[] = [
       "8000 Aarhus C",
       "Tel: +45 6015 4515",
     ],
-    email: "hello@hellomonday.com",
+    email: "hello@creativecore.com",
     href: "https://www.google.com/maps/place/Hello+Monday/@56.1500968,10.2030539,17z",
   },
   {
@@ -43,7 +43,7 @@ export const studioLocations: StudioLocation[] = [
       "1059 BW Amsterdam",
       "Netherlands",
     ],
-    email: "hello@hellomonday.com",
+    email: "hello@creativecore.com",
     href: "https://www.google.com/maps/place/Generaal+Vetterstraat+66,+1059+BW+Amsterdam,+Netherlands",
   },
 ];
