@@ -22,6 +22,7 @@ export default function SettingsForm({ initialSettings }: Props) {
     social_instagram: initialSettings.social_instagram,
     social_linkedin: initialSettings.social_linkedin,
     social_vimeo: initialSettings.social_vimeo,
+    social_tiktok: initialSettings.social_tiktok,
     seo_title: initialSettings.seo_title,
     seo_description: initialSettings.seo_description,
     seo_og_image_url: initialSettings.seo_og_image_url,
@@ -113,6 +114,7 @@ export default function SettingsForm({ initialSettings }: Props) {
         {field("social_instagram", "Instagram URL")}
         {field("social_twitter", "Twitter / X URL")}
         {field("social_vimeo", "Vimeo URL")}
+        {field("social_tiktok", "TikTok URL")}
       </section>
 
       <section className="space-y-4">

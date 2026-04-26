@@ -68,6 +68,7 @@ export interface SiteSettings {
   social_instagram: string;
   social_linkedin: string;
   social_vimeo: string;
+  social_tiktok: string;
   seo_title: string;
   seo_description: string;
   seo_og_image_url: string;
@@ -108,6 +109,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   social_instagram: "",
   social_linkedin: "",
   social_vimeo: "",
+  social_tiktok: "",
   seo_title: "",
   seo_description: "",
   seo_og_image_url: "",
