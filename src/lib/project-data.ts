@@ -104,7 +104,7 @@ export interface ProjectFullDb extends ProjectSummaryDb {
   hero_title: string;
   hero_subtitle: string;
   hero_summary: string;
-  hero_image_url: string;
+  hero_image_url: string | null;
   client: string;
   project_type: string;
   deliverables: string;
@@ -185,7 +185,7 @@ export interface ProjectFullInput {
   hero_title: string;
   hero_subtitle: string;
   hero_summary: string;
-  hero_image_url: string;
+  hero_image_url: string | null;
   client: string;
   project_type: string;
   deliverables: string;
