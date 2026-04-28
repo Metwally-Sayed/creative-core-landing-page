@@ -65,6 +65,7 @@ export type ProjectDetail = ProjectSummary & {
   heroTitle: string;
   heroSubtitle: string;
   heroSummary: string;
+  heroImage?: string;
   inheritThemeFromPalette: boolean;
   introMeta: ProjectIntroMeta;
   overview: ProjectFact[];

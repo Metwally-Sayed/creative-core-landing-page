@@ -342,6 +342,7 @@ export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail 
     heroTitle: ar.hero_title || db.hero_title,
     heroSubtitle: ar.hero_subtitle || db.hero_subtitle,
     heroSummary: ar.hero_summary || db.hero_summary,
+    heroImage: db.hero_image_url || db.cover_image_url || undefined,
     inheritThemeFromPalette: resolveThemeInheritance(
       db.inherit_theme_from_palette,
       db.theme_preference_configured,
