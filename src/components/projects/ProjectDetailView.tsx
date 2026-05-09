@@ -719,7 +719,6 @@ function ProjectCinematicHero({
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const summaryRef = useRef<HTMLParagraphElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
-  const metaRef = useRef<HTMLDivElement>(null);
   const ruleRef = useRef<HTMLDivElement>(null);
 
   const dir = isRtl ? -1 : 1;
@@ -729,54 +728,90 @@ function ProjectCinematicHero({
 
   useGSAP(
     () => {
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-        if (gradientRef.current) tl.from(gradientRef.current, { autoAlpha: 0, duration: 0.6 }, 0);
-        if (wordmarkRef.current) tl.from(wordmarkRef.current, { autoAlpha: 0, scale: 1.06, y: 24, duration: 1.4 }, 0.15);
-        if (topBarRef.current) tl.from(topBarRef.current, { autoAlpha: 0, y: -12, duration: 0.55 }, 0.35);
-        if (eyebrowRef.current) tl.from(eyebrowRef.current, { autoAlpha: 0, x: dir * -20, duration: 0.5 }, 0.7);
+      if (gradientRef.current) tl.from(gradientRef.current, { autoAlpha: 0, duration: 0.8 }, 0);
 
-        const chars = titleWrapRef.current?.querySelectorAll<HTMLElement>("[data-char]");
-        if (chars && chars.length) {
-          tl.from(chars, { yPercent: 110, autoAlpha: 0, stagger: 0.04, duration: 0.7, ease: "power4.out" }, 0.8);
-        } else if (titleWrapRef.current) {
-          tl.from(titleWrapRef.current, { yPercent: 25, autoAlpha: 0, duration: 0.8, ease: "power4.out" }, 0.8);
-        }
+      if (wordmarkRef.current) {
+        tl.from(
+          wordmarkRef.current,
+          {
+            autoAlpha: 0,
+            scale: 1.18,
+            y: 60,
+            filter: "blur(18px)",
+            duration: 1.8,
+            ease: "expo.out",
+          },
+          0.1
+        );
+      }
 
-        if (subtitleRef.current) tl.from(subtitleRef.current, { autoAlpha: 0, y: 14, duration: 0.55 }, 1.05);
-        if (summaryRef.current) tl.from(summaryRef.current, { autoAlpha: 0, y: 10, duration: 0.5 }, 1.2);
+      if (topBarRef.current) tl.from(topBarRef.current, { autoAlpha: 0, y: -16, duration: 0.7 }, 0.4);
+      if (eyebrowRef.current) tl.from(eyebrowRef.current, { autoAlpha: 0, x: dir * -28, duration: 0.65 }, 0.85);
 
-        const tagItems = tagsRef.current?.children;
-        if (tagItems && tagItems.length) {
-          tl.from(tagItems, { autoAlpha: 0, x: dir * -10, stagger: 0.07, duration: 0.4 }, 1.3);
-        }
+      const chars = titleWrapRef.current?.querySelectorAll<HTMLElement>("[data-char]");
+      if (chars && chars.length) {
+        tl.from(
+          chars,
+          { yPercent: 120, autoAlpha: 0, stagger: 0.05, duration: 0.9, ease: "expo.out" },
+          0.95
+        );
+      } else if (titleWrapRef.current) {
+        tl.from(
+          titleWrapRef.current,
+          { yPercent: 35, autoAlpha: 0, duration: 1.0, ease: "expo.out" },
+          0.95
+        );
+      }
 
-        if (metaRef.current) tl.from(metaRef.current, { autoAlpha: 0, x: dir * 24, duration: 0.55 }, 0.95);
-        if (ruleRef.current) {
-          tl.from(
-            ruleRef.current,
-            { scaleX: 0, transformOrigin: dir > 0 ? "left center" : "right center", duration: 1.0 },
-            1.1
-          );
-        }
+      if (subtitleRef.current) tl.from(subtitleRef.current, { autoAlpha: 0, y: 18, duration: 0.7 }, 1.25);
+      if (summaryRef.current) tl.from(summaryRef.current, { autoAlpha: 0, y: 14, duration: 0.65 }, 1.4);
 
-        if (!isMobile && heroRef.current) {
-          gsap
-            .timeline({
-              scrollTrigger: {
-                trigger: heroRef.current,
-                start: "top top",
-                end: "bottom top",
-                scrub: 0.6,
-              },
-            })
-            .to(wordmarkRef.current, { y: -80, scale: 1.04, ease: "none" }, 0)
-            .to(editorialRef.current, { y: -32, ease: "none" }, 0)
-            .to(gradientRef.current, { filter: "brightness(0.92)", ease: "none" }, 0);
-        }
-      });
+      const tagItems = tagsRef.current?.children;
+      if (tagItems && tagItems.length) {
+        tl.from(tagItems, { autoAlpha: 0, y: 12, scale: 0.9, stagger: 0.08, duration: 0.55 }, 1.55);
+      }
+
+      if (ruleRef.current) {
+        tl.from(
+          ruleRef.current,
+          {
+            scaleX: 0,
+            transformOrigin: dir > 0 ? "left center" : "right center",
+            duration: 1.4,
+            ease: "power4.out",
+          },
+          1.3
+        );
+      }
+
+      // Continuous ambient motion — wordmark slowly breathes after entrance
+      if (wordmarkRef.current) {
+        gsap.to(wordmarkRef.current, {
+          scale: 1.025,
+          y: -8,
+          duration: 5.5,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          delay: 2.0,
+        });
+      }
+
+      if (!isMobile && heroRef.current) {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          })
+          .to(wordmarkRef.current, { y: -100, scale: 1.05, ease: "none" }, 0)
+          .to(editorialRef.current, { y: -40, ease: "none" }, 0);
+      }
     },
     { scope: heroRef, dependencies: [isMobile, isRtl, project.heroTitle] }
   );
@@ -865,9 +900,7 @@ function ProjectCinematicHero({
         ref={editorialRef}
         className="absolute inset-x-0 bottom-0 z-20 px-5 pb-12 lg:px-12 lg:pb-14 will-change-transform"
       >
-        <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
-          {/* Editorial — start side on desktop (right in RTL, left in LTR) */}
-          <div className="flex flex-col gap-5 lg:items-start lg:text-start">
+        <div className="flex flex-col gap-5 lg:items-start lg:text-start">
             {/* Eyebrow */}
             {project.heroLabel && (
               <div ref={eyebrowRef} className="flex items-center gap-3 text-white/70">
@@ -932,29 +965,6 @@ function ProjectCinematicHero({
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Meta — end side on desktop (left in RTL, right in LTR) */}
-          {(project.introMeta.client || project.introMeta.type) && (
-            <div ref={metaRef} className="flex flex-row gap-8 lg:flex-col lg:items-end lg:text-end lg:gap-6">
-              {project.introMeta.client && (
-                <div className="space-y-1.5">
-                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.38em] text-white/45">
-                    {isRtl ? "العميل" : "Client"}
-                  </p>
-                  <p className="font-serif text-base text-white/90">{project.introMeta.client}</p>
-                </div>
-              )}
-              {project.introMeta.type && (
-                <div className="space-y-1.5">
-                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.38em] text-white/45">
-                    {isRtl ? "التصنيف" : "Category"}
-                  </p>
-                  <p className="font-serif text-base text-white/90">{project.introMeta.type}</p>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Bottom rule */}
