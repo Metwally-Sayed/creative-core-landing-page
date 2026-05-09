@@ -786,19 +786,6 @@ function ProjectCinematicHero({
         );
       }
 
-      // Continuous ambient motion — wordmark slowly breathes after entrance
-      if (wordmarkRef.current) {
-        gsap.to(wordmarkRef.current, {
-          scale: 1.025,
-          y: -8,
-          duration: 5.5,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          delay: 2.0,
-        });
-      }
-
       if (!isMobile && heroRef.current) {
         gsap
           .timeline({
@@ -822,14 +809,19 @@ function ProjectCinematicHero({
       className="relative overflow-hidden"
       style={{ height: "100svh", minHeight: "640px" }}
     >
-      {/* Layer 1 — vertical brand-color gradient */}
+      {/* Layer 1 — tinted brand gradient (no harsh cream→dark jump; tinted blush throughout) */}
       <div
         ref={gradientRef}
         aria-hidden
-        className="absolute inset-0 will-change-[filter]"
+        className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, hsl(var(--background)) 0%, hsl(var(--background)) 18%, hsl(var(--accent)) 100%)",
+            "linear-gradient(to bottom, " +
+            "color-mix(in oklab, hsl(var(--background)) 88%, hsl(var(--accent))) 0%, " +
+            "color-mix(in oklab, hsl(var(--background)) 70%, hsl(var(--accent))) 28%, " +
+            "color-mix(in oklab, hsl(var(--background)) 38%, hsl(var(--accent))) 60%, " +
+            "color-mix(in oklab, hsl(var(--background)) 12%, hsl(var(--accent))) 85%, " +
+            "hsl(var(--accent)) 100%)",
         }}
       />
 
@@ -848,12 +840,12 @@ function ProjectCinematicHero({
         <div
           ref={wordmarkRef}
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[34%] z-10 -translate-x-1/2 -translate-y-1/2 will-change-transform"
+          className="pointer-events-none absolute left-1/2 top-[44%] z-10 -translate-x-1/2 -translate-y-1/2 will-change-transform"
           style={{ width: isMobile ? "92vw" : "min(78vw, 1100px)" }}
         >
           <div
             className="relative w-full"
-            style={{ aspectRatio: "3 / 1", mixBlendMode: "overlay", opacity: isMobile ? 0.22 : 0.34 }}
+            style={{ aspectRatio: "3 / 1", opacity: isMobile ? 0.45 : 0.55 }}
           >
             <Image
               src={project.heroImage}
