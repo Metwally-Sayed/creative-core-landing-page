@@ -728,6 +728,12 @@ function ProjectCinematicHero({
 
   useGSAP(
     () => {
+      // Read mobile state at setup time, not from React state (which flips
+      // post-mount and would otherwise force useGSAP to re-run mid-animation,
+      // leaving elements stuck at the from() initial state on mobile).
+      const isPhone =
+        typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       if (gradientRef.current) tl.from(gradientRef.current, { autoAlpha: 0, duration: 0.8 }, 0);
@@ -786,7 +792,7 @@ function ProjectCinematicHero({
         );
       }
 
-      if (!isMobile && heroRef.current) {
+      if (!isPhone && heroRef.current) {
         gsap
           .timeline({
             scrollTrigger: {
@@ -800,7 +806,7 @@ function ProjectCinematicHero({
           .to(editorialRef.current, { y: -40, ease: "none" }, 0);
       }
     },
-    { scope: heroRef, dependencies: [isMobile, isRtl, project.heroTitle] }
+    { scope: heroRef }
   );
 
   return (
