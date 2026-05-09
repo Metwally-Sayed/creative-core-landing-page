@@ -16,6 +16,7 @@ interface ContactItem {
   sublabel: string;
   value: string;
   href?: string;
+  external?: boolean;
 }
 
 function AnimatedLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
@@ -101,6 +102,7 @@ function ContactCard({ item }: { item: ContactItem }) {
         onClick={handleClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         className="group block border-t border-[color:var(--footer-border)] pt-6"
       >
         <p className="mb-2 text-sm text-[color:var(--footer-muted)]">{item.sublabel}</p>
@@ -144,6 +146,11 @@ export default function Footer({
   const pathname = usePathname() || '';
   const isProductPage = pathname.startsWith('/product');
 
+  const whatsappNumber = settings?.whatsapp ?? "";
+  const whatsappHref = whatsappNumber
+    ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`
+    : undefined;
+
   const contactItems: ContactItem[] = [
     {
       label: tFooter("collaborateLabel"),
@@ -157,12 +164,21 @@ export default function Footer({
       value: settings?.contact_email ?? "hello@creativecore.com",
       href: `mailto:${settings?.contact_email ?? "hello@creativecore.com"}`,
     },
-    {
-      label: tFooter("careersLabel"),
-      sublabel: tFooter("careersSublabel"),
-      value: tFooter("applyHere"),
-      href: "#careers",
-    },
+    ...(whatsappHref
+      ? [{
+          label: tFooter("whatsapp"),
+          sublabel: tFooter("chatWithUs"),
+          value: tFooter("whatsapp"),
+          href: whatsappHref,
+          external: true,
+        }]
+      : []),
+    // {
+    //   label: tFooter("careersLabel"),
+    //   sublabel: tFooter("careersSublabel"),
+    //   value: tFooter("applyHere"),
+    //   href: "#careers",
+    // },
     {
       label: tFooter("internshipsLabel"),
       sublabel: tFooter("internshipsSublabel"),
@@ -281,6 +297,7 @@ export default function Footer({
                     { label: "Twitter", url: settings?.social_twitter },
                     { label: "Vimeo", url: settings?.social_vimeo },
                     { label: "TikTok", url: settings?.social_tiktok },
+                    { label: tFooter("whatsapp"), url: whatsappHref },
                   ]
                     .filter((s) => s.url)
                     .map(({ label, url }) => (

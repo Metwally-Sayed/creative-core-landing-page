@@ -13,6 +13,12 @@
     "scrollToExplore": "Scroll to explore",
     "readMore": "Read more"
   },
+  "meta": {
+    "aboutTitle": "About Us | Creative Core",
+    "aboutDescription": "We are a full-service creative agency that combines creative thinking with practical execution to help brands launch, grow, and stand out.",
+    "servicesTitle": "Services | Creative Core",
+    "servicesDescription": "Branding, digital marketing, content creation, photography, 3D, motion graphics, and websites & apps — a full system that serves your brand."
+  },
   "home": {
     "heroHeadlineLine1": "Ideas That",
     "heroHeadlineLine2": "Orbit Your",
@@ -26,6 +32,7 @@
     "projectsFilterSocialMedia": "social media",
     "projectsFilterPhotography": "photography",
     "projectsFilterPackaging": "Packaging & Print Design",
+    "projectsFilterMarketing": "Marketing",
     "projectsFilterContentCreation": "Content Creation",
     "projectsViewAllLabel": "Explore All",
     "projectsViewAllSub": "23 dynamic case studies"
@@ -58,14 +65,30 @@
     "homeAriaLabel": "Creative Core home",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "menuLabel": "Menu"
+    "menuLabel": "Menu",
+    "whatsappCta": "Contact Us"
   },
   "about": {
-    "jumpAheadLabel": "Jump ahead:"
+    "jumpAheadLabel": "Jump ahead:",
+    "studioBreadcrumb": "Studio · About",
+    "sideLabel": "About",
+    "whoWeAreLabel": "Who we are",
+    "processLabel": "Process",
+    "stepLabel": "Step",
+    "tagDesign": "Design",
+    "tagStrategy": "Strategy",
+    "tagMotion": "Motion"
   },
   "services": {
     "jumpAheadLabel": "Jump ahead:",
-    "shinyThingsLink": "Shiny Things"
+    "shinyThingsLink": "Shiny Things",
+    "studioBreadcrumb": "Studio · Services",
+    "sideLabel": "Services",
+    "whatWeOfferLabel": "What we offer",
+    "credentials": "Credentials",
+    "tagBrand": "Brand",
+    "tagDigital": "Digital",
+    "tagMotion": "Motion"
   },
   "work": {
     "filterLabel": "Filter:"
@@ -212,6 +235,8 @@
     "ourWorlds": "Our Worlds",
     "globalPrivacy": "Global Privacy Statement",
     "backToTop": "Back to top",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "chatWithUs": "Chat with us",
+    "whatsapp": "WhatsApp"
   }
 }

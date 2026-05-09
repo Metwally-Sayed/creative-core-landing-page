@@ -13,6 +13,12 @@
     "scrollToExplore": "مرّر للاستكشاف",
     "readMore": "اقرأ المزيد"
   },
+  "meta": {
+    "aboutTitle": "من نحن | نواة الإبداع",
+    "aboutDescription": "وكالة إبداعية متكاملة تجمع بين التفكير الإبداعي والتنفيذ العملي لمساعدة العلامات التجارية على الإطلاق والنمو والتميّز.",
+    "servicesTitle": "خدماتنا | نواة الإبداع",
+    "servicesDescription": "براندينج، تسويق إلكتروني، صناعة محتوى، تصوير، تصميم ثلاثي الأبعاد، موشن جرافيك، ومواقع وتطبيقات — منظومة كاملة تخدم براندك."
+  },
   "home": {
     "heroHeadlineLine1": "أفكار تدور",
     "heroHeadlineLine2": "في فلك",
@@ -26,6 +32,7 @@
     "projectsFilterSocialMedia": "سوشيال ميديا",
     "projectsFilterPhotography": "تصوير",
     "projectsFilterPackaging": "تصميم التغليف والطباعة",
+    "projectsFilterMarketing": "تسويق",
     "projectsFilterContentCreation": "إنشاء المحتوى",
     "projectsViewAllLabel": "استكشف الكل",
     "projectsViewAllSub": "٢٣ دراسة حالة ديناميكية"
@@ -58,14 +65,30 @@
     "homeAriaLabel": "الصفحة الرئيسية لـ Creative Core",
     "openMenu": "فتح القائمة",
     "closeMenu": "إغلاق القائمة",
-    "menuLabel": "القائمة"
+    "menuLabel": "القائمة",
+    "whatsappCta": "تواصل معنا"
   },
   "about": {
-    "jumpAheadLabel": "انتقل إلى:"
+    "jumpAheadLabel": "انتقل إلى:",
+    "studioBreadcrumb": "الاستوديو · من نحن",
+    "sideLabel": "من نحن",
+    "whoWeAreLabel": "من نحن",
+    "processLabel": "العملية",
+    "stepLabel": "خطوة",
+    "tagDesign": "تصميم",
+    "tagStrategy": "استراتيجية",
+    "tagMotion": "حركة"
   },
   "services": {
     "jumpAheadLabel": "انتقل إلى:",
-    "shinyThingsLink": "أشياء لامعة"
+    "shinyThingsLink": "أشياء لامعة",
+    "studioBreadcrumb": "الاستوديو · الخدمات",
+    "sideLabel": "الخدمات",
+    "whatWeOfferLabel": "ما نقدمه",
+    "credentials": "اعتماداتنا",
+    "tagBrand": "براند",
+    "tagDigital": "رقمي",
+    "tagMotion": "حركة"
   },
   "work": {
     "filterLabel": "تصفية:"
@@ -212,6 +235,8 @@
     "ourWorlds": "عوالمنا",
     "globalPrivacy": "بيان الخصوصية العالمي",
     "backToTop": "العودة إلى الأعلى",
-    "copied": "تم النسخ!"
+    "copied": "تم النسخ!",
+    "chatWithUs": "تحدّث معنا",
+    "whatsapp": "واتساب"
   }
 }

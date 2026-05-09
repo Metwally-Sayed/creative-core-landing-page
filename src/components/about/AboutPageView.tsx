@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   EditorialReveal,
@@ -134,6 +135,7 @@ function ProcessSection({
   steps: ResolvedStep[];
 }) {
   const dir = useDirection();
+  const tCommon = useTranslations("common");
   return (
     <section className="py-16 md:py-28">
       <div className="mx-auto max-w-[1450px] px-6 md:px-10 lg:px-16">
@@ -185,7 +187,7 @@ function ProcessSection({
                 href="/work"
                 className="inline-block text-[0.82rem] font-medium text-accent underline decoration-secondary/70 underline-offset-[3px] transition-colors hover:text-secondary"
               >
-                See our work →
+                {tCommon("seeWork")} {dir === -1 ? "←" : "→"}
               </Link>
             </EditorialReveal>
           </div>

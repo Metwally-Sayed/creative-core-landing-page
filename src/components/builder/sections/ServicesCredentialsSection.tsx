@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { EditorialReveal, EditorialWordReveal } from "@/components/editorial/EditorialMotion";
 import { useDirection } from "@/hooks/useDirection";
 
@@ -21,6 +22,7 @@ export default function ServicesCredentialsSection({
 }) {
   const dir = useDirection();
   const reduced = useReducedMotion();
+  const t = useTranslations("services");
   const mid = Math.ceil(stats.length / 2);
   const col1 = stats.slice(0, mid);
   const col2 = stats.slice(mid);
@@ -69,11 +71,11 @@ export default function ServicesCredentialsSection({
         >
           <div className="flex items-center gap-2.5">
             <motion.div
-              className="h-1.5 w-1.5 rounded-full bg-accent/50"
+              className="h-1.5 w-1.5 rounded-full bg-secondary"
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
               {eyebrow}
             </span>
           </div>
@@ -129,14 +131,14 @@ export default function ServicesCredentialsSection({
 
           {/* Body */}
           <EditorialReveal delay={0.38} x={20 * dir} y={20}>
-            <div className="flex h-full flex-col justify-between gap-8 lg:border-s lg:border-accent/10 lg:ps-14 lg:pt-1">
+            <div className="flex flex-col gap-8 lg:h-full lg:justify-between lg:border-s lg:border-accent/10 lg:ps-14 lg:pt-1">
               <div className="flex items-center gap-3">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-accent/30">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-secondary">
                   <rect x="0.5" y="0.5" width="15" height="15" stroke="currentColor" strokeWidth="0.7" />
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-accent/28">Credentials</span>
+                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">{t("credentials")}</span>
               </div>
               <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] tracking-[-0.01em] text-foreground/60">
                 {body}
@@ -161,10 +163,10 @@ export default function ServicesCredentialsSection({
                       transition={{ duration: 0.9, delay: 0.15 + si * 0.1, ease }}
                     />
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6">
-                      <p className="font-serif text-[1.65rem] leading-[1.05] tracking-[-0.03em] text-accent md:text-[1.95rem]">
+                      <p className="font-serif text-[1.3rem] leading-[1.05] tracking-[-0.03em] text-accent md:text-[1.65rem] lg:text-[1.95rem]">
                         {stat.label}
                       </p>
-                      <p className="font-serif text-[4rem] leading-none tracking-[-0.07em] text-accent/90 md:text-[5rem]">
+                      <p className="font-serif text-[3rem] leading-none tracking-[-0.07em] text-accent/90 md:text-[4rem] lg:text-[5rem]">
                         {stat.value}
                       </p>
                     </div>

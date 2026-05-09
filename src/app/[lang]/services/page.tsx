@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPage } from "@/lib/page-data";
 import SectionRenderer from "@/components/builder/SectionRenderer";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Services | Creative Core",
-  description:
-    "Brand identity, packaging, content, campaigns, and digital presence — creative solutions built to grow your brand.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "meta" });
+  return {
+    title: t("servicesTitle"),
+    description: t("servicesDescription"),
+  };
+}
 
 export default async function ServicesPage({
   params,

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { EditorialWordReveal, EditorialReveal } from "@/components/editorial/EditorialMotion";
 import { useDirection } from "@/hooks/useDirection";
 
@@ -9,6 +10,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function AboutHeroSection({ title, body }: { title: string; body: string }) {
   const dir = useDirection();
   const reduced = useReducedMotion();
+  const t = useTranslations("about");
 
   return (
     <section className="relative overflow-hidden bg-background">
@@ -64,9 +66,9 @@ export default function AboutHeroSection({ title, body }: { title: string; body:
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
         >
-          <span className="font-mono text-[0.65rem] uppercase tracking-[0.45em] text-accent/25">About</span>
+          <span className="font-mono text-[0.65rem] uppercase tracking-[0.45em] text-accent/25">{t("sideLabel")}</span>
           <div className="h-16 w-px bg-accent/15" />
-          <span className="font-mono text-[0.65rem] tabular-nums tracking-[0.3em] text-accent/18">001</span>
+          <span className="font-mono text-[0.65rem] tabular-nums tracking-[0.3em] text-secondary">001</span>
         </motion.div>
 
         {/* Chapter strip */}
@@ -78,12 +80,12 @@ export default function AboutHeroSection({ title, body }: { title: string; body:
         >
           <div className="flex items-center gap-2.5">
             <motion.div
-              className="h-1.5 w-1.5 rounded-full bg-accent/50"
+              className="h-1.5 w-1.5 rounded-full bg-secondary"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-accent/40">
-              Studio · About
+            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
+              {t("studioBreadcrumb")}
             </span>
           </div>
           <motion.div
@@ -138,17 +140,17 @@ export default function AboutHeroSection({ title, body }: { title: string; body:
 
           {/* Body block */}
           <EditorialReveal delay={0.45} x={22 * dir} y={22}>
-            <div className="flex h-full flex-col justify-between gap-10 lg:border-s lg:border-accent/10 lg:ps-14 lg:pt-1">
+            <div className="flex flex-col gap-8 lg:h-full lg:justify-between lg:border-s lg:border-accent/10 lg:ps-14 lg:pt-1">
 
               {/* Header of body col */}
               <div className="flex items-center gap-3">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0 text-accent/35">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0 text-secondary">
                   <rect x="0.5" y="0.5" width="17" height="17" stroke="currentColor" strokeWidth="0.8" />
                   <line x1="9" y1="0.5" x2="9" y2="17.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="9" x2="17.5" y2="9" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-accent/30">
-                  Who we are
+                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">
+                  {t("whoWeAreLabel")}
                 </span>
               </div>
 
@@ -164,7 +166,7 @@ export default function AboutHeroSection({ title, body }: { title: string; body:
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.8 }}
               >
-                {["Design", "Strategy", "Motion"].map((tag, i) => (
+                {[t("tagDesign"), t("tagStrategy"), t("tagMotion")].map((tag, i) => (
                   <div key={tag} className="flex flex-col gap-1.5">
                     <div
                       className="h-px bg-accent/30"
