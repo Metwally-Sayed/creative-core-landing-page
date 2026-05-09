@@ -6,6 +6,9 @@ const emptySubscribe = () => () => {};
 import { ArrowUpRight, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { useTranslations, useLocale } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
@@ -13,6 +16,8 @@ import { Link } from "@/i18n/navigation";
 import type { ProjectColor, ProjectDetail, ProjectSummary, ProjectSection } from "@/lib/project-catalog";
 import { COLOR_TOKENS, buildProjectThemeTokens } from "@/lib/project-theme";
 import LiquidCard from "@/components/LiquidCard";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type ProjectDetailViewProps = {
   project: ProjectDetail;
@@ -310,9 +315,16 @@ function PullQuote() {
 function MetricReveal({ metric, index, total }: { metric: { label: string, value: string }; index: number; total: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
+  const locale = useLocale();
+  const isAr = locale === "ar";
+  const toE = (n: number) => isAr ? String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[+d]) : String(n);
+  const counterLabel = isAr
+    ? `${toE(index + 1)} من ${toE(total)}`
+    : `${index + 1} of ${total}`;
+  const decorNum = isAr ? toE(index + 1) : `0${index + 1}`;
   return (
-    <motion.div 
-      ref={ref} 
+    <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 60 }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
       transition={{ duration: 0.9, delay: 0.15 + index * 0.2, ease: transitionEase }}
@@ -320,22 +332,22 @@ function MetricReveal({ metric, index, total }: { metric: { label: string, value
     >
       {/* Decorative glow on hover */}
       <div className="absolute -top-12 -right-12 size-40 rounded-full bg-[hsl(var(--secondary))]/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-      
+
       {/* Phase index */}
       <span className="text-[5rem] md:text-[6rem] font-serif font-black leading-none text-white/[0.04] absolute -top-3 -left-1 select-none pointer-events-none">
-        0{index + 1}
+        {decorNum}
       </span>
-      
+
       {/* Metric dot + label */}
       <div className="flex items-center gap-3 mb-6 relative z-10">
-        <motion.div 
-          initial={{ scale: 0 }} 
+        <motion.div
+          initial={{ scale: 0 }}
           animate={inView ? { scale: 1 } : { scale: 0 }}
           transition={{ duration: 0.4, delay: 0.4 + index * 0.15 }}
-          className="size-2.5 rounded-full bg-[hsl(var(--secondary))] shrink-0" 
+          className="size-2.5 rounded-full bg-[hsl(var(--secondary))] shrink-0"
         />
-        <p className="text-xs uppercase tracking-[0.2em] text-white/40 font-medium">
-          {index + 1} of {total}
+        <p className="text-xs uppercase tracking-[0.2em] text-white/40 font-medium" dir="ltr">
+          {counterLabel}
         </p>
       </div>
 
@@ -685,6 +697,274 @@ function ColorPaletteShowcase({ colors }: { colors: ProjectColor[] }) {
 }
 
 // -------------------------------------------------------------
+// Brand-Wordmark Hero — gradient + ghosted white logo + GSAP timeline
+// -------------------------------------------------------------
+
+function ProjectCinematicHero({
+  project,
+  isMobile,
+  isRtl,
+}: {
+  project: ProjectDetail;
+  isMobile: boolean;
+  isRtl: boolean;
+}) {
+  const heroRef = useRef<HTMLElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+  const wordmarkRef = useRef<HTMLDivElement>(null);
+  const editorialRef = useRef<HTMLDivElement>(null);
+  const topBarRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
+  const titleWrapRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const summaryRef = useRef<HTMLParagraphElement>(null);
+  const tagsRef = useRef<HTMLDivElement>(null);
+  const metaRef = useRef<HTMLDivElement>(null);
+  const ruleRef = useRef<HTMLDivElement>(null);
+
+  const dir = isRtl ? -1 : 1;
+  const titleIsAr = isArabicText(project.heroTitle);
+  const subtitleIsAr = project.heroSubtitle ? isArabicText(project.heroSubtitle) : isRtl;
+  const summaryIsAr = project.heroSummary ? isArabicText(project.heroSummary) : isRtl;
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+        if (gradientRef.current) tl.from(gradientRef.current, { autoAlpha: 0, duration: 0.6 }, 0);
+        if (wordmarkRef.current) tl.from(wordmarkRef.current, { autoAlpha: 0, scale: 1.06, y: 24, duration: 1.4 }, 0.15);
+        if (topBarRef.current) tl.from(topBarRef.current, { autoAlpha: 0, y: -12, duration: 0.55 }, 0.35);
+        if (eyebrowRef.current) tl.from(eyebrowRef.current, { autoAlpha: 0, x: dir * -20, duration: 0.5 }, 0.7);
+
+        const chars = titleWrapRef.current?.querySelectorAll<HTMLElement>("[data-char]");
+        if (chars && chars.length) {
+          tl.from(chars, { yPercent: 110, autoAlpha: 0, stagger: 0.04, duration: 0.7, ease: "power4.out" }, 0.8);
+        } else if (titleWrapRef.current) {
+          tl.from(titleWrapRef.current, { yPercent: 25, autoAlpha: 0, duration: 0.8, ease: "power4.out" }, 0.8);
+        }
+
+        if (subtitleRef.current) tl.from(subtitleRef.current, { autoAlpha: 0, y: 14, duration: 0.55 }, 1.05);
+        if (summaryRef.current) tl.from(summaryRef.current, { autoAlpha: 0, y: 10, duration: 0.5 }, 1.2);
+
+        const tagItems = tagsRef.current?.children;
+        if (tagItems && tagItems.length) {
+          tl.from(tagItems, { autoAlpha: 0, x: dir * -10, stagger: 0.07, duration: 0.4 }, 1.3);
+        }
+
+        if (metaRef.current) tl.from(metaRef.current, { autoAlpha: 0, x: dir * 24, duration: 0.55 }, 0.95);
+        if (ruleRef.current) {
+          tl.from(
+            ruleRef.current,
+            { scaleX: 0, transformOrigin: dir > 0 ? "left center" : "right center", duration: 1.0 },
+            1.1
+          );
+        }
+
+        if (!isMobile && heroRef.current) {
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: heroRef.current,
+                start: "top top",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            })
+            .to(wordmarkRef.current, { y: -80, scale: 1.04, ease: "none" }, 0)
+            .to(editorialRef.current, { y: -32, ease: "none" }, 0)
+            .to(gradientRef.current, { filter: "brightness(0.92)", ease: "none" }, 0);
+        }
+      });
+    },
+    { scope: heroRef, dependencies: [isMobile, isRtl, project.heroTitle] }
+  );
+
+  return (
+    <section
+      ref={heroRef}
+      className="relative overflow-hidden"
+      style={{ height: "100svh", minHeight: "640px" }}
+    >
+      {/* Layer 1 — vertical brand-color gradient */}
+      <div
+        ref={gradientRef}
+        aria-hidden
+        className="absolute inset-0 will-change-[filter]"
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(var(--background)) 0%, hsl(var(--background)) 18%, hsl(var(--accent)) 100%)",
+        }}
+      />
+
+      {/* Layer 2 — soft grain for tactile depth */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 h-full w-full">
+          <filter id="hero-grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#hero-grain)" />
+        </svg>
+      </div>
+
+      {/* Layer 3 — giant white wordmark watermark */}
+      {project.heroImage && (
+        <div
+          ref={wordmarkRef}
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-[34%] z-10 -translate-x-1/2 -translate-y-1/2 will-change-transform"
+          style={{ width: isMobile ? "92vw" : "min(78vw, 1100px)" }}
+        >
+          <div
+            className="relative w-full"
+            style={{ aspectRatio: "3 / 1", mixBlendMode: "overlay", opacity: isMobile ? 0.22 : 0.34 }}
+          >
+            <Image
+              src={project.heroImage}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 92vw, 1100px"
+              className="object-contain select-none"
+              priority
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Layer 4 — top bar */}
+      <div
+        ref={topBarRef}
+        className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 pt-8 lg:px-12 lg:pt-10"
+      >
+        <Link
+          href="/projects"
+          className="group flex items-center gap-2 text-white/70 transition-colors hover:text-white"
+        >
+          <ArrowUpRight
+            className={`size-4 transition-transform group-hover:-translate-y-px ${
+              isRtl ? "-rotate-[315deg]" : "rotate-[225deg]"
+            }`}
+          />
+          <span className="font-mono text-[0.68rem] uppercase tracking-[0.32em]">
+            {isRtl ? "العودة" : "Back"}
+          </span>
+        </Link>
+        {!isMobile && (
+          <div className="flex items-center gap-3 text-white/40">
+            <span className="font-mono text-[0.58rem] uppercase tracking-[0.42em]">
+              {isRtl ? "مرّر" : "Scroll"}
+            </span>
+            <div className="h-7 w-px bg-white/30" />
+          </div>
+        )}
+      </div>
+
+      {/* Layer 5 — editorial content */}
+      <div
+        ref={editorialRef}
+        className="absolute inset-x-0 bottom-0 z-20 px-5 pb-12 lg:px-12 lg:pb-14 will-change-transform"
+      >
+        <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+          {/* Editorial — start side on desktop (right in RTL, left in LTR) */}
+          <div className="flex flex-col gap-5 lg:items-start lg:text-start">
+            {/* Eyebrow */}
+            {project.heroLabel && (
+              <div ref={eyebrowRef} className="flex items-center gap-3 text-white/70">
+                <div className="h-px w-8 bg-white/50" />
+                <span className="font-mono text-[0.66rem] uppercase tracking-[0.42em]">
+                  {project.heroLabel}
+                </span>
+              </div>
+            )}
+
+            {/* Project name */}
+            <div ref={titleWrapRef} className="overflow-hidden">
+              <h1
+                className="font-serif leading-[0.96] tracking-[-0.04em] text-white"
+                style={{
+                  fontSize: "clamp(3rem, 8.4vw, 6.75rem)",
+                  direction: titleIsAr ? "rtl" : "ltr",
+                }}
+              >
+                {titleIsAr
+                  ? project.heroTitle
+                  : project.heroTitle.split("").map((c, i) => (
+                      <span key={i} data-char className="inline-block">
+                        {c === " " ? " " : c}
+                      </span>
+                    ))}
+              </h1>
+            </div>
+
+            {/* Subtitle */}
+            {project.heroSubtitle && (
+              <p
+                ref={subtitleRef}
+                className="max-w-md text-[1rem] font-light leading-relaxed text-white/80 md:text-[1.1rem]"
+                style={{ direction: subtitleIsAr ? "rtl" : "ltr" }}
+              >
+                {project.heroSubtitle}
+              </p>
+            )}
+
+            {/* Summary — desktop only */}
+            {project.heroSummary && !isMobile && (
+              <p
+                ref={summaryRef}
+                className="hidden max-w-md text-[0.9rem] leading-relaxed text-white/60 md:block"
+                style={{ direction: summaryIsAr ? "rtl" : "ltr" }}
+              >
+                {project.heroSummary}
+              </p>
+            )}
+
+            {/* Tags */}
+            {project.tags.length > 0 && (
+              <div ref={tagsRef} className="flex flex-wrap gap-2 lg:justify-start">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/30 px-3.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-white/85 transition-colors duration-300 hover:border-white/70 hover:text-white"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Meta — end side on desktop (left in RTL, right in LTR) */}
+          {(project.introMeta.client || project.introMeta.type) && (
+            <div ref={metaRef} className="flex flex-row gap-8 lg:flex-col lg:items-end lg:text-end lg:gap-6">
+              {project.introMeta.client && (
+                <div className="space-y-1.5">
+                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.38em] text-white/45">
+                    {isRtl ? "العميل" : "Client"}
+                  </p>
+                  <p className="font-serif text-base text-white/90">{project.introMeta.client}</p>
+                </div>
+              )}
+              {project.introMeta.type && (
+                <div className="space-y-1.5">
+                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.38em] text-white/45">
+                    {isRtl ? "التصنيف" : "Category"}
+                  </p>
+                  <p className="font-serif text-base text-white/90">{project.introMeta.type}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Bottom rule */}
+        <div ref={ruleRef} className="mt-10 h-px w-full bg-white/25" />
+      </div>
+    </section>
+  );
+}
+
+// -------------------------------------------------------------
 // Main Component
 // -------------------------------------------------------------
 
@@ -732,14 +1012,6 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
 
   const { scrollYProgress } = useScroll();
 
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "45%"]);
-  const heroArtworkY = useTransform(heroScroll, [0, 1], ["0%", "85%"]);
-  const heroLayer1Y = useTransform(heroScroll, [0, 1], ["0%", "60%"]);
-  const heroLayer2Y = useTransform(heroScroll, [0, 1], ["0%", "120%"]);
-  const heroOpacity = useTransform(heroScroll, [0, 0.7], [1, 0]);
-
   const overviewRef = useRef(null);
   const overviewInView = useInView(overviewRef, { once: true, margin: "-50px" });
 
@@ -782,114 +1054,12 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
           style={{ scaleX: scrollYProgress }} 
         />
 
-        {/* 1. Cinematic Layered Parallax Hero */}
-        <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 text-white min-h-[90vh]">
-          {/* Animated Gradient Mesh Base */}
-          <div className="absolute inset-0 bg-[hsl(var(--accent))]">
-            {/* Subtle white radial glow — keeps depth without pulling in black */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_30%_30%,rgba(255,255,255,0.10),transparent_70%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_80%,rgba(255,255,255,0.05),transparent_70%)]" />
-            {/* Pulse blobs tinted white so they only ever lighten */}
-            <div className="absolute top-[-20%] left-[-10%] hidden h-[50%] w-[50%] rounded-full bg-white opacity-[0.07] blur-[120px] animate-pulse md:block" style={{ animationDuration: '8s' }} />
-            <div className="absolute bottom-[-10%] right-[-10%] hidden h-[60%] w-[60%] rounded-full bg-white opacity-[0.04] blur-[150px] animate-pulse md:block" style={{ animationDuration: '10s' }} />
-          </div>
-          
-          <motion.div style={isMobile ? undefined : { y: heroLayer2Y, opacity: heroOpacity }} className="absolute inset-0 z-0 hidden items-center justify-center pointer-events-none md:flex">
-            <div className="size-160 border border-white/5 rounded-full absolute -left-40 top-40" />
-            <div className="size-120 border border-white/5 rounded-full absolute -right-20 -top-20" />
-          </motion.div>
-
-          <motion.div style={isMobile ? undefined : { y: heroLayer1Y, opacity: heroOpacity }} className="absolute inset-0 z-0 hidden items-center justify-center pointer-events-none md:flex">
-            <div className="w-[120%] h-px bg-linear-to-r from-transparent via-white/10 to-transparent absolute top-1/3 rotate-[-15deg]" />
-            <div className="w-[120%] h-px bg-linear-to-r from-transparent via-white/10 to-transparent absolute bottom-1/4 rotate-10" />
-          </motion.div>
-
-          <div className="site-shell relative z-10 flex flex-col items-center justify-between text-center min-h-[50vh]">
-            <motion.div style={isMobile ? undefined : { y: heroTextY, opacity: heroOpacity }} className="space-y-6 max-w-5xl pt-8 relative z-20">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: isMobile ? 0.1 : 2.3, ease: transitionEase }}
-                className="eyebrow text-[hsl(var(--secondary))] opacity-90"
-              >
-                {project.introMeta.client} {project.title.toLowerCase().includes("api") ? "API" : ""}
-              </motion.p>
-              
-              <div className="font-serif text-[4rem] sm:text-[5.5rem] md:text-[7.5rem] leading-[0.95] tracking-[-0.04em] overflow-hidden">
-                 <SplitText text={project.heroTitle} />
-              </div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: isMobile ? 0.3 : 2.8, ease: transitionEase }}
-                className="mx-auto max-w-2xl text-[1.15rem] md:text-[1.4rem] font-light text-white/70 leading-relaxed"
-              >
-                {project.heroSubtitle}
-              </motion.p>
-            </motion.div>
-            
-            {/* Parallax Artwork — Layered Portrait Frame */}
-            <motion.div
-              style={isMobile ? undefined : { y: heroArtworkY, opacity: heroOpacity }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: isMobile ? 0.6 : 3, ease: transitionEase }}
-              className="mt-20 md:mt-28 relative z-10 select-none"
-            >
-              {/* Depth shadow layer — offset card behind */}
-              <div className="absolute top-3 left-3 w-full h-full rounded-sm bg-accent/20 blur-[2px]" />
-
-              {/* Ghost card (second layer, slightly offset) */}
-              <motion.div
-                className="absolute -top-2 -right-2 w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-sm border border-white/[0.08] bg-white/[0.03]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: isMobile ? 0.9 : 3.3 }}
-              />
-
-              {/* Main portrait card */}
-              <div className="relative w-[11rem] h-[15rem] md:w-[15rem] md:h-[21rem] rounded-sm overflow-hidden border border-white/[0.14] z-10">
-                <Image src={project.primaryShowcase.src} alt="Hero Cover" fill className="object-cover" priority />
-
-                {/* Accent tint */}
-                <div className="pointer-events-none absolute inset-0 opacity-[0.14] mix-blend-color" style={{ background: "hsl(var(--accent))" }} />
-
-                {/* Top vignette */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-
-                {/* Animated scan line */}
-                <motion.div
-                  className="pointer-events-none absolute inset-x-0 h-[1px]"
-                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)" }}
-                  animate={{ y: [0, 336] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                />
-
-                {/* Corner tick marks */}
-                <div className="pointer-events-none absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-white/40" />
-                <div className="pointer-events-none absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-white/40" />
-                <div className="pointer-events-none absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-white/40" />
-                <div className="pointer-events-none absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-white/40" />
-
-                {/* Bottom label inside card */}
-                <div className="pointer-events-none absolute bottom-3 inset-x-0 flex items-center justify-center gap-2">
-                  <div className="h-px w-4 bg-white/25" />
-                  <span className="font-mono text-[0.45rem] uppercase tracking-[0.45em] text-white/40">Artwork</span>
-                  <div className="h-px w-4 bg-white/25" />
-                </div>
-              </div>
-
-              {/* Pulsing glow beneath */}
-              <motion.div
-                className="pointer-events-none absolute -inset-4 -z-10 rounded-sm"
-                style={{ filter: "blur(32px)", background: "hsl(var(--accent) / 0.22)" }}
-                animate={{ opacity: [0.4, 0.8, 0.4] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </motion.div>
-          </div>
-        </section>
+        {/* 1. Cinematic Full-Bleed Hero */}
+        <ProjectCinematicHero
+          project={project}
+          isMobile={isMobile}
+          isRtl={isRtl}
+        />
 
         {/* 2. Overview Bar */}
         <section ref={overviewRef} className="site-shell -mt-12 md:-mt-20 relative z-20 px-4 md:px-8 mb-20 md:mb-32">
@@ -917,7 +1087,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         </section>
 
         {/* 3. Editorial Intro */}
-        <section ref={introRef} className="site-shell pb-20 md:pb-32 px-6 md:px-12">
+        {/* <section ref={introRef} className="site-shell pb-20 md:pb-32 px-6 md:px-12">
           <div className="grid gap-12 md:gap-20 lg:grid-cols-[1.1fr_1.4fr] items-start">
             <h2 className="font-serif text-[2.75rem] leading-[1.05] tracking-[-0.04em] text-accent md:text-[4rem] lg:text-[4.75rem] md:pe-10">
               <SplitText text={project.title} />
@@ -932,10 +1102,10 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* 4. Primary LiquidCard Showcase */}
-        <section className="site-shell pb-24 md:pb-40 px-4 md:px-8">
+        <section className="site-shell pb-24 md:pb-10 px-4 md:px-8">
           <LiquidCard aspectRatio="aspect-[4/3] md:aspect-[2.2/1]" className="w-full shadow-2xl border border-black/5 dark:border-white/5">
             <RevealImage src={project.primaryShowcase.src} alt={project.primaryShowcase.alt} sizes="100vw" priority />
           </LiquidCard>
