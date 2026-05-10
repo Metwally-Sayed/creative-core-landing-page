@@ -55,11 +55,7 @@ function Preloader({ title, skip = false }: { title: string; skip?: boolean }) {
   // `skip` flips after mount when the media query resolves, so we must
   // explicitly hide here — otherwise the earlier state (isVisible=true) sticks.
   useEffect(() => {
-    if (skip) {
-      setIsVisible(false);
-      return;
-    }
-    const timer = setTimeout(() => setIsVisible(false), 2000);
+    const timer = setTimeout(() => setIsVisible(false), skip ? 0 : 2000);
     return () => clearTimeout(timer);
   }, [skip]);
 
@@ -116,7 +112,7 @@ function FloatingNavPill({ title, progress }: { title: string, progress: number 
           transition={{ duration: 0.5, ease: transitionEase }}
           className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="flex items-center gap-4 rounded-full border border-[hsl(var(--accent-foreground))/0.22] bg-[hsl(var(--accent))/0.88] px-6 py-3 text-[hsl(var(--accent-foreground))] shadow-[0_10px_40px_hsl(var(--accent)/0.35)] backdrop-blur-md">
+          <div className="flex items-center gap-4 rounded-full border border-[hsl(var(--accent-foreground))/0.15] bg-[hsl(var(--accent))] px-6 py-3 text-[hsl(var(--accent-foreground))] shadow-[0_10px_40px_hsl(var(--accent)/0.35)]">
             <div className="relative size-2 shrink-0 overflow-hidden rounded-full bg-[hsl(var(--accent-foreground))/0.22]">
                <motion.div 
                  className="absolute bottom-0 left-0 right-0 bg-secondary" 

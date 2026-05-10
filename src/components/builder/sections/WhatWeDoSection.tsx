@@ -17,7 +17,6 @@ import {
   Lightbulb,
 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
-
 // ─── Icon registry ────────────────────────────────────────────────────────────
 
 type IconName =
@@ -87,7 +86,7 @@ export default function WhatWeDoSection({
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="text-center mb-16 md:mb-24">
           {eyebrow && (
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--secondary))]">
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-secondary">
               {eyebrow}
             </p>
           )}

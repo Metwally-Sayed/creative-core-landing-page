@@ -195,10 +195,23 @@ export default async function SectionRenderer({
             );
 
           case "services_section": {
-            // Track index across services_section instances
             const svcIdx = sections
               .slice(0, sections.indexOf(section))
               .filter((s) => s.type === "services_section").length;
+
+            // AR cards only translate title/subtitle — image_url and slug always come from EN
+            const enCards = Array.isArray(section.content.cards)
+              ? (section.content.cards as ServiceCard[])
+              : [];
+            const rawCards = Array.isArray(c.cards) ? (c.cards as ServiceCard[]) : [];
+            const mergedCards = isAr
+              ? rawCards.map((card, i) => ({
+                  ...card,
+                  image_url: enCards[i]?.image_url ?? card.image_url,
+                  slug: enCards[i]?.slug ?? card.slug,
+                }))
+              : rawCards;
+
             return (
               <ServicesSectionBlock
                 key={section.id}
@@ -208,7 +221,8 @@ export default async function SectionRenderer({
                 title={String(c.title ?? "")}
                 body={String(c.body ?? "")}
                 link_label={String(c.link_label ?? "")}
-                cards={Array.isArray(c.cards) ? (c.cards as ServiceCard[]) : []}
+                cards={mergedCards}
+                showcase_images={Array.isArray(c.showcase_images) ? (c.showcase_images as Array<{ url: string; alt: string }>) : []}
               />
             );
           }
