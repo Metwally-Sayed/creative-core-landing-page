@@ -3,14 +3,14 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import LiquidCard from '@/components/LiquidCard';
 import { Link } from '@/i18n/navigation';
 import { useDirection } from '@/hooks/useDirection';
 import type { ProjectSummaryDb } from '@/lib/project-data';
 
 // Liquid blob card component
-function LiquidProjectCard({ project, index }: { project: ProjectSummaryDb; index: number }) {
+function LiquidProjectCard({ project, index, locale }: { project: ProjectSummaryDb; index: number; locale: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -116,27 +116,34 @@ function LiquidProjectCard({ project, index }: { project: ProjectSummaryDb; inde
         </LiquidCard>
 
         {/* Content */}
-        <div className="space-y-2">
-          <h3 className="text-lg md:text-xl font-serif leading-tight text-[hsl(var(--accent))] transition-opacity duration-300 group-hover:opacity-60">
-            {project.title}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="cursor-pointer text-xs tracking-[0.14em] text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--secondary))]"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
+        {(() => {
+          const ar = locale === "ar" ? project.translations?.ar : undefined;
+          const displayTitle = ar?.title ?? project.title;
+          const displayTags = ar?.tags ?? project.tags;
+          return (
+            <div className="space-y-2">
+              <h3 className="text-lg md:text-xl font-serif leading-tight text-[hsl(var(--accent))] transition-opacity duration-300 group-hover:opacity-60">
+                {displayTitle}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {displayTags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="cursor-pointer text-xs tracking-[0.14em] text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--secondary))]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </Link>
     </motion.article>
   );
 }
 
-const categories = ["All", "Branding", "3D interior design", "social media", "photography", "Packaging & Print Design", "Content Creation"] as const;
+const categories = ["All", "Branding", "3D interior design", "social media", "photography", "Marketing", "Content Creation"] as const;
 type Category = (typeof categories)[number];
 
 const categoryTranslationKeys: Record<Category, string> = {
@@ -145,12 +152,14 @@ const categoryTranslationKeys: Record<Category, string> = {
   "3D interior design": "projectsFilter3D",
   "social media": "projectsFilterSocialMedia",
   photography: "projectsFilterPhotography",
-  "Packaging & Print Design": "projectsFilterPackaging",
+  // "Packaging & Print Design": "projectsFilterPackaging",
+  Marketing: "projectsFilterMarketing",
   "Content Creation": "projectsFilterContentCreation",
 };
 
 export default function Projects({ projects, showHeader = true }: { projects: ProjectSummaryDb[]; showHeader?: boolean }) {
   const t = useTranslations("home");
+  const locale = useLocale();
   const dir = useDirection();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const sectionRef = useRef(null);
@@ -185,7 +194,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
       id="work"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background)/0.96)_34%,hsl(var(--background)/0.7)_68%,transparent_100%)] lg:h-40" />
-      <div className="site-shell relative z-20 max-w-[1400px] px-0">
+      <div className="site-shell relative z-20 max-w-350 px-0 py-16">
         {showHeader && (
           <>
             <div className="mb-24 space-y-6 lg:mb-32">
@@ -217,12 +226,13 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
             </div>
 
             {/* Category Filters */}
-            <div className="mb-16 flex flex-wrap gap-4 lg:mb-20">
+            <div className="mb-16 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mb-20 lg:overflow-visible">
+              <div className="flex w-max gap-3 lg:w-auto lg:flex-wrap lg:gap-4">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className="group relative px-6 py-2 text-xs font-semibold uppercase tracking-widest"
+                  className="group relative shrink-0 px-6 py-2 text-xs font-semibold uppercase tracking-widest"
                 >
                   <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
                     {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
@@ -239,6 +249,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
                   )}
                 </button>
               ))}
+              </div>
             </div>
           </>
         )}
@@ -277,7 +288,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   className={parallaxClass}
                 >
-                  <LiquidProjectCard project={project} index={index} />
+                  <LiquidProjectCard project={project} index={index} locale={locale} />
                 </motion.div>
               );
             })}
@@ -285,7 +296,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
         </div>
 
         {/* View All Button */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -309,7 +320,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
               </p>
             </div>
           </Link>
-        </motion.div>
+        </motion.div> */}
       </div>
     </motion.section>
   );
