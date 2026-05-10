@@ -110,7 +110,7 @@ function FloatingNavPill({ title, progress }: { title: string, progress: number 
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.9 }}
           transition={{ duration: 0.5, ease: transitionEase }}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none hidden md:block"
         >
           <div className="flex items-center gap-4 rounded-full border border-[hsl(var(--accent-foreground))/0.15] bg-[hsl(var(--accent))] px-6 py-3 text-[hsl(var(--accent-foreground))] shadow-[0_10px_40px_hsl(var(--accent)/0.35)]">
             <div className="relative size-2 shrink-0 overflow-hidden rounded-full bg-[hsl(var(--accent-foreground))/0.22]">
@@ -866,19 +866,7 @@ function ProjectCinematicHero({
         ref={topBarRef}
         className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 pt-8 lg:px-12 lg:pt-10"
       >
-        <Link
-          href="/projects"
-          className="group flex items-center gap-2 text-white/70 transition-colors hover:text-white"
-        >
-          <ArrowUpRight
-            className={`size-4 transition-transform group-hover:-translate-y-px ${
-              isRtl ? "-rotate-[315deg]" : "rotate-[225deg]"
-            }`}
-          />
-          <span className="font-mono text-[0.68rem] uppercase tracking-[0.32em]">
-            {isRtl ? "العودة" : "Back"}
-          </span>
-        </Link>
+        <div />
         {!isMobile && (
           <div className="flex items-center gap-3 text-white/40">
             <span className="font-mono text-[0.58rem] uppercase tracking-[0.42em]">
