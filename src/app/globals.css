@@ -198,6 +198,8 @@
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* iOS Safari shows html's bg during rubber-band overscroll */
+    background-color: hsl(var(--background));
   }
 
   body {
