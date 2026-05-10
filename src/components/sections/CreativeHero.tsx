@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -50,6 +51,21 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
 
   const headlineLines = headline.split("\n").map((line) => line.trim()).filter(Boolean);
 
+  const sphereWrapRef = useRef<HTMLDivElement>(null);
+  const [sphereSize, setSphereSize] = useState(400);
+
+  useEffect(() => {
+    const el = sphereWrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setSphereSize(Math.min(Math.floor(entry.contentRect.width), 400));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const adaptedRadius = Math.round((sphereSize / 400) * 180);
+
   return (
     <section id={id} className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-32 pb-16 md:py-0">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,hsl(var(--background))_0%,hsl(var(--background)/0.85)_45%,transparent_100%)]" />
@@ -95,8 +111,13 @@ export default function CreativeHero({ id, config }: CreativeHeroProps) {
           </div>
         </div>
 
-        <div className="hidden md:flex items-center justify-center">
-          <ImageSphere items={items} sphereRadius={180} containerSize={400} autoRotate={true} />
+        <div ref={sphereWrapRef} className="flex items-center justify-center">
+          <ImageSphere
+            items={items}
+            containerSize={sphereSize}
+            sphereRadius={adaptedRadius}
+            autoRotate={true}
+          />
         </div>
       </div>
     </section>
