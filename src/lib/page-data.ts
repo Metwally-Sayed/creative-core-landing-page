@@ -69,6 +69,7 @@ export interface SiteSettings {
   social_linkedin: string;
   social_vimeo: string;
   social_tiktok: string;
+  whatsapp: string;
   seo_title: string;
   seo_description: string;
   seo_og_image_url: string;
@@ -110,6 +111,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   social_linkedin: "",
   social_vimeo: "",
   social_tiktok: "",
+  whatsapp: "",
   seo_title: "",
   seo_description: "",
   seo_og_image_url: "",
@@ -178,4 +180,77 @@ export const getSettings = unstable_cache(
   },
   ["settings"],
   { revalidate: 60, tags: ["settings"] }
+);
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+
+export interface DashboardProject {
+  id: string;
+  slug: string;
+  title: string;
+  cover_image_url: string;
+  published: boolean;
+  tags: string[];
+  service_type: string;
+  updated_at: string;
+}
+
+export interface DashboardStats {
+  projectsTotal: number;
+  projectsPublished: number;
+  projectsDraft: number;
+  mediaTotal: number;
+  faqTotal: number;
+  pagesTotal: number;
+  recentProjects: DashboardProject[];
+}
+
+export const getDashboardStats = unstable_cache(
+  async (): Promise<DashboardStats> => {
+    const [
+      { count: projectsTotal },
+      { count: projectsPublished },
+      { count: mediaTotal },
+      { count: faqTotal },
+      { count: pagesTotal },
+      { data: recentRows },
+    ] = await Promise.all([
+      supabase.from("projects").select("id", { count: "exact", head: true }),
+      supabase
+        .from("projects")
+        .select("id", { count: "exact", head: true })
+        .eq("published", true),
+      supabase
+        .from("media_assets")
+        .select("id", { count: "exact", head: true }),
+      supabase
+        .from("faq_items")
+        .select("id", { count: "exact", head: true }),
+      supabase
+        .from("pages")
+        .select("id", { count: "exact", head: true }),
+      supabase
+        .from("projects")
+        .select(
+          "id, slug, title, cover_image_url, published, tags, service_type, updated_at"
+        )
+        .order("updated_at", { ascending: false })
+        .limit(6),
+    ]);
+
+    const total = projectsTotal ?? 0;
+    const published = projectsPublished ?? 0;
+
+    return {
+      projectsTotal: total,
+      projectsPublished: published,
+      projectsDraft: total - published,
+      mediaTotal: mediaTotal ?? 0,
+      faqTotal: faqTotal ?? 0,
+      pagesTotal: pagesTotal ?? 0,
+      recentProjects: (recentRows ?? []) as DashboardProject[],
+    };
+  },
+  ["dashboard"],
+  { revalidate: 30, tags: ["projects", "pages", "faq"] }
 );

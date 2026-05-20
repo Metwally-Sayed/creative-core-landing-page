@@ -11,6 +11,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Route handling is composed in `src/proxy.ts` (`proxy.ts`, not `middleware.ts`, on Next.js 16).
 - `src/lib/supabase.ts` is server-only and uses the Supabase service-role key; never import it into Client Components.
 - Admin writes revalidate cache tags via `revalidateTag(_, "max")`; current tags in use include `settings`, `pages`, `projects`, `nav_links`, `faq`, and `locations`. Prefer extending tag-based invalidation over full-route refreshes.
+- Most repo maintenance scripts live under `scripts/`, are meant to be run from `nextjs-app/`, and load Supabase credentials from `.env.local` via `dotenv.config({ path: ".env.local" })`.
 
 ## Commands In Use
 
@@ -23,6 +24,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `npx tsx scripts/seed-collections.ts` — seed starter rows for `locations` and `faq_items`.
 - `npx tsx scripts/seed-pages.ts` — upsert the default page-builder pages and sections.
 - `npx tsx scripts/seed-from-snapshot.ts` — reset and reseed projects plus related media from `tmp/seed-projects.en-ar.snapshot.txt`.
+- `npx tsx scripts/inspect-services-page.ts` — dump the `services` page sections and EN/AR content from Supabase for debugging.
+- `npx tsx scripts/list-projects-titles.ts` — print project slugs plus EN/AR title fields from Supabase for content verification.
 
 ## Env Setup
 

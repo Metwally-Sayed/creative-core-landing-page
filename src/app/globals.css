@@ -86,8 +86,8 @@
 }
 
 [dir="rtl"] {
-  --font-sans: var(--font-plex-arabic), system-ui, sans-serif;
-  --font-serif: var(--font-noto-naskh), Georgia, serif;
+  --font-sans: var(--font-cairo), sans-serif;
+  --font-serif: var(--font-cairo), sans-serif;
 }
 
 @layer base {
@@ -135,12 +135,20 @@
   }
 
   [data-admin] {
-    --admin-bg: 0 0% 98%;
-    --admin-surface: 0 0% 100%;
-    --admin-border: 0 0% 90%;
-    --admin-text: 0 0% 15%;
-    --admin-text-muted: 0 0% 45%;
-    --admin-accent: var(--primary);
+    /* Cream canvas, navy ink, orange accent — matches landing site DNA */
+    --admin-bg: 42 14% 95%;          /* #F4F1EA warm cream */
+    --admin-surface: 0 0% 100%;      /* #FFFFFF card surface */
+    --admin-border: 222 30% 88%;     /* soft navy-tinted border */
+    --admin-text: 222 71% 13%;       /* #0B1B3B navy ink */
+    --admin-text-muted: 214 15% 60%; /* #8794A6 stone-400 */
+    --admin-accent: var(--secondary); /* orange */
+
+    /* Named aliases used by admin components */
+    --admin-navy: 222 71% 25%;       /* #1B3A6F mid navy */
+    --admin-navy-ink: 222 71% 13%;   /* #0B1B3B deepest navy */
+    --admin-orange: 23 84% 59%;      /* #EE7E3D orange */
+    --admin-hover: 222 30% 96%;      /* very light navy hover */
+    --admin-border-strong: 222 30% 80%;
   }
 
   /*

@@ -683,7 +683,7 @@ function ColorPaletteShowcase({ colors }: { colors: ProjectColor[] }) {
                 </div>
               </div>
             </div>
-            <p className="font-medium text-lg leading-none mb-2 text-accent">{color.name}</p>
+            <p className="font-medium text-lg leading-none mb-2 text-accent">{isRtl && color.name_ar ? color.name_ar : color.name}</p>
             <p className="text-muted-foreground uppercase tracking-wider text-sm">{color.hex}</p>
           </motion.button>
         ))}

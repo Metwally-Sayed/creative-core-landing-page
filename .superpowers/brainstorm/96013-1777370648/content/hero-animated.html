@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Burgito Hero — Animated Desktop Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* ── Burgito brand palette (inherited from DB) ── */
+    --brand-red: #D60523;
+    --brand-red-hsl: 350, 97%, 42%;
+    --brand-pink: #F9DCEA;
+    --brand-black: #000000;
+    --brand-white: #FFFFFF;
+
+    /* computed overlays */
+    --overlay-gradient:
+      linear-gradient(
+        to top,
+        rgba(214, 5, 35, 0.82) 0%,
+        rgba(140, 3, 22, 0.55) 30%,
+        rgba(0, 0, 0, 0.25) 60%,
+        rgba(0, 0, 0, 0.08) 100%
+      );
+    --glow: radial-gradient(ellipse 70% 50% at 20% 80%, rgba(214, 5, 35, 0.35) 0%, transparent 70%);
+  }
+
+  body {
+    background: #0a0a0a;
+    font-family: 'DM Sans', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 64px;
+    gap: 0;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .top-bar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .palette-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .palette-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-right: 4px;
+  }
+  .swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+    cursor: default;
+  }
+  .swatch::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+    color: rgba(255,255,255,0.45);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .swatch:hover::after { opacity: 1; }
+  .play-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #D60523;
+    border: 1px solid rgba(214, 5, 35, 0.4);
+    padding: 7px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    background: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .play-btn:hover { background: rgba(214,5,35,0.1); border-color: rgba(214,5,35,0.7); }
+
+  /* ── BROWSER CHROME ── */
+  .browser {
+    width: 100%;
+    max-width: 1280px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .browser-bar {
+    background: #1e1e1e;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .browser-dot:nth-child(1) { background: #ff5f56; }
+  .browser-dot:nth-child(2) { background: #ffbd2e; }
+  .browser-dot:nth-child(3) { background: #27c93f; }
+  .browser-url {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── HERO STAGE ── */
+  .hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center center;
+    /* will animate via JS */
+    transform: scale(1.08);
+    opacity: 0;
+    transition: opacity 0.01s;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay-gradient);
+    z-index: 1;
+  }
+  .hero-glow {
+    position: absolute;
+    inset: 0;
+    background: var(--glow);
+    z-index: 1;
+    opacity: 0.7;
+  }
+
+  /* ── NOISE GRAIN ── */
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.04;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px;
+  }
+
+  /* ── HERO CONTENT ── */
+  .hero-content {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 0;
+  }
+
+  /* top strip */
+  .hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 48px 0;
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  .hero-top-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .hero-top-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .hero-top-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand-red);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* middle section — title area */
+  .hero-mid {
+    display: flex;
+    align-items: flex-end;
+    padding: 0 48px 36px;
+    gap: 0;
+    justify-content: space-between;
+  }
+  .hero-mid-left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .hero-eyebrow-line {
+    width: 28px;
+    height: 1px;
+    background: var(--brand-red);
+  }
+  .hero-eyebrow-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--brand-pink);
+  }
+
+  .hero-title-wrap {
+    overflow: hidden;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(64px, 9vw, 128px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: #fff;
+    transform: translateY(110%);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.55;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid rgba(249, 220, 234, 0.3);
+    border-radius: 100px;
+    color: var(--brand-pink);
+    background: rgba(214, 5, 35, 0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  /* right column — meta + image teaser */
+  .hero-mid-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    padding-bottom: 4px;
+    opacity: 0;
+    transform: translateX(24px);
+    min-width: 200px;
+  }
+  .hero-meta-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: right;
+  }
+  .hero-meta-item label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 3px;
+  }
+  .hero-meta-item span {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* bottom strip */
+  .hero-bottom {
+    padding: 0 48px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0);
+    padding-top: 24px;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .hero-bottom-rule {
+    position: absolute;
+    bottom: 88px;
+    left: 48px;
+    right: 48px;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 10;
+  }
+  .hero-summary {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.65;
+    max-width: 460px;
+  }
+  .hero-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .hero-cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--brand-red);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+  .hero-cta-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* scroll indicator */
+  .hero-scroll {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+    opacity: 0;
+  }
+  .hero-scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .hero-scroll-track {
+    width: 1px;
+    height: 48px;
+    background: rgba(255,255,255,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-scroll-thumb {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: var(--brand-red);
+    animation: scroll-thumb 2s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  @keyframes scroll-thumb {
+    0% { top: -100%; }
+    100% { top: 100%; }
+  }
+
+  /* ── SCROLL SIMULATION ── */
+  .scroll-sim-bar {
+    width: 100%;
+    max-width: 1280px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .scroll-sim-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+  }
+  .scroll-sim-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 1px;
+    position: relative;
+    cursor: pointer;
+  }
+  .scroll-sim-fill {
+    height: 100%;
+    background: var(--brand-red);
+    border-radius: 1px;
+    width: 0%;
+    transition: width 0.1s;
+  }
+  .scroll-sim-handle {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--brand-red);
+    cursor: grab;
+    transition: right 0.1s;
+  }
+  .scroll-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    width: 32px;
+    text-align: right;
+  }
+
+  /* ── FIELD LABELS TOGGLE ── */
+  .field-labels {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .field-labels.show { opacity: 1; }
+  .field-pin {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .field-pin-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #F9DCEA;
+    border: 1px solid rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+  .field-pin-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #F9DCEA;
+    background: rgba(214, 5, 35, 0.75);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+  }
+  .field-pin-line {
+    position: absolute;
+    background: rgba(249,220,234,0.4);
+  }
+
+  /* toggle btn */
+  .toggle-fields-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: rgba(249,220,234,0.08);
+    border: 1px solid rgba(249,220,234,0.2);
+    color: var(--brand-pink);
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-fields-btn:hover { background: rgba(249,220,234,0.15); }
+
+  /* ── BOTTOM NOTES ── */
+  .notes {
+    width: 100%;
+    max-width: 1280px;
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .note {
+    background: #141414;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .note h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brand-red);
+    margin-bottom: 8px;
+  }
+  .note p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+  .note code {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--brand-pink);
+    background: rgba(214,5,35,0.12);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<div class="top-bar">
+  <span class="top-bar-label">Burgito · Hero Redesign · Desktop Preview</span>
+  <div class="palette-row">
+    <span class="palette-label">Brand palette (from DB):</span>
+    <div class="swatch" style="background:#D60523;" data-label="accent / #D60523"></div>
+    <div class="swatch" style="background:#F9DCEA;border-color:rgba(255,255,255,0.2);" data-label="secondary / #F9DCEA"></div>
+    <div class="swatch" style="background:#FFFFFF;border-color:rgba(255,255,255,0.2);" data-label="background / #FFFFFF"></div>
+    <div class="swatch" style="background:#000000;" data-label="foreground / #000000"></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button class="toggle-fields-btn" onclick="toggleFields()">Show DB fields</button>
+    <button class="play-btn" onclick="replayAnimation()">▶ Replay</button>
+  </div>
+</div>
+
+<!-- browser chrome -->
+<div class="browser">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="browser-dot"></div>
+      <div class="browser-dot"></div>
+      <div class="browser-dot"></div>
+    </div>
+    <div class="browser-url">localhost:3000/ar/projects/burgito</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="hero">
+    <!-- Background image -->
+    <img
+      class="hero-img"
+      id="heroImg"
+      src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1600&h=900&fit=crop&q=85"
+      alt="Burgito hero"
+    />
+
+    <!-- Brand-inherited overlays -->
+    <div class="hero-overlay"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-noise"></div>
+
+    <!-- Animated rule -->
+    <div class="hero-bottom-rule" id="heroRule"></div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll" id="heroScroll">
+      <div class="hero-scroll-text">Scroll</div>
+      <div class="hero-scroll-track">
+        <div class="hero-scroll-thumb" id="scrollThumb"></div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="hero-content">
+      <!-- Top -->
+      <div class="hero-top" id="heroTop">
+        <span class="hero-top-left">Creative Core · Studio</span>
+        <div class="hero-top-right">
+          <div class="hero-top-dot"></div>
+          <span>Case Study</span>
+          <span style="opacity:0.3">2024</span>
+        </div>
+      </div>
+
+      <!-- Mid -->
+      <div class="hero-mid">
+        <div class="hero-mid-left">
+          <!-- eyebrow: project.heroLabel + project.introMeta.type -->
+          <div class="hero-eyebrow" id="heroEyebrow">
+            <div class="hero-eyebrow-line"></div>
+            <span class="hero-eyebrow-text">Brand Identity · Branding</span>
+          </div>
+
+          <!-- title: project.heroTitle -->
+          <div class="hero-title-wrap">
+            <span class="hero-title" id="heroTitle">Burgito</span>
+          </div>
+
+          <!-- subtitle: project.heroSubtitle -->
+          <p class="hero-subtitle" id="heroSubtitle">
+            A playful burger brand built from appetite,<br/>slang, and a wink of retro diner energy.
+          </p>
+
+          <!-- tags: project.tags[] -->
+          <div class="hero-tags" id="heroTags">
+            <span class="hero-tag">Branding</span>
+            <span class="hero-tag">Packaging</span>
+            <span class="hero-tag">Campaign</span>
+          </div>
+        </div>
+
+        <!-- right: project.overview -->
+        <div class="hero-mid-right" id="heroMeta">
+          <div class="hero-meta-stack">
+            <div class="hero-meta-item">
+              <label>Client</label>
+              <span>Burgito</span>
+            </div>
+            <div class="hero-meta-item">
+              <label>Scope</label>
+              <span>Identity + packaging</span>
+            </div>
+            <div class="hero-meta-item">
+              <label>Tone</label>
+              <span>Bold, playful, diner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom: summary + CTA -->
+      <div class="hero-bottom" id="heroBottom">
+        <!-- project.heroSummary — this field is currently unused! -->
+        <p class="hero-summary">
+          Burgito is a compact brand identity study that turns a fast-food premise
+          into a bold character system, packaging language, and campaign-ready visual toolkit.
+        </p>
+        <div class="hero-cta">
+          <button class="hero-cta-btn">Explore the system ↗</button>
+          <div class="hero-cta-arrow">↓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DB field pins overlay -->
+    <div class="field-labels" id="fieldLabels">
+      <div class="field-pin" style="top:6%;left:3%;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.heroLabel + project.introMeta.type</div>
+      </div>
+      <div class="field-pin" style="top:30%;left:3%;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.heroTitle</div>
+      </div>
+      <div class="field-pin" style="top:56%;left:3%;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.heroSubtitle</div>
+      </div>
+      <div class="field-pin" style="top:64%;left:3%;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.tags[]</div>
+      </div>
+      <div class="field-pin" style="top:38%;right:3%;flex-direction:row-reverse;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.overview[]</div>
+      </div>
+      <div class="field-pin" style="bottom:10%;left:3%;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.heroSummary ← currently unused!</div>
+      </div>
+      <div class="field-pin" style="bottom:10%;right:3%;flex-direction:row-reverse;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">project.introMeta.launchLabel</div>
+      </div>
+      <div class="field-pin" style="top:2%;right:3%;flex-direction:row-reverse;">
+        <div class="field-pin-dot"></div>
+        <div class="field-pin-label">theme_palette.accent → overlay gradient</div>
+      </div>
+    </div>
+  </div><!-- /hero -->
+</div><!-- /browser -->
+
+<!-- scroll simulation bar -->
+<div class="scroll-sim-bar">
+  <span class="scroll-sim-label">Scroll simulation</span>
+  <div class="scroll-sim-track" id="scrollTrack">
+    <div class="scroll-sim-fill" id="scrollFill"></div>
+    <div class="scroll-sim-handle" id="scrollHandle"></div>
+  </div>
+  <span class="scroll-pct" id="scrollPct">0%</span>
+</div>
+
+<!-- notes -->
+<div class="notes">
+  <div class="note">
+    <h4>⚡ Color Inheritance</h4>
+    <p>The red gradient overlay, tag borders, and eyebrow line all read from <code>theme_palette.accent</code> — Burgito Red <code>#D60523</code>. A different project gets its own gradient automatically.</p>
+  </div>
+  <div class="note">
+    <h4>⚡ GSAP Utils in Use</h4>
+    <p><code>gsap.utils.mapRange</code> converts scroll 0→1 into image scale 1.08→1.0 and title translateY 0→-80px. <code>clamp</code> bounds the opacity so it never goes negative. <code>normalize</code> feeds the fill bar progress.</p>
+  </div>
+  <div class="note">
+    <h4>⚡ New DB Fields Shown</h4>
+    <p><code>project.heroSummary</code> was completely unused before — now it anchors the bottom strip. <code>project.heroLabel</code> drives the eyebrow. All <code>overview[]</code> facts appear in the right column.</p>
+  </div>
+</div>
+
+<script>
+// ── Animation timeline ──────────────────────────────────────────────────────
+
+const t = (el, props, delay) => {
+  setTimeout(() => {
+    if (!el) return;
+    el.style.transition = `all ${props.dur || 0.7}s cubic-bezier(0.22, 1, 0.36, 1)`;
+    Object.entries(props).forEach(([k, v]) => {
+      if (k !== 'dur') el.style[k] = v;
+    });
+  }, delay);
+};
+
+function runAnimation() {
+  const img = document.getElementById('heroImg');
+  const top = document.getElementById('heroTop');
+  const eyebrow = document.getElementById('heroEyebrow');
+  const title = document.getElementById('heroTitle');
+  const subtitle = document.getElementById('heroSubtitle');
+  const tags = document.getElementById('heroTags');
+  const meta = document.getElementById('heroMeta');
+  const bottom = document.getElementById('heroBottom');
+  const rule = document.getElementById('heroRule');
+  const scroll = document.getElementById('heroScroll');
+  const thumb = document.getElementById('scrollThumb');
+
+  // 1. Image fades in and scales down (Ken Burns)
+  setTimeout(() => {
+    img.style.transition = 'opacity 1.4s ease, transform 4s cubic-bezier(0.22,1,0.36,1)';
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1.0)';
+  }, 80);
+
+  // 2. Top bar
+  t(top, { opacity: '1', transform: 'translateY(0)', dur: 0.6 }, 400);
+
+  // 3. Eyebrow
+  t(eyebrow, { opacity: '1', transform: 'translateY(0)', dur: 0.6 }, 700);
+
+  // 4. Title sweep up
+  setTimeout(() => {
+    title.style.transition = 'transform 1s cubic-bezier(0.22, 1, 0.36, 1)';
+    title.style.transform = 'translateY(0%)';
+  }, 900);
+
+  // 5. Subtitle
+  t(subtitle, { opacity: '1', transform: 'translateY(0)', dur: 0.7 }, 1300);
+
+  // 6. Tags stagger
+  const tagEls = tags.querySelectorAll('.hero-tag');
+  t(tags, { opacity: '1', transform: 'translateY(0)', dur: 0.5 }, 1500);
+  tagEls.forEach((tag, i) => {
+    tag.style.opacity = '0';
+    tag.style.transform = 'translateY(8px)';
+    setTimeout(() => {
+      tag.style.transition = 'all 0.5s cubic-bezier(0.22,1,0.36,1)';
+      tag.style.opacity = '1';
+      tag.style.transform = 'translateY(0)';
+    }, 1600 + i * 100);
+  });
+
+  // 7. Right meta
+  t(meta, { opacity: '1', transform: 'translateX(0)', dur: 0.8 }, 1400);
+
+  // 8. Rule
+  setTimeout(() => {
+    rule.style.transition = 'transform 1s cubic-bezier(0.22,1,0.36,1)';
+    rule.style.transform = 'scaleX(1)';
+  }, 1700);
+
+  // 9. Bottom strip
+  t(bottom, { opacity: '1', transform: 'translateY(0)', dur: 0.7 }, 1900);
+
+  // 10. Scroll indicator
+  t(scroll, { opacity: '1', dur: 0.6 }, 2400);
+  setTimeout(() => {
+    thumb.style.animationPlayState = 'running';
+  }, 2400);
+}
+
+function replayAnimation() {
+  const img = document.getElementById('heroImg');
+  const top = document.getElementById('heroTop');
+  const eyebrow = document.getElementById('heroEyebrow');
+  const title = document.getElementById('heroTitle');
+  const subtitle = document.getElementById('heroSubtitle');
+  const tags = document.getElementById('heroTags');
+  const meta = document.getElementById('heroMeta');
+  const bottom = document.getElementById('heroBottom');
+  const rule = document.getElementById('heroRule');
+  const scroll = document.getElementById('heroScroll');
+  const thumb = document.getElementById('scrollThumb');
+
+  // reset
+  img.style.transition = 'none'; img.style.opacity = '0'; img.style.transform = 'scale(1.08)';
+  top.style.transition = 'none'; top.style.opacity = '0'; top.style.transform = 'translateY(-14px)';
+  eyebrow.style.transition = 'none'; eyebrow.style.opacity = '0'; eyebrow.style.transform = 'translateY(16px)';
+  title.style.transition = 'none'; title.style.transform = 'translateY(110%)';
+  subtitle.style.transition = 'none'; subtitle.style.opacity = '0'; subtitle.style.transform = 'translateY(12px)';
+  tags.style.opacity = '0';
+  meta.style.transition = 'none'; meta.style.opacity = '0'; meta.style.transform = 'translateX(24px)';
+  bottom.style.transition = 'none'; bottom.style.opacity = '0'; bottom.style.transform = 'translateY(12px)';
+  rule.style.transition = 'none'; rule.style.transform = 'scaleX(0)';
+  scroll.style.transition = 'none'; scroll.style.opacity = '0';
+  thumb.style.animationPlayState = 'paused';
+
+  setTimeout(runAnimation, 60);
+}
+
+// ── Scroll simulation ──────────────────────────────────────────────────────
+
+let scrollProgress = 0;
+const track = document.getElementById('scrollTrack');
+const fill = document.getElementById('scrollFill');
+const handle = document.getElementById('scrollHandle');
+const pct = document.getElementById('scrollPct');
+const heroImg = document.getElementById('heroImg');
+const heroTitle = document.getElementById('heroTitle');
+const heroContent = document.querySelector('.hero-content');
+
+function applyScrollParallax(progress) {
+  // mapRange(0, 1, 1.0, 1.08) → image scale increases as you scroll (zoom out effect simulated as zoom in when scroll=0)
+  // We use: scale starts at 1.0, then as scroll increases image scales and moves up
+  const imgScale = 1.0 + progress * 0.06;
+  const imgY = progress * -8;
+  heroImg.style.transform = `scale(${imgScale}) translateY(${imgY}%)`;
+  heroImg.style.filter = `brightness(${0.85 - progress * 0.25}) saturate(${1.1 - progress * 0.3})`;
+
+  // title parallax: moves up faster
+  const titleY = progress * -40;
+  document.getElementById('heroTitle').style.transform = `translateY(${titleY}px)`;
+
+  // content fades out
+  heroContent.style.opacity = `${1 - progress * 0.8}`;
+}
+
+function setScrollProgress(p) {
+  scrollProgress = Math.min(1, Math.max(0, p));
+  const pctVal = Math.round(scrollProgress * 100);
+  fill.style.width = pctVal + '%';
+  pct.textContent = pctVal + '%';
+  applyScrollParallax(scrollProgress);
+}
+
+let dragging = false;
+handle.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+document.addEventListener('mouseup', () => { dragging = false; });
+document.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const rect = track.getBoundingClientRect();
+  const p = (e.clientX - rect.left) / rect.width;
+  setScrollProgress(p);
+});
+track.addEventListener('click', e => {
+  const rect = track.getBoundingClientRect();
+  setScrollProgress((e.clientX - rect.left) / rect.width);
+});
+
+// Auto-scroll demo after animation
+let autoScrollTimer = null;
+function startAutoScroll() {
+  clearInterval(autoScrollTimer);
+  let dir = 1;
+  let p = 0;
+  autoScrollTimer = setInterval(() => {
+    p += 0.004 * dir;
+    if (p >= 0.5) dir = -1;
+    if (p <= 0) { dir = 1; clearInterval(autoScrollTimer); setScrollProgress(0); return; }
+    setScrollProgress(p);
+  }, 16);
+}
+setTimeout(startAutoScroll, 3000);
+
+// ── DB field toggle ──────────────────────────────────────────────────────────
+let fieldsVisible = false;
+function toggleFields() {
+  fieldsVisible = !fieldsVisible;
+  document.getElementById('fieldLabels').classList.toggle('show', fieldsVisible);
+  document.querySelector('.toggle-fields-btn').textContent = fieldsVisible ? 'Hide DB fields' : 'Show DB fields';
+}
+
+// ── Start ──────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => { setTimeout(runAnimation, 300); });
+</script>
+</body>
+</html>

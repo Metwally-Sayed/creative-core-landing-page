@@ -51,6 +51,7 @@ export type ProjectIntroMeta = {
 export type ProjectColor = {
   hex: string;
   name: string;
+  name_ar?: string;
   themeRole: ProjectThemeRole | null;
 };
 

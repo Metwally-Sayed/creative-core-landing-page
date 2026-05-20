@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { getSettings } from "@/lib/page-data";
 import LoginForm from "./LoginForm";
 
 export default async function LoginPage({
@@ -12,8 +13,18 @@ export default async function LoginPage({
     redirect("/admin");
   }
 
-  const params = await searchParams;
+  const [params, settings] = await Promise.all([
+    searchParams,
+    getSettings(),
+  ]);
+
   const from = params.from ?? "/admin";
 
-  return <LoginForm from={from} />;
+  return (
+    <LoginForm
+      from={from}
+      logoUrl={settings.logo_url || undefined}
+      siteName={settings.site_name || "Creative Core"}
+    />
+  );
 }

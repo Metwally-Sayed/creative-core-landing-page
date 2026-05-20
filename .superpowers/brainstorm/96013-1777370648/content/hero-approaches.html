@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hero Redesign — 3 Approaches</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f0f;
+    font-family: 'DM Sans', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    padding: 48px 32px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .page-header h1 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #ef9a56;
+    margin-bottom: 16px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .approaches {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .approach {
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    background: #1a1a1a;
+  }
+  .approach:hover { border-color: rgba(239,154,86,0.5); transform: translateY(-3px); }
+  .approach.selected { border-color: #ef9a56; }
+
+  .approach-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    background: #ef9a56;
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  /* ── APPROACH A: SPLIT SCREEN ── */
+  .hero-a {
+    aspect-ratio: 9/16;
+    display: flex;
+    flex-direction: column;
+    background: #0b1b3b;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-a-image {
+    flex: 1.2;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-a-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75) saturate(1.1);
+  }
+  .hero-a-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, #0b1b3b 100%);
+  }
+  .hero-a-content {
+    padding: 20px 22px 24px;
+    position: relative;
+    z-index: 2;
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .hero-a-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: #ef9a56;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-a-eyebrow::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: #ef9a56;
+    opacity: 0.6;
+  }
+  .hero-a-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .hero-a-subtitle {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .hero-a-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.7);
+  }
+  .hero-a-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .meta-item label {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .meta-item span {
+    font-size: 9px;
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+  }
+
+  /* ── APPROACH B: FULL-BLEED CINEMATIC ── */
+  .hero-b {
+    aspect-ratio: 9/16;
+    position: relative;
+    overflow: hidden;
+    background: #111;
+  }
+  .hero-b-image {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-b-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(1.2);
+  }
+  .hero-b-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(11,27,59,0.95) 0%, rgba(11,27,59,0.4) 40%, transparent 70%),
+      radial-gradient(ellipse at 30% 60%, rgba(239,154,86,0.12) 0%, transparent 60%);
+  }
+  .hero-b-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+  }
+  .hero-b-corner-label {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .hero-b-scroll-indicator {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .hero-b-scroll-indicator span {
+    font-family: 'DM Mono', monospace;
+    font-size: 6px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    writing-mode: vertical-rl;
+  }
+  .hero-b-scroll-line {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+  }
+  .hero-b-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #ef9a56;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-b-label::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+  }
+  .hero-b-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .hero-b-summary {
+    font-size: 9.5px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 18px;
+    max-width: 80%;
+  }
+  .hero-b-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .hero-b-client {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .hero-b-tags-row {
+    display: flex;
+    gap: 5px;
+  }
+  .hero-b-cta {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ef9a56;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* ── APPROACH C: EDITORIAL MAGAZINE ── */
+  .hero-c {
+    aspect-ratio: 9/16;
+    background: #faf8f4;
+    color: #0b1b3b;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .hero-c-header {
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(11,27,59,0.08);
+  }
+  .hero-c-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(11,27,59,0.4);
+  }
+  .hero-c-index {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    color: rgba(11,27,59,0.3);
+    letter-spacing: 0.2em;
+  }
+  .hero-c-image-wrap {
+    position: relative;
+    overflow: hidden;
+    flex: 1.4;
+  }
+  .hero-c-image-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(1.05);
+  }
+  .hero-c-number {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.08);
+    line-height: 1;
+    letter-spacing: -0.06em;
+    pointer-events: none;
+  }
+  .hero-c-image-label {
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.3);
+    padding: 4px 8px;
+    border-radius: 100px;
+    backdrop-filter: blur(4px);
+  }
+  .hero-c-content {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    justify-content: space-between;
+  }
+  .hero-c-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #ef9a56;
+  }
+  .hero-c-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #0b1b3b;
+  }
+  .hero-c-rule {
+    height: 1px;
+    background: rgba(11,27,59,0.12);
+    margin: 2px 0;
+  }
+  .hero-c-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .hero-c-meta-item label {
+    font-family: 'DM Mono', monospace;
+    font-size: 6px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(11,27,59,0.35);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .hero-c-meta-item span {
+    font-size: 8.5px;
+    font-weight: 600;
+    color: #0b1b3b;
+  }
+  .hero-c-tags {
+    display: flex;
+    gap: 5px;
+  }
+  .hero-c-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border: 1px solid rgba(11,27,59,0.15);
+    border-radius: 100px;
+    color: rgba(11,27,59,0.55);
+  }
+
+  /* ── LABELS ── */
+  .approach-label {
+    padding: 18px 20px 16px;
+    background: #141414;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .approach-label h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 6px;
+  }
+  .approach-label p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.55;
+  }
+  .approach-label .pro-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ef9a56;
+    border: 1px solid rgba(239,154,86,0.3);
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+
+  /* animation labels */
+  .anim-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    margin-right: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.5);
+  }
+  .anim-pill::before {
+    content: '⚡';
+    font-size: 9px;
+  }
+
+  .select-hint {
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* current hero comparison */
+  .current-label {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .current-label span {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+
+  /* check mark */
+  .approach.selected .approach-badge::before { content: '✓ '; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Project Hero — 3 Redesign Directions</h1>
+  <p>burgito · /ar/projects/burgito · All content from DB fields</p>
+</div>
+
+<div class="current-label"><span>↓ three directions — click to pick one</span></div>
+
+<div class="approaches">
+
+  <!-- APPROACH A -->
+  <div class="approach" onclick="select(this,'A')" id="optA">
+    <div class="approach-badge">A</div>
+    <div class="hero-a">
+      <div class="hero-a-image">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=700&fit=crop" alt="Burgito"/>
+        <div class="hero-a-image-overlay"></div>
+      </div>
+      <div class="hero-a-content">
+        <div class="hero-a-eyebrow">Case Study · Branding</div>
+        <div class="hero-a-title">Burgito<br/>Burger</div>
+        <div class="hero-a-tags">
+          <span class="tag">Branding</span>
+          <span class="tag">Packaging</span>
+          <span class="tag">Campaign</span>
+        </div>
+        <div class="hero-a-subtitle">A burger brand built on bold identity, heat-pressed packaging, and campaign storytelling that converts.</div>
+        <div class="hero-a-meta">
+          <div class="meta-item"><label>Client</label><span>Burgito</span></div>
+          <div class="meta-item"><label>Type</label><span>Branding</span></div>
+          <div class="meta-item"><label>Year</label><span>2024</span></div>
+          <div class="meta-item"><label>Deliverables</label><span>Identity, Print</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="approach-label">
+      <h3>A — Image Over, Text Under</h3>
+      <p>Large hero image fades into a dark info panel. The image dominates the upper viewport; metadata and title anchor at the bottom.</p>
+      <span class="pro-tag">Best for image-first projects</span>
+      <br/>
+      <span class="anim-pill">mapRange scroll parallax</span>
+      <span class="anim-pill">staggered tag reveal</span>
+      <span class="anim-pill">clamp opacity fade</span>
+    </div>
+  </div>
+
+  <!-- APPROACH B -->
+  <div class="approach" onclick="select(this,'B')" id="optB">
+    <div class="approach-badge">B</div>
+    <div class="hero-b">
+      <div class="hero-b-image">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=900&fit=crop" alt="Burgito"/>
+      </div>
+      <div class="hero-b-overlay"></div>
+      <div class="hero-b-corner-label">Creative Core · Studio</div>
+      <div class="hero-b-scroll-indicator">
+        <div class="hero-b-scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+      <div class="hero-b-content">
+        <div class="hero-b-label">Case Study</div>
+        <div class="hero-b-title">Burgito<br/>Burger</div>
+        <div class="hero-b-summary">A burger brand built on bold identity, heat-pressed packaging, and campaign storytelling that turns heads and converts appetites.</div>
+        <div class="hero-b-bottom">
+          <div>
+            <div class="hero-b-client">Burgito · 2024</div>
+            <div class="hero-b-tags-row" style="margin-top:5px">
+              <span class="tag" style="font-size:6px;padding:3px 6px;">Branding</span>
+              <span class="tag" style="font-size:6px;padding:3px 6px;">Packaging</span>
+            </div>
+          </div>
+          <div class="hero-b-cta">↗</div>
+        </div>
+      </div>
+    </div>
+    <div class="approach-label">
+      <h3>B — Full-Bleed Cinematic</h3>
+      <p>Hero image fills the entire viewport. Title, summary, and meta float over a dramatic gradient. The heroSummary field finally gets used prominently.</p>
+      <span class="pro-tag">Most immersive — recommended</span>
+      <br/>
+      <span class="anim-pill">normalize scroll zoom</span>
+      <span class="anim-pill">interpolate color overlay</span>
+      <span class="anim-pill">clamp parallax depth</span>
+    </div>
+  </div>
+
+  <!-- APPROACH C -->
+  <div class="approach" onclick="select(this,'C')" id="optC">
+    <div class="approach-badge">C</div>
+    <div class="hero-c">
+      <div class="hero-c-header">
+        <span class="hero-c-brand">Creative Core · Projects</span>
+        <span class="hero-c-index">001 / 012</span>
+      </div>
+      <div class="hero-c-image-wrap">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=600&fit=crop" alt="Burgito"/>
+        <div class="hero-c-number">01</div>
+        <div class="hero-c-image-label">Primary Showcase</div>
+      </div>
+      <div class="hero-c-content">
+        <div>
+          <div class="hero-c-eyebrow">Case Study · Branding</div>
+          <div class="hero-c-title">Burgito<br/>Burger</div>
+        </div>
+        <div class="hero-c-rule"></div>
+        <div class="hero-c-meta-grid">
+          <div class="hero-c-meta-item"><label>Client</label><span>Burgito</span></div>
+          <div class="hero-c-meta-item"><label>Type</label><span>Branding</span></div>
+          <div class="hero-c-meta-item"><label>Year</label><span>2024</span></div>
+          <div class="hero-c-meta-item"><label>Scope</label><span>Identity</span></div>
+        </div>
+        <div class="hero-c-tags">
+          <span class="hero-c-tag">Branding</span>
+          <span class="hero-c-tag">Packaging</span>
+          <span class="hero-c-tag">Campaign</span>
+        </div>
+      </div>
+    </div>
+    <div class="approach-label">
+      <h3>C — Light Editorial Magazine</h3>
+      <p>Warm off-white background. Image is large but framed. Clean typographic grid with structured meta — closest to an editorial case study.</p>
+      <span class="pro-tag">Best for text-heavy projects</span>
+      <br/>
+      <span class="anim-pill">distribute stagger timing</span>
+      <span class="anim-pill">mapRange reveal progress</span>
+      <span class="anim-pill">snap grid alignment</span>
+    </div>
+  </div>
+
+</div>
+
+<p class="select-hint">click a direction to select it, then reply in the terminal</p>
+
+<script>
+function select(el, id) {
+  document.querySelectorAll('.approach').forEach(a => a.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.__companionEmit) window.__companionEmit({ type: 'select', value: id, label: el.querySelector('h3').textContent });
+}
+</script>
+</body>
+</html>

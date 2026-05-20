@@ -1,0 +1,4 @@
+{"type":"server-started","port":63323,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:63323","screen_dir":"/Users/metwally/Desktop/Kimi_Agent_Clone Hello Monday Site 2/nextjs-app/.superpowers/brainstorm/96013-1777370648/content","state_dir":"/Users/metwally/Desktop/Kimi_Agent_Clone Hello Monday Site 2/nextjs-app/.superpowers/brainstorm/96013-1777370648/state"}
+{"type":"screen-added","file":"/Users/metwally/Desktop/Kimi_Agent_Clone Hello Monday Site 2/nextjs-app/.superpowers/brainstorm/96013-1777370648/content/hero-approaches.html"}
+{"type":"screen-added","file":"/Users/metwally/Desktop/Kimi_Agent_Clone Hello Monday Site 2/nextjs-app/.superpowers/brainstorm/96013-1777370648/content/hero-animated.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -23,6 +23,7 @@ export default function SettingsForm({ initialSettings }: Props) {
     social_linkedin: initialSettings.social_linkedin,
     social_vimeo: initialSettings.social_vimeo,
     social_tiktok: initialSettings.social_tiktok,
+    whatsapp: initialSettings.whatsapp,
     seo_title: initialSettings.seo_title,
     seo_description: initialSettings.seo_description,
     seo_og_image_url: initialSettings.seo_og_image_url,
@@ -104,6 +105,7 @@ export default function SettingsForm({ initialSettings }: Props) {
         </h2>
         {field("contact_email", "General Email")}
         {field("business_email", "New Business Email")}
+        {field("whatsapp", "WhatsApp Number (e.g. +966538639332)")}
       </section>
 
       <section className="space-y-4">

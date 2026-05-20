@@ -3,6 +3,7 @@ import type { ProjectColor, ProjectThemeRole } from "@/lib/project-catalog";
 export type ThemePaletteColor = {
   hex: string;
   name: string;
+  name_ar?: string;
 };
 
 export type ThemePalette = {
@@ -151,7 +152,9 @@ function pushPaletteColor(
   const name = normaliseColor(color.name);
   if (!hex && !name) return;
 
-  colors.push({ hex, name, themeRole });
+  const entry: ProjectColor = { hex, name, themeRole };
+  if (color.name_ar?.trim()) entry.name_ar = color.name_ar.trim();
+  colors.push(entry);
 }
 
 export function hasThemePaletteColors(palette: ThemePalette | Record<string, never> | null | undefined) {

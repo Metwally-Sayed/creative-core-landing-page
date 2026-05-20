@@ -107,13 +107,14 @@ type ThemePaletteState = {
 const THEME_COLOR_HEX_PATTERN = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/;
 
 function emptyThemeColor(): ThemePaletteColor {
-  return { hex: "", name: "" };
+  return { hex: "", name: "", name_ar: "" };
 }
 
 function normalizeThemeColor(color?: ThemePaletteColor | null): ThemePaletteColor {
   return {
     hex: color?.hex?.trim() ?? "",
     name: color?.name?.trim() ?? "",
+    name_ar: color?.name_ar?.trim() ?? "",
   };
 }
 
@@ -174,11 +175,20 @@ function ThemeSwatchField({
           placeholder="#D60523"
         />
       </Field>
-      <Field label="Name">
+      <Field label="Name (EN)">
         <Input
           value={color.name}
           onChange={(e) => onChange({ ...color, name: e.target.value })}
           placeholder="Brand Red"
+        />
+      </Field>
+      <ArDivider />
+      <Field label="Name (AR)">
+        <Input
+          dir="rtl"
+          value={color.name_ar ?? ""}
+          onChange={(e) => onChange({ ...color, name_ar: e.target.value })}
+          placeholder="أحمر العلامة"
         />
       </Field>
     </div>
@@ -253,7 +263,7 @@ function SupportingColorsEditor({
                   placeholder="#71CAC8"
                 />
               </Field>
-              <Field label="Name">
+              <Field label="Name (EN)">
                 <Input
                   value={color.name}
                   onChange={(e) => updateColor(index, { ...color, name: e.target.value })}
@@ -261,6 +271,15 @@ function SupportingColorsEditor({
                 />
               </Field>
             </div>
+            <ArDivider />
+            <Field label="Name (AR)">
+              <Input
+                dir="rtl"
+                value={color.name_ar ?? ""}
+                onChange={(e) => updateColor(index, { ...color, name_ar: e.target.value })}
+                placeholder="زجاج البحر"
+              />
+            </Field>
           </div>
         ))}
       </div>

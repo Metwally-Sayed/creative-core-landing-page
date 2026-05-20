@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { ButtonHTMLAttributes, Dispatch, SetStateAction } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -134,12 +134,17 @@ function formatList(items: string[], notSelectedText: string) {
   return items.length === 0 ? notSelectedText : items.join(", ");
 }
 
-function useStepItems(t: ReturnType<typeof useTranslations<"quote">>): StepItem[] {
+function toEasternArabic(n: string): string {
+  return n.replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[+d]);
+}
+
+function useStepItems(t: ReturnType<typeof useTranslations<"quote">>, locale: string): StepItem[] {
+  const idx = (n: string) => locale === "ar" ? toEasternArabic(n) : n;
   return [
-    { id: "goals",    index: "01", label: t("step01Label"), title: t("step01Title"), description: t("step01Description") },
-    { id: "scope",    index: "02", label: t("step02Label"), title: t("step02Title"), description: t("step02Description") },
-    { id: "timeline", index: "03", label: t("step03Label"), title: t("step03Title"), description: t("step03Description") },
-    { id: "contact",  index: "04", label: t("step04Label"), title: t("step04Title"), description: t("step04Description") },
+    { id: "goals",    index: idx("01"), label: t("step01Label"), title: t("step01Title"), description: t("step01Description") },
+    { id: "scope",    index: idx("02"), label: t("step02Label"), title: t("step02Title"), description: t("step02Description") },
+    { id: "timeline", index: idx("03"), label: t("step03Label"), title: t("step03Title"), description: t("step03Description") },
+    { id: "contact",  index: idx("04"), label: t("step04Label"), title: t("step04Title"), description: t("step04Description") },
   ];
 }
 
@@ -495,7 +500,8 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
   const t = useTranslations("quote");
   const tCommon = useTranslations("common");
   const dir = useDirection();
-  const STEP_ITEMS = useStepItems(t);
+  const locale = useLocale();
+  const STEP_ITEMS = useStepItems(t, locale);
 
   const activeIndex = STEP_ORDER.indexOf(activeStep);
   const activeItem = STEP_ITEMS.find((item) => item.id === activeStep) ?? STEP_ITEMS[0];
@@ -618,7 +624,7 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
       <DialogContent
         dir={dir === -1 ? "rtl" : "ltr"}
         showCloseButton={false}
-        className="w-[calc(100vw-1.5rem)] sm:w-full !max-w-[1040px] overflow-hidden rounded-[2rem] border border-[hsl(var(--border))]/45 bg-[hsl(var(--background))]/96 p-0 shadow-[var(--shadow-float)] backdrop-blur-2xl"
+        className="flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[2rem] rounded-b-none border border-[hsl(var(--border))]/45 bg-[hsl(var(--background))]/96 p-0 shadow-[var(--shadow-float)] backdrop-blur-2xl sm:w-[calc(100vw-2rem)] sm:rounded-[2rem] sm:rounded-b-[2rem] !max-w-[1040px]"
         onInteractOutside={(e) => {
           if (hasData) {
             const confirmDiscard = window.confirm(t("discardConfirm"));
@@ -631,28 +637,29 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
 
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(157,172,255,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,181,123,0.16),transparent_28%)]" />
 
-        <div className="relative p-4 md:p-6">
-          {/* Header */}
-          <header className="mb-5 border-b border-[hsl(var(--border))]/55 pb-4 md:mb-6 md:pb-5">
-            <p className="eyebrow">{t("brandEyebrow")}</p>
-            <h3 className="mt-2 text-[34px] leading-[1.06] text-[hsl(var(--primary))] md:text-[46px]">
-              {t("dialogTitle")}
-            </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[hsl(var(--foreground))]/80 md:text-base">
-              {t("headerIntro")}
-            </p>
+        {/* Sticky header */}
+        <header className="relative shrink-0 border-b border-[hsl(var(--border))]/55 p-4 md:p-6">
+          <p className="eyebrow">{t("brandEyebrow")}</p>
+          <h3 className="mt-1.5 text-[26px] leading-[1.06] text-[hsl(var(--primary))] sm:text-[34px] md:text-[46px]">
+            {t("dialogTitle")}
+          </h3>
+          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-[hsl(var(--foreground))]/80 md:text-base">
+            {t("headerIntro")}
+          </p>
 
-            <DialogClose asChild>
-              <button
-                type="button"
-                aria-label={t("closeAriaLabel")}
-                className="absolute end-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(var(--border))]/60 bg-white/82 text-[hsl(var(--foreground))]/75 transition-colors hover:text-[hsl(var(--primary))]"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </DialogClose>
-          </header>
+          <DialogClose asChild>
+            <button
+              type="button"
+              aria-label={t("closeAriaLabel")}
+              className="absolute end-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[hsl(var(--border))]/60 bg-white/82 text-[hsl(var(--foreground))]/75 transition-colors hover:text-[hsl(var(--primary))]"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </DialogClose>
+        </header>
 
+        {/* Scrollable body */}
+        <div className="relative flex-1 overflow-y-auto p-4 md:p-6">
           {/* Body grid */}
           <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)_280px] lg:gap-5">
             {/* Desktop step nav */}
@@ -686,7 +693,7 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
             {/* Main content */}
             <main className="space-y-4">
               {/* Mobile chip row */}
-              <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
+              <div className="flex flex-wrap gap-2 lg:hidden">
                 {STEP_ITEMS.map((step) => (
                   <StepChip
                     key={step.id}

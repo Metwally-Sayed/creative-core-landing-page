@@ -6,8 +6,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import {
   Inter,
   Playfair_Display,
-  IBM_Plex_Sans_Arabic,
-  Noto_Naskh_Arabic,
+  Cairo,
 } from "next/font/google";
 import { AnimatePresence } from "framer-motion";
 import { isLocale, localeDirection, locales } from "@/i18n/config";
@@ -34,17 +33,10 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const plexArabic = IBM_Plex_Sans_Arabic({
+const cairo = Cairo({
   subsets: ["arabic"],
-  weight: ["400", "500", "700"],
-  variable: "--font-plex-arabic",
-  display: "swap",
-});
-
-const notoNaskh = Noto_Naskh_Arabic({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  variable: "--font-noto-naskh",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cairo",
   display: "swap",
 });
 
@@ -86,7 +78,7 @@ export default async function LocaleLayout({
     <html
       lang={lang}
       dir={dir}
-      className={`${inter.variable} ${playfair.variable} ${plexArabic.variable} ${notoNaskh.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <NextIntlClientProvider messages={messages} locale={lang}>
