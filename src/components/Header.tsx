@@ -171,7 +171,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
             exit={{ x: 72 * dir, opacity: 0 }}
             transition={{ duration: 0.4, ease: transitionEase }}
             style={dir === 1 ? { right: "1.25rem" } : { left: "1.25rem" }}
-            className="fixed bottom-6 z-50 flex items-center gap-2.5 rounded-full bg-[hsl(var(--accent))] py-2.5 pe-4 ps-2.5 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white shadow-[0_6px_28px_rgba(11,27,59,0.28)] lg:hidden"
+            className="fixed bottom-6 z-50 flex items-center gap-2.5 rounded-full bg-[hsl(var(--accent))] py-2.5 pe-4 ps-2.5 text-[0.68rem] font-bold uppercase  text-white shadow-[0_6px_28px_rgba(11,27,59,0.28)] lg:hidden"
           >
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--secondary))]">
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-white" aria-hidden="true">

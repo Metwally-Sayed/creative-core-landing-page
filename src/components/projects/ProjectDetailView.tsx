@@ -342,7 +342,7 @@ function MetricReveal({ metric, index, total }: { metric: { label: string, value
           transition={{ duration: 0.4, delay: 0.4 + index * 0.15 }}
           className="size-2.5 rounded-full bg-[hsl(var(--secondary))] shrink-0"
         />
-        <p className="text-xs uppercase tracking-[0.2em] text-white/40 font-medium" dir="ltr">
+        <p className="text-xs uppercase  text-white/40 font-medium" dir="ltr">
           {counterLabel}
         </p>
       </div>
@@ -1253,7 +1253,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 border-t border-border/60 pt-12 md:pt-16">
               <div className="flex flex-wrap gap-x-12 gap-y-6">
                  {project.credits.map((c, i) => (
-                   <p key={i} className="text-[0.7rem] md:text-[0.8rem] uppercase tracking-[0.2em] text-[hsl(var(--muted-foreground))]">
+                   <p key={i} className="text-[0.7rem] md:text-[0.8rem] uppercase  text-[hsl(var(--muted-foreground))]">
                      <span className="opacity-70 font-medium block md:inline mb-1 md:mb-0">{c.label}: </span>
                      <span className="font-semibold text-[hsl(var(--accent))]">{c.value}</span>
                    </p>

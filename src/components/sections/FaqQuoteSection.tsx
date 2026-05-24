@@ -144,7 +144,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
 
                 {locDeliverables(activeFaq).length ? (
                   <div className="space-y-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                    <p className="text-[10px] font-bold uppercase  text-white/40">
                       {t("standardDeliverables")}
                     </p>
                     <ul className="flex flex-wrap gap-2">

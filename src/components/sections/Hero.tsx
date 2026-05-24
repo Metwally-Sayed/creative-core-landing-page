@@ -174,7 +174,7 @@ export default function Hero({
       <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
         <motion.p
           style={{ opacity }}
-          className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+          className="text-[10px] uppercase  text-muted-foreground"
         >
           {scrollCueLabel}
         </motion.p>

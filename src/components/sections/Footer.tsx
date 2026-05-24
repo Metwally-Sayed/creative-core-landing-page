@@ -273,7 +273,7 @@ export default function Footer({
                   }
               }}
               >
-                <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase tracking-[0.2em]">{tFooter("ourWorlds")}</p>
+                <p className="mb-6 text-sm text-[color:var(--footer-link)] uppercase ">{tFooter("ourWorlds")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 lg:gap-x-24">
                   {locations.map((location) => (
                     <motion.div

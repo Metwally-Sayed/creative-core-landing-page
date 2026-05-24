@@ -89,7 +89,7 @@ export default function ProductSection() {
                     transition={{ duration: 0.6, delay: 0.6 + i * 0.1 }}
                   >
                     <p className="text-4xl md:text-5xl font-serif text-white mb-2">{t(stat.valKey as Parameters<typeof t>[0])}</p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-secondary/80 mb-1">{t(stat.labelKey as Parameters<typeof t>[0])}</p>
+                    <p className="text-xs uppercase  text-secondary/80 mb-1">{t(stat.labelKey as Parameters<typeof t>[0])}</p>
                   </motion.div>
                 ))}
               </div>
