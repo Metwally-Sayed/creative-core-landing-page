@@ -388,7 +388,7 @@ export default function SettingsForm({ initialSettings }: Props) {
     type: "text" | "textarea" = "text"
   ) => (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-[hsl(var(--admin-text-muted))] uppercase tracking-wide">
+      <label className="text-xs font-medium text-[hsl(var(--admin-text-muted))] uppercase ">
         {label}
       </label>
       {type === "textarea" ? (
@@ -420,7 +420,7 @@ export default function SettingsForm({ initialSettings }: Props) {
   return (
     <div className="max-w-2xl space-y-8">
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Site Identity
         </h2>
         {field("site_name", "Site Name")}
@@ -428,7 +428,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Contact
         </h2>
         {field("contact_email", "General Email")}
@@ -436,7 +436,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Social
         </h2>
         {field("social_linkedin", "LinkedIn URL")}
@@ -446,7 +446,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           SEO Defaults
         </h2>
         {field("seo_title", "Default Meta Title")}
@@ -573,7 +573,7 @@ Then find the social links section (the map over `['LinkedIn', 'Instagram', 'Twi
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-bold uppercase tracking-widest text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
+                        className="text-xs font-bold uppercase st text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
                       >
                         {label}
                       </a>
@@ -1115,7 +1115,7 @@ export default function NewPagePage() {
       <h1 className="mb-8 text-2xl font-semibold">New Page</h1>
       <form onSubmit={handleSubmit} className="max-w-md space-y-5">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
             Title
           </label>
           <input
@@ -1130,7 +1130,7 @@ export default function NewPagePage() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
             Slug
           </label>
           <div className="flex items-center gap-1">
@@ -1212,7 +1212,7 @@ function Field({
     "w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]";
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+      <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
         {label}
       </label>
       {type === "textarea" ? (
@@ -1257,7 +1257,7 @@ export default function SectionEditor({ section, onChange }: Props) {
         <Field label="Image URL" value={c(section, "image_url")} onChange={(v) => set("image_url", v)} type="url" />
         <Field label="Image Alt" value={c(section, "image_alt")} onChange={(v) => set("image_alt", v)} />
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">Image Layout</label>
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">Image Layout</label>
           <select
             className="rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm"
             value={c(section, "image_layout") || "right"}
@@ -1297,7 +1297,7 @@ export default function SectionEditor({ section, onChange }: Props) {
       <div className="space-y-3">
         <Field label="Heading" value={c(section, "heading")} onChange={(v) => set("heading", v)} />
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
             Items (JSON array of {"{"}"label","value"{"}"})
           </label>
           <textarea
@@ -1313,7 +1313,7 @@ export default function SectionEditor({ section, onChange }: Props) {
     ),
     rich_text: (
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+        <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
           HTML (allowed: p, h2–h4, a, strong, em, ul, ol, li, blockquote)
         </label>
         <textarea
@@ -1328,7 +1328,7 @@ export default function SectionEditor({ section, onChange }: Props) {
 
   return (
     <div className="rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-4">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+      <p className="mb-3 text-xs font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
         {section.type.replace(/_/g, " ")}
       </p>
       {fields[section.type] ?? (
@@ -1528,19 +1528,19 @@ export default function PageEditor({ page }: { page: PageFullDb }) {
       {tab === "meta" && (
         <div className="max-w-xl space-y-4">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">Slug (read-only)</label>
+            <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">Slug (read-only)</label>
             <input type="text" readOnly value={page.slug} className={`${inputCls} opacity-60`} />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">Meta Title</label>
+            <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">Meta Title</label>
             <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} className={inputCls} />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">Meta Description</label>
+            <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">Meta Description</label>
             <textarea rows={3} value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} className={inputCls} />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">OG Image URL</label>
+            <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">OG Image URL</label>
             <input type="url" value={ogImageUrl} onChange={(e) => setOgImageUrl(e.target.value)} className={inputCls} />
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
@@ -1701,7 +1701,7 @@ export default function TextImageSection({
         >
           <div className={imageFirst ? "order-2 md:order-1" : ""}>
             {eyebrow && (
-              <p className={`mb-3 text-xs font-bold uppercase tracking-widest ${isNavy ? "text-white/60" : "text-[hsl(var(--secondary))]"}`}>
+              <p className={`mb-3 text-xs font-bold uppercase st ${isNavy ? "text-white/60" : "text-[hsl(var(--secondary))]"}`}>
                 {eyebrow}
               </p>
             )}
@@ -1760,7 +1760,7 @@ export default function MetricsSection({ heading, items = [] }: Props) {
               <span className="font-serif text-4xl font-bold text-[hsl(var(--secondary))] md:text-5xl">
                 {item.value}
               </span>
-              <span className="text-sm text-foreground/60 uppercase tracking-wider">
+              <span className="text-sm text-foreground/60 uppercase r">
                 {item.label}
               </span>
             </div>

@@ -42,7 +42,7 @@ export default function BrandLogo({
   return (
     <span
       className={cn(
-        "flex flex-col leading-[0.9] tracking-[0.08em] uppercase transition-colors duration-300",
+        "flex flex-col leading-[0.9]  uppercase transition-colors duration-300",
         colorClass,
         className,
       )}

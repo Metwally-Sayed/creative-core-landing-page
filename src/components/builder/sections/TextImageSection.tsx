@@ -28,7 +28,7 @@ export default function TextImageSection({
         <div className={`grid grid-cols-1 items-center gap-12 md:grid-cols-2`}>
           <div className={imageFirst ? "md:order-2" : ""}>
             {eyebrow && (
-              <p className={`mb-3 text-xs font-bold uppercase tracking-widest ${isNavy ? "text-white/60" : "text-[hsl(var(--secondary))]"}`}>
+              <p className={`mb-3 text-xs font-bold uppercase st ${isNavy ? "text-white/60" : "text-[hsl(var(--secondary))]"}`}>
                 {eyebrow}
               </p>
             )}

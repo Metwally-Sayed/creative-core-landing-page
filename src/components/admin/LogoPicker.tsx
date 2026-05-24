@@ -19,7 +19,7 @@ export default function LogoPicker({ label, description, value, onChange, darkPr
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">{label}</p>
+        <p className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">{label}</p>
         {description && <p className="mt-0.5 text-xs text-[hsl(var(--admin-text-muted))] opacity-70">{description}</p>}
       </div>
 

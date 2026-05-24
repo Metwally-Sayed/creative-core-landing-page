@@ -119,7 +119,7 @@ function FloatingNavPill({ title, progress }: { title: string, progress: number 
                  style={{ height: `${progress * 100}%` }} 
                />
             </div>
-            <span className="whitespace-nowrap text-sm font-medium tracking-wide">
+            <span className="whitespace-nowrap text-sm font-medium ">
               {title}
             </span>
           </div>
@@ -298,7 +298,7 @@ function PullQuote() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.2, ease: transitionEase }}
-          className="font-serif italic text-[2.2rem] md:text-[3.5rem] leading-[1.2] text-[hsl(var(--accent))] font-light tracking-[-0.02em]"
+          className="font-serif italic text-[2.2rem] md:text-[3.5rem] leading-[1.2] text-[hsl(var(--accent))] font-light -0.02em]"
           style={isAr ? { direction: "rtl" } : undefined}
         >
           &ldquo;{quote}&rdquo;
@@ -576,7 +576,7 @@ function RelatedProjectCard({ project, index }: { project: ProjectSummary; index
           />
         </LiquidCard>
         <div className="space-y-3 px-2">
-          <h4 className="font-serif text-[1.75rem] md:text-[2.2rem] leading-tight tracking-[-0.02em] text-[hsl(var(--accent))] group-hover:text-secondary transition-colors duration-300">
+          <h4 className="font-serif text-[1.75rem] md:text-[2.2rem] leading-tight -0.02em] text-[hsl(var(--accent))] group-hover:text-secondary transition-colors duration-300">
             {project.title}
           </h4>
           <p className="eyebrow text-muted-foreground">
@@ -605,7 +605,7 @@ function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS_EN }) {
   return (
     <section className="site-shell py-24 md:py-40 px-6 md:px-12">
       <div className="mb-20">
-        <SplitText text={t("theProcess")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
+        <SplitText text={t("theProcess")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent -0.03em]" />
       </div>
       <div ref={ref} className="relative">
         <motion.div
@@ -626,7 +626,7 @@ function ProcessTimeline({ steps }: { steps: typeof DEFAULT_PROCESS_EN }) {
             >
               <div className="absolute top-0 md:-top-[24px] start-0 size-3 rounded-full bg-secondary border-4 border-background z-10 hidden md:block" />
               <div className="space-y-4">
-                <span className="text-secondary font-bold text-sm tracking-widest">{step.phase}</span>
+                <span className="text-secondary font-bold text-sm st">{step.phase}</span>
                 <h4 className="font-serif text-2xl text-accent">{step.label}</h4>
                 <p className="text-muted-foreground leading-relaxed text-[1.05rem]">{step.desc}</p>
               </div>
@@ -658,7 +658,7 @@ function ColorPaletteShowcase({ colors }: { colors: ProjectColor[] }) {
     <section ref={ref} className="site-shell py-24 md:py-32 px-6 md:px-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div className={isRtl ? "text-right" : ""}>
-          <SplitText text={t("colorStory")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent tracking-[-0.03em]" />
+          <SplitText text={t("colorStory")} className="font-serif text-[2.5rem] md:text-[4rem] text-accent -0.03em]" />
           <p className="text-muted-foreground text-lg mt-4 max-w-md" style={isRtl ? { direction: "rtl" } : undefined}>{t("colorStoryBody")}</p>
         </div>
       </div>
@@ -684,7 +684,7 @@ function ColorPaletteShowcase({ colors }: { colors: ProjectColor[] }) {
               </div>
             </div>
             <p className="font-medium text-lg leading-none mb-2 text-accent">{isRtl && color.name_ar ? color.name_ar : color.name}</p>
-            <p className="text-muted-foreground uppercase tracking-wider text-sm">{color.hex}</p>
+            <p className="text-muted-foreground uppercase r text-sm">{color.hex}</p>
           </motion.button>
         ))}
       </div>
@@ -869,7 +869,7 @@ function ProjectCinematicHero({
         <div />
         {!isMobile && (
           <div className="flex items-center gap-3 text-white/40">
-            <span className="font-mono text-[0.58rem] uppercase tracking-[0.42em]">
+            <span className="font-mono text-[0.58rem] uppercase 0.42em]">
               {isRtl ? "مرّر" : "Scroll"}
             </span>
             <div className="h-7 w-px bg-white/30" />
@@ -887,7 +887,7 @@ function ProjectCinematicHero({
             {project.heroLabel && (
               <div ref={eyebrowRef} className="flex items-center gap-3 text-white/70">
                 <div className="h-px w-8 bg-white/50" />
-                <span className="font-mono text-[0.66rem] uppercase tracking-[0.42em]">
+                <span className="font-mono text-[0.66rem] uppercase 0.42em]">
                   {project.heroLabel}
                 </span>
               </div>
@@ -896,7 +896,7 @@ function ProjectCinematicHero({
             {/* Project name */}
             <div ref={titleWrapRef} className="overflow-hidden">
               <h1
-                className="font-serif leading-[0.96] tracking-[-0.04em] text-white"
+                className="font-serif leading-[0.96]  text-white"
                 style={{
                   fontSize: "clamp(3rem, 8.4vw, 6.75rem)",
                   direction: titleIsAr ? "rtl" : "ltr",
@@ -940,7 +940,7 @@ function ProjectCinematicHero({
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-white/30 px-3.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-white/85 transition-colors duration-300 hover:border-white/70 hover:text-white"
+                    className="rounded-full border border-white/30 px-3.5 py-1.5 font-mono text-[0.62rem] uppercase  text-white/85 transition-colors duration-300 hover:border-white/70 hover:text-white"
                   >
                     {tag}
                   </span>
@@ -1081,7 +1081,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         {/* 3. Editorial Intro */}
         {/* <section ref={introRef} className="site-shell pb-20 md:pb-32 px-6 md:px-12">
           <div className="grid gap-12 md:gap-20 lg:grid-cols-[1.1fr_1.4fr] items-start">
-            <h2 className="font-serif text-[2.75rem] leading-[1.05] tracking-[-0.04em] text-accent md:text-[4rem] lg:text-[4.75rem] md:pe-10">
+            <h2 className="font-serif text-[2.75rem] leading-[1.05]  text-accent md:text-[4rem] lg:text-[4.75rem] md:pe-10">
               <SplitText text={project.title} />
             </h2>
             <div className="space-y-10 mt-2">
@@ -1133,7 +1133,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               </div>
             ))}
           </div>
-          <div className="mt-4 px-6 font-mono text-[0.6rem] tracking-[0.3em] text-accent/40">{galleryCount} frames</div>
+          <div className="mt-4 px-6 font-mono text-[0.6rem] 0.3em] text-accent/40">{galleryCount} frames</div>
         </section>
 
         {/* Desktop: pinned full-screen horizontal scroll */}
@@ -1156,7 +1156,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/20 rounded-full overflow-hidden z-10">
               <motion.div className="h-full bg-white origin-left" style={{ scaleX: horizontalScrollProgress }} />
             </div>
-            <div className="absolute bottom-8 right-12 z-10 font-mono text-[0.65rem] tracking-[0.3em] text-white/50">
+            <div className="absolute bottom-8 right-12 z-10 font-mono text-[0.65rem] 0.3em] text-white/50">
               {galleryCount} frames
             </div>
           </div>
@@ -1205,7 +1205,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
         <section className="bg-white/40 dark:bg-black/20 pt-28 pb-40 border-t border-border/40 md:backdrop-blur-3xl relative z-20 overflow-hidden">
           <div className="site-shell px-6 md:px-12 lg:px-20 mb-32 md:mb-48">
             <div className="mb-14 md:mb-20">
-              <h3 className="font-serif text-[2.75rem] md:text-[4rem] tracking-[-0.03em] text-accent">{t("relatedProjects")}</h3>
+              <h3 className="font-serif text-[2.75rem] md:text-[4rem] -0.03em] text-accent">{t("relatedProjects")}</h3>
             </div>
             <div className="grid md:grid-cols-2 gap-12 md:gap-x-20 md:gap-y-24">
               {relatedProjects.slice(0, 2).map((relatedProject, idx) => (
@@ -1228,13 +1228,13 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
               <div className="bg-white/5 p-10 md:p-16 flex flex-col justify-center items-start border-l border-white/10 relative z-10">
                 <div className="space-y-8 w-full">
                   <div>
-                    <span className="block text-sm uppercase tracking-widest text-[hsl(var(--secondary))] mb-2 font-bold">Inquiries</span>
+                    <span className="block text-sm uppercase st text-[hsl(var(--secondary))] mb-2 font-bold">Inquiries</span>
                     <a href="mailto:hello@example.com" className="text-2xl md:text-3xl font-serif hover:text-[hsl(var(--secondary))] transition-colors border-b border-white/20 pb-1">
                       hello@example.com
                     </a>
                   </div>
                   <div>
-                     <span className="block text-sm uppercase tracking-widest text-[hsl(var(--secondary))] mb-2 font-bold font-sans">Connect</span>
+                     <span className="block text-sm uppercase st text-[hsl(var(--secondary))] mb-2 font-bold font-sans">Connect</span>
                      <div className="flex gap-6">
                         {['Twitter', 'LinkedIn', 'Dribbble'].map((social) => (
                           <MagneticButton key={social} href="#" className="text-lg font-light hover:text-[hsl(var(--secondary))] transition-colors">

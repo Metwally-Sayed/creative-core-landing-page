@@ -49,10 +49,10 @@ function ServicesHero({ title, body }: { title: string; body: string }) {
           <EditorialWordReveal
             as="h1"
             text={title}
-            className="font-serif text-[clamp(4.8rem,9vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+            className="font-serif text-[clamp(4.8rem,9vw,8.4rem)] leading-[0.9] -0.07em] text-accent"
           />
           <EditorialReveal delay={0.16} x={30 * dir} y={18}>
-            <p className="max-w-[36rem] pb-2 text-[clamp(1.45rem,2.35vw,2.15rem)] leading-[1.25] tracking-[-0.03em] text-foreground/80">
+            <p className="max-w-[36rem] pb-2 text-[clamp(1.45rem,2.35vw,2.15rem)] leading-[1.25] -0.03em] text-foreground/80">
               {body}
             </p>
           </EditorialReveal>
@@ -86,7 +86,7 @@ function ServiceShowcaseCard({ imageUrl, subtitle, title, slug }: ResolvedCard) 
         </LiquidCard>
         <div className="space-y-1">
           <p className="text-[0.73rem] leading-none text-secondary/75">{subtitle}</p>
-          <h3 className="max-w-[17ch] font-serif text-[2rem] leading-[0.95] tracking-[-0.04em] text-accent transition-opacity duration-300 group-hover:opacity-70">
+          <h3 className="max-w-[17ch] font-serif text-[2rem] leading-[0.95]  text-accent transition-opacity duration-300 group-hover:opacity-70">
             {title}
           </h3>
         </div>
@@ -121,7 +121,7 @@ function ServicesSection({
         >
           <span
             aria-hidden
-            className="select-none font-serif text-[8rem] leading-none tracking-[-0.08em] text-accent/8"
+            className="select-none font-serif text-[8rem] leading-none -0.08em] text-accent/8"
           >
             {num}
           </span>
@@ -138,7 +138,7 @@ function ServicesSection({
             <EditorialWordReveal
               as="h2"
               text={section.title}
-              className="font-serif text-[clamp(4.1rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+              className="font-serif text-[clamp(4.1rem,7vw,6.25rem)] leading-[0.9] -0.07em] text-accent"
               delayChildren={0.06}
             />
             <EditorialReveal delay={0.12} y={22}>
@@ -191,7 +191,7 @@ function CredentialsSection({
             <EditorialWordReveal
               as="h2"
               text={credentials.title}
-              className="font-serif text-[clamp(4rem,7vw,6rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+              className="font-serif text-[clamp(4rem,7vw,6rem)] leading-[0.9] -0.07em] text-accent"
               delayChildren={0.05}
             />
             <EditorialReveal delay={0.12} y={22}>
@@ -212,10 +212,10 @@ function CredentialsSection({
                       y={24}
                     >
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-6 border-t border-border/60 pt-4">
-                        <p className="font-serif text-[1.65rem] leading-[1.05] tracking-[-0.03em] text-accent md:text-[1.95rem]">
+                        <p className="font-serif text-[1.65rem] leading-[1.05] -0.03em] text-accent md:text-[1.95rem]">
                           {stat.label}
                         </p>
-                        <p className="font-serif text-[4.2rem] leading-none tracking-[-0.07em] text-accent md:text-[5rem]">
+                        <p className="font-serif text-[4.2rem] leading-none -0.07em] text-accent md:text-[5rem]">
                           {stat.value}
                         </p>
                       </div>

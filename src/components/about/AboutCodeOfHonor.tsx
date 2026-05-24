@@ -249,7 +249,7 @@ function HonorItemCard({
           <p className="text-[0.72rem] leading-none text-muted-foreground/70">
             {item.index}
           </p>
-          <h3 className="font-serif text-[1.9rem] leading-[0.95] tracking-[-0.045em]">
+          <h3 className="font-serif text-[1.9rem] leading-[0.95] -0.045em]">
             {item.title}
           </h3>
         </div>

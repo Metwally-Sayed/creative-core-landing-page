@@ -75,7 +75,7 @@ export default function ServicesCredentialsSection({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase  text-secondary">
               {eyebrow}
             </span>
           </div>
@@ -105,7 +105,7 @@ export default function ServicesCredentialsSection({
             <EditorialWordReveal
               as="h2"
               text={title}
-              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] tracking-[-0.05em] text-accent"
+              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] -0.05em] text-accent"
               delayChildren={0.1}
               stagger={0.055}
             />
@@ -138,9 +138,9 @@ export default function ServicesCredentialsSection({
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">{t("credentials")}</span>
+                <span className="font-mono text-[0.65rem] uppercase 0.4em] text-secondary">{t("credentials")}</span>
               </div>
-              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] tracking-[-0.01em] text-foreground/60">
+              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] -0.01em] text-foreground/60">
                 {body}
               </p>
             </div>
@@ -163,10 +163,10 @@ export default function ServicesCredentialsSection({
                       transition={{ duration: 0.9, delay: 0.15 + si * 0.1, ease }}
                     />
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6">
-                      <p className="font-serif text-[1.3rem] leading-[1.05] tracking-[-0.03em] text-accent md:text-[1.65rem] lg:text-[1.95rem]">
+                      <p className="font-serif text-[1.3rem] leading-[1.05] -0.03em] text-accent md:text-[1.65rem] lg:text-[1.95rem]">
                         {stat.label}
                       </p>
-                      <p className="font-serif text-[3rem] leading-none tracking-[-0.07em] text-accent/90 md:text-[4rem] lg:text-[5rem]">
+                      <p className="font-serif text-[3rem] leading-none -0.07em] text-accent/90 md:text-[4rem] lg:text-[5rem]">
                         {stat.value}
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export default function ServicesCredentialsSection({
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/20" />
-            <span className="font-mono text-[0.6rem] uppercase tracking-[0.42em] text-accent/18">Create Core</span>
+            <span className="font-mono text-[0.6rem] uppercase 0.42em] text-accent/18">Create Core</span>
             <div className="h-1 w-1 rounded-full bg-accent/20" />
           </div>
         </motion.div>

@@ -14,7 +14,7 @@ function ArDivider() {
   return (
     <div className="flex items-center gap-2 pt-1">
       <div className="flex-1 border-t border-amber-400/30" />
-      <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">العربية (Arabic)</span>
+      <span className="text-xs font-semibold text-amber-500 uppercase r">العربية (Arabic)</span>
       <div className="flex-1 border-t border-amber-400/30" />
     </div>
   );
@@ -37,7 +37,7 @@ function Field({
     "w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]";
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+      <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
         {label}
       </label>
       {type === "textarea" ? (
@@ -96,7 +96,7 @@ function WhatWeDoItemEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+        <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
           Items
         </span>
         <span className="text-[0.65rem] text-[hsl(var(--admin-text-muted))]">
@@ -257,7 +257,7 @@ function SphereMediaEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+        <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
           Sphere Media
         </span>
         <span className="text-[0.65rem] text-[hsl(var(--admin-text-muted))]">
@@ -471,7 +471,7 @@ function ServiceCardEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+        <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
           Cards
         </span>
         <span className="text-[0.65rem] text-[hsl(var(--admin-text-muted))]">
@@ -603,7 +603,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
 
               {mediaItems.length > 0 ? (
                 <div className="border-t border-[hsl(var(--admin-border))] pt-3 space-y-2">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                  <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
                     Sphere Media — Alt Text (AR)
                   </span>
                   {mediaItems.map((item, index) => {
@@ -703,7 +703,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
             <div className="space-y-3">
               <Field label="Heading (AR)" dir="rtl" value={ar(section, "heading")} onChange={(v) => setAr("heading", v)} />
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                   Items (AR — JSON array with label/value)
                 </label>
                 <textarea
@@ -725,7 +725,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
         case "rich_text":
           return (
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+              <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                 HTML (AR — allowed: p, h2–h4, a, strong, em, ul, ol, li, blockquote)
               </label>
               <textarea
@@ -788,7 +788,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
               <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                   Steps (AR — JSON: [{`{ "num": "01", "title": "...", "body": "..." }`}, ...])
                 </label>
                 <textarea dir="rtl" rows={8}
@@ -807,7 +807,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
               <Field label="Link Label (AR)" dir="rtl" value={ar(section, "link_label")} onChange={(v) => setAr("link_label", v)} />
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                   Cards (AR — JSON: [{`{ "title": "...", "subtitle": "...", "image_url": "...", "slug": "..." }`}, ...])
                 </label>
                 <textarea dir="rtl" rows={8}
@@ -825,7 +825,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               <Field label="Title (AR)" dir="rtl" value={ar(section, "title")} onChange={(v) => setAr("title", v)} type="textarea" />
               <Field label="Body (AR)" dir="rtl" value={ar(section, "body")} onChange={(v) => setAr("body", v)} type="textarea" />
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+                <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                   Stats (AR — JSON: [{`{ "label": "...", "value": "120+" }`}, ...])
                 </label>
                 <textarea dir="rtl" rows={6}
@@ -875,7 +875,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
             <Field label="Image URL" value={c(section, "image_url")} onChange={(v) => set("image_url", v)} type="url" />
             <Field label="Image Alt" value={c(section, "image_alt")} onChange={(v) => set("image_alt", v)} />
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">Image Layout</label>
+              <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">Image Layout</label>
               <select
                 className="rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2 text-sm"
                 value={c(section, "image_layout") || "right"}
@@ -919,7 +919,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
           <div className="space-y-3">
             <Field label="Heading" value={c(section, "heading")} onChange={(v) => set("heading", v)} />
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+              <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                 Items (JSON array)
               </label>
               <textarea
@@ -936,7 +936,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
       case "rich_text":
         return (
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+            <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
               HTML (allowed: p, h2–h4, a, strong, em, ul, ol, li, blockquote)
             </label>
             <textarea
@@ -993,7 +993,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
             <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
             <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+              <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                 Steps (JSON — [{`{ "num": "01", "title": "...", "body": "..." }`}, ...])
               </label>
               <textarea rows={10}
@@ -1019,7 +1019,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
               />
             </div>
             <div className="border-t border-[hsl(var(--admin-border))] pt-3 space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+              <label className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
                 Showcase Images (slider shown when no project cards)
               </label>
               <ShowcaseImagesEditor
@@ -1036,7 +1036,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
             <Field label="Title" value={c(section, "title")} onChange={(v) => set("title", v)} type="textarea" />
             <Field label="Body" value={c(section, "body")} onChange={(v) => set("body", v)} type="textarea" />
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+              <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
                 Stats (JSON — [{`{ "label": "Happy Clients", "value": "120+" }`}, ...])
               </label>
               <textarea rows={8}
@@ -1055,7 +1055,7 @@ export default function SectionEditor({ section, onChange, lang }: Props) {
   return (
     <div className={`rounded-lg border p-4 ${lang === "ar" ? "border-amber-400/40 bg-amber-50/5" : "border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))]"}`}>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <p className="text-xs font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           {section.type.replace(/_/g, " ")}
         </p>
         {lang === "ar" && <span className="text-xs font-normal text-amber-500">العربية</span>}

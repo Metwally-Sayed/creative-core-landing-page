@@ -82,7 +82,7 @@ function WorkProjectCard({
         </LiquidCard>
 
         <div className="pt-4 md:pt-5">
-          <h2 className="max-w-[16ch] font-serif text-[1.95rem] leading-[0.94] tracking-[-0.045em] text-[#171512] transition-opacity duration-300 group-hover:opacity-70 md:text-[2.2rem]">
+          <h2 className="max-w-[16ch] font-serif text-[1.95rem] leading-[0.94] -0.045em] text-[#171512] transition-opacity duration-300 group-hover:opacity-70 md:text-[2.2rem]">
             {project.title}
           </h2>
 

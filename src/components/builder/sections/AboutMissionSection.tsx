@@ -66,7 +66,7 @@ export default function AboutMissionSection({ eyebrow, quote }: { eyebrow: strin
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
-              <span className="font-mono text-[0.72rem] uppercase tracking-[0.42em] text-white/45">
+              <span className="font-mono text-[0.72rem] uppercase 0.42em] text-white/45">
                 {eyebrow}
               </span>
             </div>
@@ -84,7 +84,7 @@ export default function AboutMissionSection({ eyebrow, quote }: { eyebrow: strin
         <EditorialWordReveal
           as="h2"
           text={quote}
-          className="font-serif text-[clamp(2.4rem,5.2vw,5rem)] leading-[1.06] tracking-[-0.055em] text-white"
+          className="font-serif text-[clamp(2.4rem,5.2vw,5rem)] leading-[1.06] -0.055em] text-white"
           delayChildren={0.1}
           stagger={0.045}
         />

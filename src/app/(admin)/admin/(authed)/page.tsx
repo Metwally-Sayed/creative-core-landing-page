@@ -46,13 +46,13 @@ export default async function AdminDashboardPage() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <p
-            className="text-[11px] font-semibold uppercase tracking-[0.28em]"
+            className="text-[11px] font-semibold uppercase "
             style={{ color: "hsl(var(--admin-text-muted))" }}
           >
             Dashboard
           </p>
           <h1
-            className="mt-2 text-[44px] font-semibold leading-[1.0] tracking-[-0.025em]"
+            className="mt-2 text-[44px] font-semibold leading-[1.0] -0.025em]"
             style={{
               fontFamily: "var(--font-serif)",
               color: "hsl(var(--admin-navy-ink))",
@@ -127,7 +127,7 @@ export default async function AdminDashboardPage() {
             {pendingTasks.map((t) => (
               <div key={t.label} className="flex-1">
                 <div
-                  className="text-[42px] font-semibold leading-none tracking-[-0.04em]"
+                  className="text-[42px] font-semibold leading-none "
                   style={{
                     fontFamily: "var(--font-serif)",
                     color: "hsl(var(--admin-orange))",
@@ -136,7 +136,7 @@ export default async function AdminDashboardPage() {
                   {t.value}
                 </div>
                 <div
-                  className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.22em]"
+                  className="mt-2.5 text-[11px] font-semibold uppercase 0.22em]"
                   style={{ color: "rgba(255,255,255,0.5)" }}
                 >
                   {t.label}
@@ -217,13 +217,13 @@ export default async function AdminDashboardPage() {
             </div>
             <div>
               <p
-                className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+                className="text-[11px] font-semibold uppercase 0.22em]"
                 style={{ color: "hsl(var(--admin-text-muted))" }}
               >
                 Media assets
               </p>
               <p
-                className="mt-0.5 text-[36px] font-semibold leading-none tracking-[-0.03em]"
+                className="mt-0.5 text-[36px] font-semibold leading-none -0.03em]"
                 style={{
                   fontFamily: "var(--font-serif)",
                   color: "hsl(var(--admin-navy-ink))",
@@ -255,13 +255,13 @@ export default async function AdminDashboardPage() {
             </div>
             <div>
               <p
-                className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+                className="text-[11px] font-semibold uppercase 0.22em]"
                 style={{ color: "hsl(var(--admin-text-muted))" }}
               >
                 Pages
               </p>
               <p
-                className="mt-0.5 text-[36px] font-semibold leading-none tracking-[-0.03em]"
+                className="mt-0.5 text-[36px] font-semibold leading-none -0.03em]"
                 style={{
                   fontFamily: "var(--font-serif)",
                   color: "hsl(var(--admin-navy-ink))",
@@ -293,13 +293,13 @@ export default async function AdminDashboardPage() {
             </div>
             <div>
               <p
-                className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+                className="text-[11px] font-semibold uppercase 0.22em]"
                 style={{ color: "hsl(var(--admin-text-muted))" }}
               >
                 FAQ items
               </p>
               <p
-                className="mt-0.5 text-[36px] font-semibold leading-none tracking-[-0.03em]"
+                className="mt-0.5 text-[36px] font-semibold leading-none -0.03em]"
                 style={{
                   fontFamily: "var(--font-serif)",
                   color: "hsl(var(--admin-navy-ink))",
@@ -317,13 +317,13 @@ export default async function AdminDashboardPage() {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <p
-              className="text-[11px] font-semibold uppercase tracking-[0.28em]"
+              className="text-[11px] font-semibold uppercase "
               style={{ color: "hsl(var(--admin-text-muted))" }}
             >
               Recent projects
             </p>
             <h2
-              className="mt-1 text-[26px] font-semibold tracking-[-0.02em]"
+              className="mt-1 text-[26px] font-semibold -0.02em]"
               style={{
                 fontFamily: "var(--font-serif)",
                 color: "hsl(var(--admin-navy-ink))",
@@ -444,7 +444,7 @@ export default async function AdminDashboardPage() {
                 {/* Info */}
                 <div className="p-3.5">
                   <p
-                    className="truncate text-[13.5px] font-semibold leading-tight tracking-[-0.01em]"
+                    className="truncate text-[13.5px] font-semibold leading-tight -0.01em]"
                     style={{
                       fontFamily: "var(--font-serif)",
                       color: "hsl(var(--admin-navy-ink))",

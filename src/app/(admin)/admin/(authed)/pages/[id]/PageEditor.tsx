@@ -204,7 +204,7 @@ export default function PageEditor({ page }: { page: PageFullDb }) {
   const inputCls =
     "w-full rounded-md border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] px-3 py-2 text-sm text-[hsl(var(--admin-text))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--admin-accent))]";
 
-  const labelCls = "text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]";
+  const labelCls = "text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]";
 
   return (
     <div>

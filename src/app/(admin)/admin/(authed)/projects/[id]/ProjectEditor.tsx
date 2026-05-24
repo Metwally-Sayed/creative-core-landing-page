@@ -68,9 +68,9 @@ function toSlug(text: string) {
 function Section({ title, children, ar }: { title: string; children: React.ReactNode; ar?: boolean }) {
   return (
     <div className={`rounded-lg border bg-[hsl(var(--admin-surface))] p-6 space-y-4 ${ar ? "border-amber-400/40 bg-amber-50/5" : "border-[hsl(var(--admin-border))]"}`}>
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-[hsl(var(--admin-text-muted))] flex items-center gap-2">
+      <h2 className="text-sm font-semibold uppercase r text-[hsl(var(--admin-text-muted))] flex items-center gap-2">
         {title}
-        {ar && <span className="text-xs font-normal text-amber-500 normal-case tracking-normal">العربية</span>}
+        {ar && <span className="text-xs font-normal text-amber-500 normal-case ">العربية</span>}
       </h2>
       {children}
     </div>
@@ -90,7 +90,7 @@ function ArDivider() {
   return (
     <div className="flex items-center gap-2 pt-1">
       <div className="flex-1 border-t border-amber-400/30" />
-      <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">العربية (Arabic)</span>
+      <span className="text-xs font-semibold text-amber-500 uppercase r">العربية (Arabic)</span>
       <div className="flex-1 border-t border-amber-400/30" />
     </div>
   );

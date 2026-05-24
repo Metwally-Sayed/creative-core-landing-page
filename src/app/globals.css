@@ -328,7 +328,7 @@
   }
 
   .eyebrow {
-    @apply text-[0.75rem] font-medium uppercase tracking-[0.28em];
+    @apply text-[0.75rem] font-medium uppercase ;
     color: hsl(var(--muted-foreground));
   }
 }

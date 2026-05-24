@@ -400,7 +400,7 @@ function ContactStep({
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <label className="space-y-1.5">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+            <span className="text-xs font-medium uppercase 0.14em] text-[hsl(var(--muted-foreground))]">
               {t("nameLabel")}
             </span>
             <Input
@@ -412,7 +412,7 @@ function ContactStep({
           </label>
 
           <label className="space-y-1.5">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+            <span className="text-xs font-medium uppercase 0.14em] text-[hsl(var(--muted-foreground))]">
               {t("emailLabel")}
             </span>
             <Input
@@ -429,7 +429,7 @@ function ContactStep({
           </label>
 
           <label className="space-y-1.5 sm:col-span-2">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+            <span className="text-xs font-medium uppercase 0.14em] text-[hsl(var(--muted-foreground))]">
               {t("companyLabel")}
             </span>
             <Input
@@ -680,7 +680,7 @@ export default function QuoteBriefDialog({ triggerLabel, triggerClassName }: Quo
                           : "border-[hsl(var(--border))]/60 bg-white/80 text-[hsl(var(--foreground))] hover:bg-white",
                       )}
                     >
-                      <p className={cn("text-xs font-medium uppercase tracking-[0.14em]", active ? "text-white/65" : "text-[hsl(var(--muted-foreground))]")}>
+                      <p className={cn("text-xs font-medium uppercase 0.14em]", active ? "text-white/65" : "text-[hsl(var(--muted-foreground))]")}>
                         {step.index}
                       </p>
                       <p className="mt-1 text-sm font-medium">{step.label}</p>

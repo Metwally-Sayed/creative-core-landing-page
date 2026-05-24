@@ -196,7 +196,7 @@ function CollaborationPreview({
       </div>
 
       <div className="rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-5 text-white/62">
-        <div className="mb-3 flex items-center justify-between gap-4 text-[0.68rem] uppercase tracking-[0.28em] text-white/34">
+        <div className="mb-3 flex items-center justify-between gap-4 text-[0.68rem] uppercase  text-white/34">
           <span>{item.projectCount}</span>
           <span>{item.tag}</span>
         </div>
@@ -279,7 +279,7 @@ export default function ProductShowcasePage() {
                   delay: 0.18 + index * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="block font-serif text-[clamp(3.45rem,8vw,6.6rem)] leading-[0.88] tracking-[-0.07em] text-[#f3eee6]"
+                className="block font-serif text-[clamp(3.45rem,8vw,6.6rem)] leading-[0.88] -0.07em] text-[#f3eee6]"
               >
                 {line}
               </motion.span>
@@ -294,7 +294,7 @@ export default function ProductShowcasePage() {
       >
         <div className="site-shell max-w-[1220px] px-0">
           <div className="grid gap-8 lg:grid-cols-[7rem_minmax(0,1fr)] lg:gap-14">
-            <p className="pt-1 text-[0.7rem] uppercase tracking-[0.34em] text-white/30">{t("sectionLabel")}</p>
+            <p className="pt-1 text-[0.7rem] uppercase 0.34em] text-white/30">{t("sectionLabel")}</p>
 
             <div className="space-y-6 text-[1.06rem] leading-[1.8] text-white/68 md:text-[1.12rem]">
               {INTRO_PARAGRAPHS.map((paragraph, index) => (
@@ -345,7 +345,7 @@ export default function ProductShowcasePage() {
                     className="group relative block w-full border-b border-white/6 px-0 py-6 text-start last:border-b-0 md:py-8"
                   >
                     <div className="grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-8 xl:grid-cols-[7rem_minmax(0,1fr)_8rem]">
-                      <p className="pt-2 text-[0.7rem] uppercase tracking-[0.24em] text-white/28">
+                      <p className="pt-2 text-[0.7rem] uppercase  text-white/28">
                         {item.projectCount}
                       </p>
 
@@ -353,7 +353,7 @@ export default function ProductShowcasePage() {
                         <div className="flex flex-wrap items-end justify-between gap-4">
                           <h2
                             className={cn(
-                              "font-serif text-[clamp(3.3rem,9vw,6rem)] leading-[0.9] tracking-[-0.07em] transition-colors duration-500",
+                              "font-serif text-[clamp(3.3rem,9vw,6rem)] leading-[0.9] -0.07em] transition-colors duration-500",
                               isActive ? "text-white" : "text-white/24 group-hover:text-white/68"
                             )}
                           >
@@ -361,7 +361,7 @@ export default function ProductShowcasePage() {
                           </h2>
                           <span
                             className={cn(
-                              "hidden text-[0.68rem] uppercase tracking-[0.28em] transition-colors md:block",
+                              "hidden text-[0.68rem] uppercase  transition-colors md:block",
                               isActive ? "text-white/42" : "text-white/16 group-hover:text-white/34"
                             )}
                           >
@@ -393,7 +393,7 @@ export default function ProductShowcasePage() {
                       <div className="hidden items-start justify-end pt-2 xl:flex">
                         <span
                           className={cn(
-                            "text-[0.68rem] uppercase tracking-[0.28em] transition-colors",
+                            "text-[0.68rem] uppercase  transition-colors",
                             isActive ? "text-white/44" : "text-white/10"
                           )}
                         >
@@ -426,7 +426,7 @@ export default function ProductShowcasePage() {
 
       <section className="border-y border-white/6 bg-[#1c1a19] px-5 py-20 lg:px-20 lg:py-24">
         <div className="site-shell max-w-[1200px] px-0">
-          <p className="mb-10 text-[0.7rem] uppercase tracking-[0.34em] text-white/28">{t("quotesLabel")}</p>
+          <p className="mb-10 text-[0.7rem] uppercase 0.34em] text-white/28">{t("quotesLabel")}</p>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -437,7 +437,7 @@ export default function ProductShowcasePage() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="max-w-[68rem]"
             >
-              <blockquote className="font-serif text-[clamp(2.2rem,4.8vw,4.75rem)] leading-[1.03] tracking-[-0.05em] text-white">
+              <blockquote className="font-serif text-[clamp(2.2rem,4.8vw,4.75rem)] leading-[1.03] -0.05em] text-white">
                 {activeTestimonial.body}
               </blockquote>
               <p className="mt-7 text-sm text-white/56">
@@ -481,8 +481,8 @@ export default function ProductShowcasePage() {
       <section className="px-5 py-20 lg:px-20 lg:py-24">
         <div className="site-shell max-w-[1220px] px-0">
           <div className="mb-12 space-y-3">
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-white/28">{t("contactLabel")}</p>
-            <h2 className="max-w-[28rem] font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] tracking-[-0.06em] text-white">
+            <p className="text-[0.7rem] uppercase 0.34em] text-white/28">{t("contactLabel")}</p>
+            <h2 className="max-w-[28rem] font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] -0.06em] text-white">
               {t("contactHeading")}
             </h2>
           </div>
@@ -502,7 +502,7 @@ export default function ProductShowcasePage() {
 
               <QuoteBriefDialog
                 triggerLabel={t("startBriefButton")}
-                triggerClassName="inline-flex h-[3.25rem] rounded-full border border-white/12 bg-white/[0.04] px-6 text-[0.72rem] uppercase tracking-[0.28em] text-white transition-colors hover:bg-white/[0.08]"
+                triggerClassName="inline-flex h-[3.25rem] rounded-full border border-white/12 bg-white/[0.04] px-6 text-[0.72rem] uppercase  text-white transition-colors hover:bg-white/[0.08]"
               />
             </div>
 

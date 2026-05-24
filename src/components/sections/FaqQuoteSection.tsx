@@ -130,7 +130,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
                 className="space-y-8"
               >
                 <div>
-                  <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-secondary/60">
+                  <p className="mb-4 text-[10px] font-bold uppercase 0.3em] text-secondary/60">
                     {t("insightSpotlight")}
                   </p>
                   <h3 className="text-4xl lg:text-5xl leading-[1.1] text-white font-serif italic">
@@ -166,7 +166,7 @@ export default function FaqQuoteSection({ faqItems }: { faqItems: FaqItemDb[] })
                   </p>
                   <QuoteBriefDialog
                     triggerLabel={t("ctaButton")}
-                    triggerClassName="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-bold uppercase tracking-widest hover:scale-105 transition-transform"
+                    triggerClassName="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-bold uppercase st hover:scale-105 transition-transform"
                   />
                 </div>
               </motion.div>

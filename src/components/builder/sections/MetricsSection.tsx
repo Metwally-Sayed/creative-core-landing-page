@@ -21,7 +21,7 @@ export default function MetricsSection({ heading, items = [] }: Props) {
               <span className="font-serif text-4xl font-bold text-[hsl(var(--secondary))] md:text-5xl">
                 {item.value}
               </span>
-              <span className="text-sm text-foreground/60 uppercase tracking-wider">
+              <span className="text-sm text-foreground/60 uppercase r">
                 {item.label}
               </span>
             </div>

@@ -77,7 +77,7 @@ function ArDivider() {
   return (
     <div className="flex items-center gap-2 pt-1">
       <div className="flex-1 border-t border-amber-400/30" />
-      <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">العربية (Arabic)</span>
+      <span className="text-xs font-semibold text-amber-500 uppercase r">العربية (Arabic)</span>
       <div className="flex-1 border-t border-amber-400/30" />
     </div>
   );

@@ -1477,7 +1477,7 @@ function toSlug(text: string) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-6 space-y-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-[hsl(var(--admin-text-muted))]">
+      <h2 className="text-sm font-semibold uppercase r text-[hsl(var(--admin-text-muted))]">
         {title}
       </h2>
       {children}
@@ -1891,7 +1891,7 @@ function toSlug(text: string) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-lg border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-surface))] p-6 space-y-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-[hsl(var(--admin-text-muted))]">
+      <h2 className="text-sm font-semibold uppercase r text-[hsl(var(--admin-text-muted))]">
         {title}
       </h2>
       {children}

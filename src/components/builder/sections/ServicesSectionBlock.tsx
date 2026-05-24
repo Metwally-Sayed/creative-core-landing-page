@@ -92,7 +92,7 @@ export default function ServicesSectionBlock({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase  text-secondary">
               {eyebrow}
             </span>
           </div>
@@ -103,7 +103,7 @@ export default function ServicesSectionBlock({
             viewport={{ once: true }}
             transition={{ duration: 1.4, delay: 0.2, ease }}
           />
-          <span className="font-mono text-[0.65rem] tabular-nums tracking-[0.28em] text-secondary">{num}</span>
+          <span className="font-mono text-[0.65rem] tabular-nums  text-secondary">{num}</span>
         </motion.div>
 
         {/* Content grid */}
@@ -123,7 +123,7 @@ export default function ServicesSectionBlock({
             <EditorialWordReveal
               as="h2"
               text={title}
-              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] tracking-[-0.05em] text-accent"
+              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] -0.05em] text-accent"
               delayChildren={0.1}
               stagger={0.055}
             />
@@ -157,19 +157,19 @@ export default function ServicesSectionBlock({
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">
+                <span className="font-mono text-[0.65rem] uppercase 0.4em] text-secondary">
                   {eyebrow}
                 </span>
               </div>
 
-              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] tracking-[-0.01em] text-foreground/60">
+              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] -0.01em] text-foreground/60">
                 {body}
               </p>
 
               <EditorialReveal delay={0.18} y={14}>
                 <Link
                   href="/work"
-                  className="group flex items-center gap-3 font-mono text-[0.75rem] uppercase tracking-[0.3em] text-accent/60 transition-colors hover:text-accent"
+                  className="group flex items-center gap-3 font-mono text-[0.75rem] uppercase 0.3em] text-accent/60 transition-colors hover:text-accent"
                 >
                   <span className="h-px w-6 bg-accent/40 transition-all duration-300 group-hover:w-10" />
                   {link_label}
@@ -206,9 +206,9 @@ export default function ServicesSectionBlock({
                     <div className="mt-4 space-y-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-px w-4 bg-accent/30" />
-                        <p className="font-mono text-[0.65rem] uppercase tracking-[0.35em] text-accent/35">{card.subtitle}</p>
+                        <p className="font-mono text-[0.65rem] uppercase 0.35em] text-accent/35">{card.subtitle}</p>
                       </div>
-                      <h3 className="max-w-[17ch] font-serif text-[1.9rem] leading-[0.95] tracking-[-0.04em] text-accent transition-opacity duration-300 group-hover:opacity-70">
+                      <h3 className="max-w-[17ch] font-serif text-[1.9rem] leading-[0.95]  text-accent transition-opacity duration-300 group-hover:opacity-70">
                         {card.title}
                       </h3>
                     </div>
@@ -245,7 +245,7 @@ export default function ServicesSectionBlock({
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/20" />
-            <span className="font-mono text-[0.6rem] uppercase tracking-[0.42em] text-accent/18">Create Core</span>
+            <span className="font-mono text-[0.6rem] uppercase 0.42em] text-accent/18">Create Core</span>
             <div className="h-1 w-1 rounded-full bg-accent/20" />
           </div>
         </motion.div>

@@ -107,7 +107,7 @@ export default function Hero({
             {/[\u0600-\u06FF]/.test(eyebrowText) ? (
               // Arabic eyebrow: animate whole text — per-char inline-block in RTL reverses visual order
               <motion.div
-                className="mb-2 overflow-hidden py-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
+                className="mb-2 overflow-hidden py-1 text-[0.72rem] font-semibold uppercase 0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
                 style={{ direction: "rtl" }}
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -127,7 +127,7 @@ export default function Hero({
                       delay: index * 0.02,
                       ease: transitionEase,
                     }}
-                    className="inline-block whitespace-pre text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
+                    className="inline-block whitespace-pre text-[0.72rem] font-semibold uppercase 0.16em] text-[hsl(var(--muted-foreground))] sm:text-[0.76rem] lg:text-[0.8rem]"
                   >
                     {char}
                   </motion.span>
@@ -142,7 +142,7 @@ export default function Hero({
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
                 transition={{ duration: 0.52, ease: transitionEase }}
-                className="font-serif text-[clamp(2.7rem,12vw,6.2rem)] leading-[0.88] tracking-[-0.04em] text-accent"
+                className="font-serif text-[clamp(2.7rem,12vw,6.2rem)] leading-[0.88]  text-accent"
               >
                 {sceneTitle}
               </motion.h1>

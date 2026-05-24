@@ -507,7 +507,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                 >
-                  <p className="text-[0.7rem] font-medium uppercase tracking-[0.22em] text-white/70">
+                  <p className="text-[0.7rem] font-medium uppercase 0.22em] text-white/70">
                     {selectedItem.alt}
                   </p>
                 </motion.div>

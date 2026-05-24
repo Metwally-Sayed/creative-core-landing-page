@@ -55,7 +55,7 @@ export default function LocaleSwitch({ className, inverted }: Props) {
         >
           <span
             className={cn(
-              "shrink-0 text-[0.6rem] font-black tracking-[0.16em] uppercase",
+              "shrink-0 text-[0.6rem] font-black 0.16em] uppercase",
               inverted ? "text-white" : "text-[hsl(var(--accent))]",
             )}
           >
@@ -81,7 +81,7 @@ export default function LocaleSwitch({ className, inverted }: Props) {
         >
           <span
             className={cn(
-              "shrink-0 text-[0.6rem] font-black tracking-[0.16em] uppercase",
+              "shrink-0 text-[0.6rem] font-black 0.16em] uppercase",
               inverted ? "text-white/80" : "text-[hsl(var(--accent)/0.8)]",
             )}
           >

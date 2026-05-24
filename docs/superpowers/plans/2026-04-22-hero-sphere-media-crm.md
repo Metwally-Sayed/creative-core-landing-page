@@ -299,7 +299,7 @@ function SphereMediaEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+        <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
           Sphere Media
         </span>
         <span className="text-[0.65rem] text-[hsl(var(--admin-text-muted))]">
@@ -485,7 +485,7 @@ case "hero": {
 
       {mediaItems.length > 0 ? (
         <div className="border-t border-[hsl(var(--admin-border))] pt-3 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <span className="text-xs font-semibold uppercase  text-[hsl(var(--admin-text-muted))]">
             Sphere Media — Alt Text (AR)
           </span>
           {mediaItems.map((item, index) => {

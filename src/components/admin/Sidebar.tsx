@@ -65,7 +65,7 @@ export default function Sidebar({ settings }: { settings?: SiteSettings }) {
             {siteName}
           </span>
           <span
-            className="text-[10px] font-semibold uppercase tracking-[0.22em] mt-0.5"
+            className="text-[10px] font-semibold uppercase 0.22em] mt-0.5"
             style={{ color: "hsl(var(--admin-text-muted))" }}
           >
             Studio · Admin
@@ -78,7 +78,7 @@ export default function Sidebar({ settings }: { settings?: SiteSettings }) {
         {ADMIN_NAV_SECTIONS.map((section) => (
           <div key={section.label} className="mb-2">
             <div
-              className="px-3 pb-1.5 pt-3 text-[10px] font-semibold uppercase tracking-[0.22em]"
+              className="px-3 pb-1.5 pt-3 text-[10px] font-semibold uppercase 0.22em]"
               style={{ color: "hsl(var(--admin-text-muted))" }}
             >
               {section.label}

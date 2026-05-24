@@ -66,9 +66,9 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
         >
-          <span className="font-mono text-[0.65rem] uppercase tracking-[0.45em] text-secondary">{t("sideLabel")}</span>
+          <span className="font-mono text-[0.65rem] uppercase 0.45em] text-secondary">{t("sideLabel")}</span>
           <div className="h-16 w-px bg-accent/15" />
-          <span className="font-mono text-[0.65rem] tabular-nums tracking-[0.3em] text-secondary">001</span>
+          <span className="font-mono text-[0.65rem] tabular-nums 0.3em] text-secondary">001</span>
         </motion.div>
 
         {/* Eyebrow strip */}
@@ -84,7 +84,7 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase  text-secondary">
               {t("studioBreadcrumb")}
             </span>
           </div>
@@ -112,7 +112,7 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
             <EditorialWordReveal
               as="h1"
               text={title}
-              className="font-serif text-[clamp(2.2rem,4.2vw,4rem)] leading-[0.92] tracking-[-0.05em] text-accent"
+              className="font-serif text-[clamp(2.2rem,4.2vw,4rem)] leading-[0.92] -0.05em] text-accent"
               delayChildren={0.18}
               stagger={0.06}
             />
@@ -144,12 +144,12 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
                   <line x1="9" y1="0.5" x2="9" y2="17.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="9" x2="17.5" y2="9" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">
+                <span className="font-mono text-[0.65rem] uppercase 0.4em] text-secondary">
                   {t("whatWeOfferLabel")}
                 </span>
               </div>
 
-              <p className="text-[clamp(1rem,1.6vw,1.22rem)] leading-[1.75] tracking-[-0.01em] text-foreground/60">
+              <p className="text-[clamp(1rem,1.6vw,1.22rem)] leading-[1.75] -0.01em] text-foreground/60">
                 {body}
               </p>
 
@@ -162,7 +162,7 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
                 {[t("tagBrand"), t("tagDigital"), t("tagMotion")].map((tag, i) => (
                   <div key={tag} className="flex flex-col gap-1.5">
                     <div className="h-px bg-accent/30" style={{ width: `${2.5 - i * 0.5}rem` }} />
-                    <span className="font-mono text-[0.6rem] uppercase tracking-[0.35em] text-accent/30">{tag}</span>
+                    <span className="font-mono text-[0.6rem] uppercase 0.35em] text-accent/30">{tag}</span>
                   </div>
                 ))}
               </motion.div>
@@ -185,7 +185,7 @@ export default function ServicesHeroSection({ title, body }: { title: string; bo
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/25" />
-            <span className="font-mono text-[0.65rem] uppercase tracking-[0.42em] text-accent/20">Create Core</span>
+            <span className="font-mono text-[0.65rem] uppercase 0.42em] text-accent/20">Create Core</span>
             <div className="h-1 w-1 rounded-full bg-accent/25" />
           </div>
         </motion.div>

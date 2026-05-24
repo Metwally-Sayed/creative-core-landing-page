@@ -31,7 +31,7 @@ function LogoMark({
 }) {
   return (
     <span
-      className={`flex flex-col leading-[0.9] tracking-[0.08em] uppercase ${className}`.trim()}
+      className={`flex flex-col leading-[0.9]  uppercase ${className}`.trim()}
     >
       <span
         className={`text-[0.92rem] font-black transition-colors duration-300 ${
@@ -222,7 +222,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 <button
                   type="button"
                   onClick={() => setIsMenuOpen((open) => !open)}
-                  className={`rounded-full px-4 py-2 text-[0.62rem] tracking-[0.24em] uppercase lg:hidden transition-colors duration-300 ${
+                  className={`rounded-full px-4 py-2 text-[0.62rem]  uppercase lg:hidden transition-colors duration-300 ${
                     forceInvert
                       ? "text-white border border-white/20 bg-white/10"
                       : "site-card text-[hsl(var(--accent))]"
@@ -402,7 +402,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
               <button
                 type="button"
                 onClick={() => setIsMenuOpen(false)}
-                className="absolute end-6 top-6 rounded-full border border-white/18 px-4 py-2 text-[0.7rem] tracking-[0.22em] text-white uppercase lg:hidden"
+                className="absolute end-6 top-6 rounded-full border border-white/18 px-4 py-2 text-[0.7rem] 0.22em] text-white uppercase lg:hidden"
                 aria-label={tHeader("closeMenu")}
               >
                 {tHeader("closeMenu")}
@@ -429,7 +429,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="group flex items-center gap-6 text-[2.4rem] leading-[0.9] font-black tracking-[-0.02em] text-white sm:text-[3rem] md:text-[5.5rem] lg:text-[7.5rem]"
+                        className="group flex items-center gap-6 text-[2.4rem] leading-[0.9] font-black -0.02em] text-white sm:text-[3rem] md:text-[5.5rem] lg:text-[7.5rem]"
                       >
                         <motion.div
                           animate={{
@@ -452,7 +452,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-6 text-[0.75rem] font-bold uppercase tracking-[0.3em] text-white/30 md:bottom-12 md:gap-12"
+                className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-6 text-[0.75rem] font-bold uppercase 0.3em] text-white/30 md:bottom-12 md:gap-12"
               >
                 {[
                   { label: 'Instagram', url: settings?.social_instagram },

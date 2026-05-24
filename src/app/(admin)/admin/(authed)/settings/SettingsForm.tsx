@@ -37,7 +37,7 @@ export default function SettingsForm({ initialSettings }: Props) {
     type: "text" | "textarea" = "text"
   ) => (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-[hsl(var(--admin-text-muted))] uppercase tracking-wide">
+      <label className="text-xs font-medium text-[hsl(var(--admin-text-muted))] uppercase ">
         {label}
       </label>
       {type === "textarea" ? (
@@ -69,7 +69,7 @@ export default function SettingsForm({ initialSettings }: Props) {
   return (
     <div className="max-w-2xl space-y-8">
       <section className="space-y-6">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Site Identity
         </h2>
 
@@ -100,7 +100,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Contact
         </h2>
         {field("contact_email", "General Email")}
@@ -109,7 +109,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           Social
         </h2>
         {field("social_linkedin", "LinkedIn URL")}
@@ -120,7 +120,7 @@ export default function SettingsForm({ initialSettings }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[hsl(var(--admin-text-muted))]">
+        <h2 className="text-sm font-semibold uppercase st text-[hsl(var(--admin-text-muted))]">
           SEO Defaults
         </h2>
         {field("seo_title", "Default Meta Title")}

@@ -129,7 +129,7 @@ function LiquidProjectCard({ project, index, locale }: { project: ProjectSummary
                 {displayTags.map((tag, i) => (
                   <span
                     key={i}
-                    className="cursor-pointer text-xs tracking-[0.14em] text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--secondary))]"
+                    className="cursor-pointer text-xs 0.14em] text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--secondary))]"
                   >
                     {tag}
                   </span>
@@ -232,7 +232,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className="group relative shrink-0 px-6 py-2 text-xs font-semibold uppercase tracking-widest"
+                  className="group relative shrink-0 px-6 py-2 text-xs font-semibold uppercase st"
                 >
                   <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
                     {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
@@ -312,7 +312,7 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
               </div>
             </div>
             <div className="text-center">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
+              <span className="text-xs font-bold uppercase 0.3em] text-accent">
                 {t("projectsViewAllLabel")}
               </span>
               <p className="mt-1 text-sm text-muted-foreground">

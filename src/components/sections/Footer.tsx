@@ -96,7 +96,7 @@ function ContactCard({ item }: { item: ContactItem }) {
 
   return (
     <div className="flex flex-col">
-      <p className="mb-4 text-xs tracking-wider text-[color:var(--footer-muted)] opacity-80">{item.label}</p>
+      <p className="mb-4 text-xs r text-[color:var(--footer-muted)] opacity-80">{item.label}</p>
       <a
         href={item.href}
         onClick={handleClick}
@@ -306,7 +306,7 @@ export default function Footer({
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-bold uppercase tracking-widest text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
+                        className="text-xs font-bold uppercase st text-[color:var(--footer-link)] transition-colors hover:text-[color:var(--footer-fg)]"
                       >
                         {label}
                       </a>
@@ -341,7 +341,7 @@ export default function Footer({
                 <path d="M0,55 C107.57331,55 172.397965,0 261.914001,0 C351.430038,0 418.082695,55 524.041347,55 C630,55 -108,55 0,55 Z" className="bulge" fill="currentColor"></path>
               </g>
             </svg>
-            <span className="relative z-10 text-white text-[10px] md:text-xs tracking-[0.15em] font-medium flex items-center gap-2 mt-1 md:mt-2 transition-transform group-hover:-translate-y-0.5">
+            <span className="relative z-10 text-white text-[10px] md:text-xs 0.15em] font-medium flex items-center gap-2 mt-1 md:mt-2 transition-transform group-hover:-translate-y-0.5">
               {tFooter("backToTop")}
               <ArrowUp className="w-3 h-3" strokeWidth={3} />
             </span>

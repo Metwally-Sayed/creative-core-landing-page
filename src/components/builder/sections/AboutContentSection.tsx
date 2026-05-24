@@ -70,7 +70,7 @@ export default function AboutContentSection({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-secondary">
+            <span className="font-mono text-[0.72rem] font-semibold uppercase  text-secondary">
               {eyebrow}
             </span>
           </div>
@@ -100,7 +100,7 @@ export default function AboutContentSection({
             <EditorialWordReveal
               as="h2"
               text={title}
-              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] tracking-[-0.05em] text-accent"
+              className="font-serif text-[clamp(2.4rem,4.6vw,4.4rem)] leading-[0.92] -0.05em] text-accent"
               delayChildren={0.1}
               stagger={0.055}
             />
@@ -134,12 +134,12 @@ export default function AboutContentSection({
                   <line x1="8" y1="0.5" x2="8" y2="15.5" stroke="currentColor" strokeWidth="0.5" />
                   <line x1="0.5" y1="8" x2="15.5" y2="8" stroke="currentColor" strokeWidth="0.5" />
                 </svg>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.4em] text-secondary">
+                <span className="font-mono text-[0.65rem] uppercase 0.4em] text-secondary">
                   {eyebrow}
                 </span>
               </div>
 
-              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] tracking-[-0.01em] text-foreground/60">
+              <p className="text-[clamp(1rem,1.55vw,1.18rem)] leading-[1.75] -0.01em] text-foreground/60">
                 {body}
               </p>
 
@@ -164,7 +164,7 @@ export default function AboutContentSection({
           />
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-accent/20" />
-            <span className="font-mono text-[0.6rem] uppercase tracking-[0.42em] text-accent/18">
+            <span className="font-mono text-[0.6rem] uppercase 0.42em] text-accent/18">
               Create Core
             </span>
             <div className="h-1 w-1 rounded-full bg-accent/20" />

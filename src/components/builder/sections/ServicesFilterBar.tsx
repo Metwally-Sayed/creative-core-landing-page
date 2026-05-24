@@ -65,7 +65,7 @@ export default function ServicesFilterBar() {
               <button
                 key={cat.label}
                 onClick={() => scrollTo(cat.id)}
-                className="relative shrink-0 rounded-full px-4 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.3em] transition-colors duration-200"
+                className="relative shrink-0 rounded-full px-4 py-1.5 font-mono text-[0.65rem] uppercase 0.3em] transition-colors duration-200"
               >
                 <span className={`relative z-10 transition-colors duration-200 ${isActive ? "text-white" : "text-accent/50 hover:text-accent"}`}>
                   {cat.label}

@@ -93,13 +93,13 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
         {/* Hero copy */}
         <div className="relative mt-auto mb-auto flex flex-col">
           <p
-            className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em]"
+            className="mb-4 text-[11px] font-semibold uppercase "
             style={{ color: "rgba(255,255,255,0.5)" }}
           >
             Studio Admin
           </p>
           <h1
-            className="leading-[0.95] font-semibold tracking-[-0.035em] max-w-[520px]"
+            className="leading-[0.95] font-semibold -0.035em] max-w-[520px]"
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: "clamp(52px, 6vw, 80px)",
@@ -127,7 +127,7 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
             ].map(([value, label]) => (
               <div key={label}>
                 <div
-                  className="text-[42px] font-semibold leading-none tracking-[-0.04em]"
+                  className="text-[42px] font-semibold leading-none "
                   style={{
                     fontFamily: "var(--font-serif)",
                     color: "hsl(var(--admin-orange))",
@@ -136,7 +136,7 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
                   {value}
                 </div>
                 <div
-                  className="mt-2.5 text-[10px] font-semibold uppercase tracking-[0.28em]"
+                  className="mt-2.5 text-[10px] font-semibold uppercase "
                   style={{ color: "rgba(255,255,255,0.45)" }}
                 >
                   {label}
@@ -195,13 +195,13 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
           </div>
 
           <p
-            className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em]"
+            className="mb-2 text-[11px] font-semibold uppercase "
             style={{ color: "hsl(var(--admin-text-muted))" }}
           >
             Sign in
           </p>
           <h2
-            className="mb-2 text-[40px] font-semibold leading-tight tracking-[-0.03em]"
+            className="mb-2 text-[40px] font-semibold leading-tight -0.03em]"
             style={{
               fontFamily: "var(--font-serif)",
               color: "hsl(var(--admin-navy-ink))",
@@ -222,7 +222,7 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
             <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="email"
-                className="text-[11px] font-semibold uppercase tracking-[0.18em]"
+                className="text-[11px] font-semibold uppercase 0.18em]"
                 style={{ color: "hsl(var(--admin-text-muted))" }}
               >
                 Email
@@ -254,7 +254,7 @@ export default function LoginForm({ from, logoUrl, siteName = "Creative Core" }:
             <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="password"
-                className="text-[11px] font-semibold uppercase tracking-[0.18em]"
+                className="text-[11px] font-semibold uppercase 0.18em]"
                 style={{ color: "hsl(var(--admin-text-muted))" }}
               >
                 Password

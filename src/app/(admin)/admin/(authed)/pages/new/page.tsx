@@ -37,7 +37,7 @@ export default function NewPagePage() {
       <h1 className="mb-8 text-2xl font-semibold">New Page</h1>
       <form onSubmit={handleSubmit} className="max-w-md space-y-5">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
             Title
           </label>
           <input
@@ -52,7 +52,7 @@ export default function NewPagePage() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--admin-text-muted))]">
+          <label className="text-xs font-medium uppercase  text-[hsl(var(--admin-text-muted))]">
             Slug
           </label>
           <div className="flex items-center gap-1">

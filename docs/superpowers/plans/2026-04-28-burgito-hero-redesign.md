@@ -201,13 +201,13 @@ function ProjectCinematicHero({
           <ArrowUpRight
             className={`size-4 ${isRtl ? "-rotate-[315deg]" : "rotate-[225deg]"}`}
           />
-          <span className="font-mono text-[0.68rem] uppercase tracking-[0.32em]">
+          <span className="font-mono text-[0.68rem] uppercase ">
             {isRtl ? "العودة" : "Back"}
           </span>
         </Link>
         {!isMobile && (
           <div className="flex items-center gap-2 text-white/35">
-            <span className="font-mono text-[0.58rem] uppercase tracking-[0.38em]">
+            <span className="font-mono text-[0.58rem] uppercase ">
               {isRtl ? "مرّر" : "Scroll"}
             </span>
             <div className="h-7 w-px bg-white/20" />
@@ -234,7 +234,7 @@ function ProjectCinematicHero({
                 transition={{ duration: 0.5, delay: isMobile ? 0.2 : 2.45, ease: transitionEase }}
               >
                 <div className="h-px w-6 bg-white/40" />
-                <span className="font-mono text-[0.68rem] uppercase tracking-[0.38em] text-white/60">
+                <span className="font-mono text-[0.68rem] uppercase  text-white/60">
                   {project.heroLabel}
                 </span>
               </motion.div>
@@ -243,7 +243,7 @@ function ProjectCinematicHero({
             {/* Title — clipped reveal */}
             <div className="overflow-hidden">
               <motion.h1
-                className="font-serif leading-[0.92] tracking-[-0.04em] text-white"
+                className="font-serif leading-[0.92]  text-white"
                 style={{ fontSize: "clamp(2.8rem, 7.5vw, 5.75rem)" }}
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
@@ -283,7 +283,7 @@ function ProjectCinematicHero({
                 {project.tags.map((tag, i) => (
                   <motion.span
                     key={tag}
-                    className="rounded-full border border-white/20 px-3 py-1 font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/60"
+                    className="rounded-full border border-white/20 px-3 py-1 font-mono text-[0.62rem] uppercase  text-white/60"
                     initial={{ opacity: 0, x: isRtl ? 10 : -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{
@@ -309,7 +309,7 @@ function ProjectCinematicHero({
             >
               {project.introMeta.client && (
                 <div className="space-y-1">
-                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.35em] text-white/35">
+                  <p className="font-mono text-[0.58rem] uppercase 0.35em] text-white/35">
                     {isRtl ? "العميل" : "Client"}
                   </p>
                   <p className="text-sm font-medium text-white/80">{project.introMeta.client}</p>
@@ -317,7 +317,7 @@ function ProjectCinematicHero({
               )}
               {project.introMeta.type && (
                 <div className="space-y-1">
-                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.35em] text-white/35">
+                  <p className="font-mono text-[0.58rem] uppercase 0.35em] text-white/35">
                     {isRtl ? "التصنيف" : "Category"}
                   </p>
                   <p className="text-sm font-medium text-white/80">{project.introMeta.type}</p>

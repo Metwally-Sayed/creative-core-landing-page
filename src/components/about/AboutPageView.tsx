@@ -36,10 +36,10 @@ function AboutHero({ title, body }: { title: string; body: string }) {
           <EditorialWordReveal
             as="h1"
             text={title}
-            className="font-serif text-[clamp(4.8rem,9vw,8.4rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+            className="font-serif text-[clamp(4.8rem,9vw,8.4rem)] leading-[0.9] -0.07em] text-accent"
           />
           <EditorialReveal delay={0.16} x={30 * dir} y={18}>
-            <p className="max-w-[38rem] pb-2 text-[clamp(1.35rem,2.2vw,2.05rem)] leading-[1.28] tracking-[-0.03em] text-foreground/80">
+            <p className="max-w-[38rem] pb-2 text-[clamp(1.35rem,2.2vw,2.05rem)] leading-[1.28] -0.03em] text-foreground/80">
               {body}
             </p>
           </EditorialReveal>
@@ -79,7 +79,7 @@ function ContentSection({
           <EditorialWordReveal
             as="h2"
             text={title}
-            className="font-serif text-[clamp(4rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+            className="font-serif text-[clamp(4rem,7vw,6.25rem)] leading-[0.9] -0.07em] text-accent"
             delayChildren={0.06}
           />
           <EditorialReveal delay={0.14} y={22}>
@@ -106,14 +106,14 @@ function MissionSection({
     <section className="bg-accent py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-6 text-center md:px-10 lg:px-16">
         <EditorialReveal delay={0.04} y={16}>
-          <p className="mb-8 text-[0.78rem] leading-none tracking-[0.12em] text-white/55 uppercase">
+          <p className="mb-8 text-[0.78rem] leading-none 0.12em] text-white/55 uppercase">
             {eyebrow}
           </p>
         </EditorialReveal>
         <EditorialWordReveal
           as="h2"
           text={quote}
-          className="font-serif text-[clamp(3rem,6vw,5.4rem)] leading-[1.05] tracking-[-0.055em] text-white"
+          className="font-serif text-[clamp(3rem,6vw,5.4rem)] leading-[1.05] -0.055em] text-white"
           delayChildren={0.08}
         />
       </div>
@@ -151,7 +151,7 @@ function ProcessSection({
               <EditorialWordReveal
                 as="h2"
                 text={title}
-                className="font-serif text-[clamp(4rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.07em] text-accent"
+                className="font-serif text-[clamp(4rem,7vw,6.25rem)] leading-[0.9] -0.07em] text-accent"
                 delayChildren={0.06}
               />
               <EditorialReveal delay={0.12} y={22}>
@@ -167,11 +167,11 @@ function ProcessSection({
                   <div className="space-y-4 bg-background p-8 md:p-10">
                     <span
                       aria-hidden
-                      className="block font-serif text-[4.5rem] leading-none tracking-[-0.08em] text-accent/10"
+                      className="block font-serif text-[4.5rem] leading-none -0.08em] text-accent/10"
                     >
                       {step.num}
                     </span>
-                    <h3 className="font-serif text-[2rem] leading-[0.95] tracking-[-0.045em] text-accent md:text-[2.4rem]">
+                    <h3 className="font-serif text-[2rem] leading-[0.95] -0.045em] text-accent md:text-[2.4rem]">
                       {step.title}
                     </h3>
                     <p className="text-[0.98rem] leading-[1.7] text-muted-foreground">
