@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import DOMPurify from "isomorphic-dompurify";
 
 const ALLOWED_TAGS = ["p", "h2", "h3", "h4", "a", "strong", "em", "ul", "ol", "li", "blockquote"];
@@ -11,28 +14,40 @@ interface Props {
 }
 
 export default function RichTextSection({ html }: Props) {
-  const purify = DOMPurify;
+  // Sanitization runs in the browser only — keeps jsdom out of the server bundle.
+  const [clean, setClean] = useState<string>("");
 
-  // After sanitization: enforce rel on blank-target links + strip unsafe hrefs
-  purify.addHook("afterSanitizeAttributes", (node) => {
-    if (node.tagName === "A") {
-      if (node.getAttribute("target") === "_blank") {
-        node.setAttribute("rel", "noopener noreferrer");
-      }
-      const href = node.getAttribute("href");
-      if (href && !SAFE_URI_REGEXP.test(href)) {
-        node.removeAttribute("href");
-      }
+  useEffect(() => {
+    if (!html) {
+      setClean("");
+      return;
     }
-  });
 
-  const clean = purify.sanitize(html, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR,
-  });
+    const purify = DOMPurify;
 
-  // Remove hook after use to avoid accumulation across calls
-  purify.removeAllHooks();
+    // After sanitization: enforce rel on blank-target links + strip unsafe hrefs
+    purify.addHook("afterSanitizeAttributes", (node) => {
+      if (node.tagName === "A") {
+        if (node.getAttribute("target") === "_blank") {
+          node.setAttribute("rel", "noopener noreferrer");
+        }
+        const href = node.getAttribute("href");
+        if (href && !SAFE_URI_REGEXP.test(href)) {
+          node.removeAttribute("href");
+        }
+      }
+    });
+
+    const sanitized = purify.sanitize(html, {
+      ALLOWED_TAGS,
+      ALLOWED_ATTR,
+    });
+
+    // Remove hook after use to avoid accumulation across re-renders
+    purify.removeAllHooks();
+
+    setClean(sanitized);
+  }, [html]);
 
   if (!clean) return null;
 
