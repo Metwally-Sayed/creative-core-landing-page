@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -119,68 +119,52 @@ export const DEFAULT_SETTINGS: SiteSettings = {
 
 // ─── Cached fetchers ──────────────────────────────────────────────────────────
 
-export const getPages = unstable_cache(
-  async (): Promise<PageSummaryDb[]> => {
-    const { data, error } = await supabase
-      .from("pages")
-      .select("id, slug, title, published, sort_order")
-      .order("sort_order");
-    if (error) throw error;
-    return data as PageSummaryDb[];
-  },
-  ["pages"],
-  { revalidate: false, tags: ["pages"] }
-);
+export const getPages = cache(async (): Promise<PageSummaryDb[]> => {
+  const { data, error } = await supabase
+    .from("pages")
+    .select("id, slug, title, published, sort_order")
+    .order("sort_order");
+  if (error) throw error;
+  return data as PageSummaryDb[];
+});
 
-export const getPage = unstable_cache(
-  async (slug: string): Promise<PageFullDb | null> => {
-    const { data: row, error } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-    if (error || !row) return null;
+export const getPage = cache(async (slug: string): Promise<PageFullDb | null> => {
+  const { data: row, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  if (error || !row) return null;
 
-    const { data: sections } = await supabase
-      .from("page_sections")
-      .select("*")
-      .eq("page_id", row.id)
-      .order("sort_order");
+  const { data: sections } = await supabase
+    .from("page_sections")
+    .select("*")
+    .eq("page_id", row.id)
+    .order("sort_order");
 
-    return { ...row, sections: sections ?? [] } as PageFullDb;
-  },
-  ["pages"],
-  { revalidate: false, tags: ["pages"] }
-);
+  return { ...row, sections: sections ?? [] } as PageFullDb;
+});
 
-export const getPageTranslations = unstable_cache(
-  async (slug: string): Promise<{ en: Record<string, string>; ar: Record<string, string> }> => {
-    const { data, error } = await supabase
-      .from("pages")
-      .select("translations")
-      .eq("slug", slug)
-      .single();
-    if (error || !data) return { en: {}, ar: {} };
-    const t = data.translations as Record<string, Record<string, string>>;
-    return { en: t.en ?? {}, ar: t.ar ?? {} };
-  },
-  ["pages"],
-  { revalidate: false, tags: ["pages"] }
-);
+export const getPageTranslations = cache(async (slug: string): Promise<{ en: Record<string, string>; ar: Record<string, string> }> => {
+  const { data, error } = await supabase
+    .from("pages")
+    .select("translations")
+    .eq("slug", slug)
+    .single();
+  if (error || !data) return { en: {}, ar: {} };
+  const t = data.translations as Record<string, Record<string, string>>;
+  return { en: t.en ?? {}, ar: t.ar ?? {} };
+});
 
-export const getSettings = unstable_cache(
-  async (): Promise<SiteSettings> => {
-    const { data, error } = await supabase
-      .from("site_settings")
-      .select("*")
-      .eq("id", 1)
-      .single();
-    if (error || !data) return DEFAULT_SETTINGS;
-    return data as SiteSettings;
-  },
-  ["settings"],
-  { revalidate: false, tags: ["settings"] }
-);
+export const getSettings = cache(async (): Promise<SiteSettings> => {
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("*")
+    .eq("id", 1)
+    .single();
+  if (error || !data) return DEFAULT_SETTINGS;
+  return data as SiteSettings;
+});
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 

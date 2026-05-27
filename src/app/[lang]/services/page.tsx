@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPage } from "@/lib/page-data";
 import SectionRenderer from "@/components/builder/SectionRenderer";
 
-export const revalidate = false;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

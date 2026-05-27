@@ -5,7 +5,7 @@ import ProjectDetailContainer from "@/components/projects/ProjectDetailContainer
 import { locales } from "@/i18n/config";
 import { getProject, getProjects } from "@/lib/project-data";
 
-export const revalidate = false;
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
 type ProjectPageProps = {

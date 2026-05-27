@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 import type {
   ProjectDetail,
@@ -213,22 +213,17 @@ export interface ProjectFullInput {
 const SUMMARY_COLS =
   "id, slug, title, tags, aspect_ratio, cover_image_url, published, sort_order, service_type, work_filters, featured_aspect_ratio, inherit_theme_from_palette, theme_palette, translations";
 
-export const getProjects = unstable_cache(
-  async (): Promise<ProjectSummaryDb[]> => {
-    const { data, error } = await supabase
-      .from("projects")
-      .select(SUMMARY_COLS)
-      .eq("published", true)
-      .order("sort_order");
-    if (error) throw error;
-    return data as ProjectSummaryDb[];
-  },
-  ["projects"],
-  { revalidate: false, tags: ["projects"] }
-);
+export const getProjects = cache(async (): Promise<ProjectSummaryDb[]> => {
+  const { data, error } = await supabase
+    .from("projects")
+    .select(SUMMARY_COLS)
+    .eq("published", true)
+    .order("sort_order");
+  if (error) throw error;
+  return data as ProjectSummaryDb[];
+});
 
-export const getProject = unstable_cache(
-  async (slug: string): Promise<ProjectFullDb | null> => {
+export const getProject = cache(async (slug: string): Promise<ProjectFullDb | null> => {
     const { data: row, error } = await supabase
       .from("projects")
       .select("*")
@@ -293,25 +288,18 @@ export const getProject = unstable_cache(
       process,
       related_ids: related,
     } as ProjectFullDb;
-  },
-  ["projects"],
-  { revalidate: false, tags: ["projects"] }
-);
+});
 
-export const getRelatedProjects = unstable_cache(
-  async (ids: string[]): Promise<ProjectSummaryDb[]> => {
-    if (!ids.length) return [];
-    const { data, error } = await supabase
-      .from("projects")
-      .select(SUMMARY_COLS)
-      .in("id", ids)
-      .eq("published", true);
-    if (error) throw error;
-    return data as ProjectSummaryDb[];
-  },
-  ["projects"],
-  { revalidate: false, tags: ["projects"] }
-);
+export const getRelatedProjects = cache(async (ids: string[]): Promise<ProjectSummaryDb[]> => {
+  if (!ids.length) return [];
+  const { data, error } = await supabase
+    .from("projects")
+    .select(SUMMARY_COLS)
+    .in("id", ids)
+    .eq("published", true);
+  if (error) throw error;
+  return data as ProjectSummaryDb[];
+});
 
 // ─── Mapper: DB types → legacy catalog types ─────────────────────────────────
 

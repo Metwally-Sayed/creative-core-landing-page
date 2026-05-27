@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 
 export interface FaqItemTranslationsAr {
@@ -20,15 +20,11 @@ export interface FaqItemDb {
   updated_at: string;
 }
 
-export const getFaqItems = unstable_cache(
-  async (): Promise<FaqItemDb[]> => {
-    const { data, error } = await supabase
-      .from("faq_items")
-      .select("*")
-      .order("sort_order", { ascending: true });
-    if (error) throw error;
-    return data as FaqItemDb[];
-  },
-  ["faq"],
-  { revalidate: false, tags: ["faq"] }
-);
+export const getFaqItems = cache(async (): Promise<FaqItemDb[]> => {
+  const { data, error } = await supabase
+    .from("faq_items")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+  return data as FaqItemDb[];
+});

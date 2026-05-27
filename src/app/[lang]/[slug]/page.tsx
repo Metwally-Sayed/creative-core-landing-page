@@ -5,8 +5,8 @@ import { getFaqItems } from "@/lib/faq-data";
 import SectionRenderer from "@/components/builder/SectionRenderer";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
-export const revalidate = false;
 
 export async function generateStaticParams() {
   const pages = await getPages();

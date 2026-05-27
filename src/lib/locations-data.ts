@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 
 export interface Location {
@@ -13,15 +13,11 @@ export interface Location {
   updated_at: string;
 }
 
-export const getLocations = unstable_cache(
-  async (): Promise<Location[]> => {
-    const { data, error } = await supabase
-      .from("locations")
-      .select("*")
-      .order("sort_order", { ascending: true });
-    if (error) throw error;
-    return data as Location[];
-  },
-  ["locations"],
-  { revalidate: false, tags: ["locations"] }
-);
+export const getLocations = cache(async (): Promise<Location[]> => {
+  const { data, error } = await supabase
+    .from("locations")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+  return data as Location[];
+});

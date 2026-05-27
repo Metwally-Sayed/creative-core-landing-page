@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 
 export interface NavLink {
@@ -10,20 +10,16 @@ export interface NavLink {
   enabled: boolean;
 }
 
-/** Public cached fetch — only enabled links, ordered by sort_order. */
-export const getNavLinks = unstable_cache(
-  async (): Promise<NavLink[]> => {
-    const { data, error } = await supabase
-      .from("nav_links")
-      .select("*")
-      .eq("enabled", true)
-      .order("sort_order");
-    if (error) throw error;
-    return data as NavLink[];
-  },
-  ["nav_links"],
-  { revalidate: false, tags: ["nav_links"] }
-);
+/** Public fetch — only enabled links, ordered by sort_order. Per-request dedup. */
+export const getNavLinks = cache(async (): Promise<NavLink[]> => {
+  const { data, error } = await supabase
+    .from("nav_links")
+    .select("*")
+    .eq("enabled", true)
+    .order("sort_order");
+  if (error) throw error;
+  return data as NavLink[];
+});
 
 /** Admin fetch — all links including disabled. */
 export async function getNavLinksAdmin(): Promise<NavLink[]> {
