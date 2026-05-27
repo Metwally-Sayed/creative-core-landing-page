@@ -1055,7 +1055,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
 
         {/* 2. Overview Bar */}
         <section ref={overviewRef} className="site-shell -mt-12 md:-mt-20 relative z-20 px-4 md:px-8 mb-20 md:mb-32">
-          <motion.div 
+          {/* <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={overviewInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             transition={{ duration: 0.7, delay: isMobile ? 0.2 : 3, ease: transitionEase }}
@@ -1075,7 +1075,7 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
                 <ArrowUpRight className="ms-3 size-4 md:size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </MagneticButton>
             </div>
-          </motion.div>
+          </motion.div> */}
         </section>
 
         {/* 3. Editorial Intro */}

@@ -22,11 +22,13 @@ import type { PageSectionDb } from "@/lib/page-data";
 import type { ProjectSummaryDb } from "@/lib/project-data";
 import type { FaqItemDb } from "@/lib/faq-data";
 import type { CreativeHeroConfig } from "@/lib/hero-types";
+import type { TagDb } from "@/lib/tags-data";
 
 interface Props {
   sections: PageSectionDb[];
   projects?: ProjectSummaryDb[];
   faqItems?: FaqItemDb[];
+  tags?: TagDb[];
   pageSlug?: string;
 }
 
@@ -53,6 +55,7 @@ export default async function SectionRenderer({
   sections,
   projects = [],
   faqItems = [],
+  tags = [],
   pageSlug,
 }: Props) {
   const locale = await getLocale();
@@ -110,7 +113,7 @@ export default async function SectionRenderer({
             );
 
           case "projects_grid":
-            return <Projects key={section.id} projects={projects} showHeader={pageSlug !== "work"} />;
+            return <Projects key={section.id} projects={projects} tags={tags} showHeader={pageSlug !== "work"} />;
 
           case "faq":
             return <FaqQuoteSection key={section.id} faqItems={faqItems} />;

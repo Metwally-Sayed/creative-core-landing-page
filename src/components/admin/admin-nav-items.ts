@@ -7,6 +7,7 @@ import {
   FileText,
   Settings,
   Menu,
+  Tag,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +36,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
   {
     label: "Content",
     items: [
+      { label: "Tags", href: "/admin/tags", icon: Tag },
       { label: "FAQ", href: "/admin/faq", icon: HelpCircle },
       { label: "Locations", href: "/admin/locations", icon: MapPin },
       { label: "Navigation", href: "/admin/nav", icon: Menu },

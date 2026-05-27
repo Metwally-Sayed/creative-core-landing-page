@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronUp, GripVertical, Pencil, Trash2, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, GripVertical, Pencil, Trash2, Plus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,6 +48,7 @@ import type {
   ProjectGalleryDb,
   ProjectFactDb,
 } from "@/lib/project-data";
+import type { TagDb } from "@/lib/tags-data";
 
 // ─── Editor item types ────────────────────────────────────────────────────────
 
@@ -782,14 +783,79 @@ function RelatedPanel({ currentId, allProjects, selectedIds, onChange }: {
   );
 }
 
+// ─── Tags multiselect ────────────────────────────────────────────────────────
+
+function TagsMultiSelect({
+  allTags,
+  selected,
+  onChange,
+}: {
+  allTags: TagDb[];
+  selected: string[];
+  onChange: (slugs: string[]) => void;
+}) {
+  function toggle(slug: string) {
+    onChange(
+      selected.includes(slug)
+        ? selected.filter((s) => s !== slug)
+        : [...selected, slug]
+    );
+  }
+
+  const selectedTags = allTags.filter((t) => selected.includes(t.slug));
+  const unselected = allTags.filter((t) => !selected.includes(t.slug));
+
+  return (
+    <div className="space-y-2">
+      {/* Selected chips */}
+      {selectedTags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedTags.map((tag) => (
+            <button
+              key={tag.slug}
+              type="button"
+              onClick={() => toggle(tag.slug)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--admin-navy-ink))] px-3 py-1 text-xs font-medium text-white"
+            >
+              {tag.title_en}
+              <X className="h-3 w-3 opacity-70" />
+            </button>
+          ))}
+        </div>
+      )}
+      {/* Available options */}
+      {unselected.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {unselected.map((tag) => (
+            <button
+              key={tag.slug}
+              type="button"
+              onClick={() => toggle(tag.slug)}
+              className="inline-flex items-center rounded-full border border-[hsl(var(--admin-border))] px-3 py-1 text-xs font-medium text-[hsl(var(--admin-text-muted))] hover:border-[hsl(var(--admin-navy-ink))] hover:text-[hsl(var(--admin-text))] transition-colors"
+            >
+              + {tag.title_en}
+            </button>
+          ))}
+        </div>
+      )}
+      {allTags.length === 0 && (
+        <p className="text-xs text-[hsl(var(--admin-text-muted))]">
+          No tags available. <a href="/admin/tags" className="underline">Create tags first.</a>
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Main editor ──────────────────────────────────────────────────────────────
 
 interface Props {
   project: ProjectFullDb;
   allProjects: ProjectSummaryDb[];
+  allTags: TagDb[];
 }
 
-export default function ProjectEditor({ project, allProjects }: Props) {
+export default function ProjectEditor({ project, allProjects, allTags }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [saveError, setSaveError] = useState("");
@@ -798,7 +864,7 @@ export default function ProjectEditor({ project, allProjects }: Props) {
   // ── English state ──────────────────────────────────────────────────────────
   const [title, setTitle] = useState(project.title);
   const [slug, setSlug] = useState(project.slug);
-  const [tagsRaw, setTagsRaw] = useState(project.tags.join(", "));
+  const [selectedTagSlugs, setSelectedTagSlugs] = useState<string[]>(project.tags);
   const [aspectRatio, setAspectRatio] = useState(project.aspect_ratio);
   const [coverImageUrl, setCoverImageUrl] = useState(project.cover_image_url);
   const [published, setPublished] = useState(project.published);
@@ -867,7 +933,7 @@ export default function ProjectEditor({ project, allProjects }: Props) {
 
     const input: ProjectFullInput = {
       title: title.trim(), slug: slug.trim(),
-      tags: tagsRaw.split(",").map((t) => t.trim()).filter(Boolean),
+      tags: selectedTagSlugs,
       aspect_ratio: aspectRatio, cover_image_url: coverImageUrl, published,
       service_type: project.service_type,
       work_filters: project.work_filters,
@@ -975,8 +1041,12 @@ export default function ProjectEditor({ project, allProjects }: Props) {
                 <Input value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} />
                 <p className="text-xs text-[hsl(var(--admin-text-muted))]">/projects/{slug || "…"}</p>
               </Field>
-              <Field label="Tags (comma-separated)">
-                <Input value={tagsRaw} onChange={(e) => setTagsRaw(e.target.value)} placeholder="Experiences, Branding" />
+              <Field label="Tags">
+                <TagsMultiSelect
+                  allTags={allTags}
+                  selected={selectedTagSlugs}
+                  onChange={setSelectedTagSlugs}
+                />
               </Field>
               <Field label="Aspect Ratio">
                 <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as typeof aspectRatio)}

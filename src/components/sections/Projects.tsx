@@ -1,16 +1,17 @@
 "use client";
 
 import { useRef, useState } from 'react';
-import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, LayoutGroup } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import LiquidCard from '@/components/LiquidCard';
 import { Link } from '@/i18n/navigation';
 import { useDirection } from '@/hooks/useDirection';
 import type { ProjectSummaryDb } from '@/lib/project-data';
+import type { TagDb } from '@/lib/tags-data';
 
 // Liquid blob card component
-function LiquidProjectCard({ project, index, locale }: { project: ProjectSummaryDb; index: number; locale: string }) {
+function LiquidProjectCard({ project, index, locale, allTags }: { project: ProjectSummaryDb; index: number; locale: string; allTags: TagDb[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -119,19 +120,29 @@ function LiquidProjectCard({ project, index, locale }: { project: ProjectSummary
         {(() => {
           const ar = locale === "ar" ? project.translations?.ar : undefined;
           const displayTitle = ar?.title ?? project.title;
-          const displayTags = ar?.tags ?? project.tags;
+          const tagBySlug = new Map(allTags.map((t) => [t.slug, t]));
+          const tagByTitle = new Map(allTags.map((t) => [t.title_en.toLowerCase(), t]));
+          const seenSlugs = new Set<string>();
+          const displayTags = project.tags
+            .map((raw) => {
+              const tag = tagBySlug.get(raw) ?? tagByTitle.get(raw.toLowerCase());
+              if (!tag || seenSlugs.has(tag.slug)) return null;
+              seenSlugs.add(tag.slug);
+              return locale === "ar" && tag.title_ar ? tag.title_ar : tag.title_en;
+            })
+            .filter((v): v is string => v !== null);
           return (
             <div className="space-y-2">
               <h3 className="text-lg md:text-xl font-serif leading-tight text-[hsl(var(--accent))] transition-opacity duration-300 group-hover:opacity-60">
                 {displayTitle}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {displayTags.map((tag, i) => (
+                {displayTags.map((label, i) => (
                   <span
                     key={i}
-                    className="cursor-pointer text-xs 0.14em] text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--secondary))]"
+                    className="text-xs text-[hsl(var(--muted-foreground))]"
                   >
-                    {tag}
+                    {label}
                   </span>
                 ))}
               </div>
@@ -143,25 +154,11 @@ function LiquidProjectCard({ project, index, locale }: { project: ProjectSummary
   );
 }
 
-const categories = ["All", "Branding", "3D interior design", "social media", "photography", "Marketing", "Content Creation"] as const;
-type Category = (typeof categories)[number];
-
-const categoryTranslationKeys: Record<Category, string> = {
-  All: "projectsFilterAll",
-  Branding: "projectsFilterBranding",
-  "3D interior design": "projectsFilter3D",
-  "social media": "projectsFilterSocialMedia",
-  photography: "projectsFilterPhotography",
-  // "Packaging & Print Design": "projectsFilterPackaging",
-  Marketing: "projectsFilterMarketing",
-  "Content Creation": "projectsFilterContentCreation",
-};
-
-export default function Projects({ projects, showHeader = true }: { projects: ProjectSummaryDb[]; showHeader?: boolean }) {
+export default function Projects({ projects, tags = [], showHeader = true }: { projects: ProjectSummaryDb[]; tags?: TagDb[]; showHeader?: boolean }) {
   const t = useTranslations("home");
   const locale = useLocale();
   const dir = useDirection();
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
+  const [activeSlug, setActiveSlug] = useState<string>("all");
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
 
@@ -177,9 +174,16 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
   const yUpPx = useMotionTemplate`${yUp}px`;
   const yDownPx = useMotionTemplate`${yDown}px`;
 
-  const filteredProjects = activeCategory === "All"
+  const filteredProjects = activeSlug === "all"
     ? projects
-    : projects.filter(p => p.tags.includes(activeCategory));
+    : (() => {
+        const activeTag = tags.find(t => t.slug === activeSlug);
+        if (!activeTag) return [];
+        const titleLower = activeTag.title_en.toLowerCase();
+        return projects.filter(p =>
+          p.tags.some(raw => raw === activeTag.slug || raw.toLowerCase() === titleLower)
+        );
+      })();
 
   const headingText = t("projectsTitle");
 
@@ -227,73 +231,96 @@ export default function Projects({ projects, showHeader = true }: { projects: Pr
 
             {/* Category Filters */}
             <div className="mb-16 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mb-20 lg:overflow-visible">
-              <div className="flex w-max gap-3 lg:w-auto lg:flex-wrap lg:gap-4">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className="group relative shrink-0 px-6 py-2 text-xs font-semibold uppercase st"
-                >
-                  <span className={`relative z-10 transition-colors duration-300 ${activeCategory === cat ? 'text-white' : 'text-accent hover:text-secondary'}`}>
-                    {t(categoryTranslationKeys[cat] as Parameters<typeof t>[0])}
-                  </span>
-                  {activeCategory === cat && (
-                    <motion.div
-                      layoutId="activeCat"
-                      className="absolute inset-0 bg-accent rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  {activeCategory !== cat && (
-                    <div className="absolute inset-0 border border-accent/10 rounded-full group-hover:border-accent/30 transition-colors" />
-                  )}
-                </button>
-              ))}
-              </div>
+              <LayoutGroup id="filter-tabs">
+                <div className="flex w-max gap-3 lg:w-auto lg:flex-wrap lg:gap-4">
+                  {[{ slug: "all", label: t("projectsFilterAll") }, ...tags.map(tag => ({
+                    slug: tag.slug,
+                    label: locale === "ar" && tag.title_ar ? tag.title_ar : tag.title_en,
+                  }))].map(({ slug, label }) => {
+                    const isActive = activeSlug === slug;
+                    return (
+                      <button
+                        key={slug}
+                        onClick={() => setActiveSlug(slug)}
+                        className="group relative shrink-0 overflow-hidden rounded-full px-6 py-2 text-xs font-semibold"
+                      >
+                        <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-accent group-hover:text-secondary'}`}>
+                          {label}
+                        </span>
+                        {isActive ? (
+                          <motion.div
+                            layoutId="activeCat"
+                            className="absolute inset-0 bg-accent"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 border border-accent/10 rounded-full group-hover:border-accent/30 transition-colors" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </LayoutGroup>
             </div>
           </>
         )}
 
-        {/* Masonry Grid with AnimatePresence */}
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-8 min-h-[600px]">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {filteredProjects.map((project, index) => {
-              const total = filteredProjects.length;
-              const lg1 = Math.ceil(total / 3);
-              const lg2 = lg1 + Math.ceil((total - lg1) / 2);
-              const md1 = Math.ceil(total / 2);
+        {/* Masonry Grid — controlled columns so parallax is always conflict-free */}
+        {(() => {
+          const total = filteredProjects.length;
+          if (total === 0) return null;
 
-              let parallaxClass = "will-change-transform break-inside-avoid mb-8 ";
-              if (index < md1) {
-                parallaxClass += "md:![transform:translateY(var(--y-up))] ";
-              } else {
-                parallaxClass += "md:![transform:translateY(var(--y-down))] ";
-              }
+          // Split items into N column arrays using sequential fill,
+          // matching what CSS columns does for equal-height items.
+          const makeCols = (n: number) => {
+            const perCol = Math.ceil(total / n);
+            return Array.from({ length: n }, (_, ci) =>
+              filteredProjects
+                .map((p, i) => ({ p, i }))
+                .filter(({ i }) => Math.floor(i / perCol) === ci)
+            );
+          };
 
-              if (index < lg1) {
-                parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-              } else if (index < lg2) {
-                parallaxClass += "lg:![transform:translateY(var(--y-down))]";
-              } else {
-                parallaxClass += "lg:![transform:translateY(var(--y-up))]";
-              }
+          // Parallax direction: even column index → up, odd → down
+          const colClass = (ci: number) =>
+            `flex flex-col gap-8 will-change-transform ${
+              ci % 2 === 0
+                ? "![transform:translateY(var(--y-up))]"
+                : "![transform:translateY(var(--y-down))]"
+            }`;
 
-              return (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className={parallaxClass}
-                >
-                  <LiquidProjectCard project={project} index={index} locale={locale} />
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
+          const renderCols = (cols: { p: typeof filteredProjects[0]; i: number }[][]) =>
+            cols.map((colItems, ci) => (
+              <div key={ci} className={colClass(ci)}>
+                {colItems.map(({ p, i }) => (
+                  <LiquidProjectCard key={p.id} project={p} index={i} locale={locale} allTags={tags} />
+                ))}
+              </div>
+            ));
+
+          return (
+            <div key={activeSlug} className="min-h-[600px]">
+              {/* Mobile — 1 column, original item order */}
+              <div className="flex flex-col gap-8 md:hidden">
+                {filteredProjects.map((p, i) => (
+                  <LiquidProjectCard key={p.id} project={p} index={i} locale={locale} allTags={tags} />
+                ))}
+              </div>
+
+              {/* md — 2 columns */}
+              <div className={`hidden gap-8 ${total >= 3 ? "md:grid lg:hidden" : "md:grid"} grid-cols-2`}>
+                {renderCols(makeCols(2))}
+              </div>
+
+              {/* lg — 3 columns (only when 3+ items) */}
+              {total >= 3 && (
+                <div className="hidden lg:grid grid-cols-3 gap-8">
+                  {renderCols(makeCols(3))}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* View All Button */}
         {/* <motion.div

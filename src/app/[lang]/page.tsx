@@ -1,6 +1,7 @@
 import { getPage } from "@/lib/page-data";
 import { getProjects } from "@/lib/project-data";
 import { getFaqItems } from "@/lib/faq-data";
+import { getTags } from "@/lib/tags-data";
 import SectionRenderer from "@/components/builder/SectionRenderer";
 import CreativeHero from "@/components/sections/CreativeHero";
 import Projects from "@/components/sections/Projects";
@@ -25,13 +26,14 @@ export default async function Home({
   if (homePage && homePage.sections.length > 0) {
     const needsProjects = homePage.sections.some((s) => s.type === "projects_grid");
     const needsFaq = homePage.sections.some((s) => s.type === "faq");
-    const [projects, faqItems] = await Promise.all([
+    const [projects, faqItems, tags] = await Promise.all([
       needsProjects ? getProjects() : Promise.resolve([]),
       needsFaq ? getFaqItems() : Promise.resolve([]),
+      needsProjects ? getTags() : Promise.resolve([]),
     ]);
     return (
       <div className="min-h-screen bg-transparent text-foreground">
-        <SectionRenderer sections={homePage.sections} projects={projects} faqItems={faqItems} />
+        <SectionRenderer sections={homePage.sections} projects={projects} faqItems={faqItems} tags={tags} />
       </div>
     );
   }
@@ -39,7 +41,7 @@ export default async function Home({
   // Fallback: static homepage if no home page in DB yet
   const t = await getTranslations("home");
   const tCommon = await getTranslations("common");
-  const [faqItems, projects] = await Promise.all([getFaqItems(), getProjects()]);
+  const [faqItems, projects, tags] = await Promise.all([getFaqItems(), getProjects(), getTags()]);
 
   const heroConfig: CreativeHeroConfig = {
     headline: `${t("heroHeadlineLine1")}\n${t("heroHeadlineLine2")}`,
@@ -53,7 +55,7 @@ export default async function Home({
     <div className="min-h-screen bg-transparent text-foreground">
       <main>
         <CreativeHero config={heroConfig} />
-        <Projects projects={projects} />
+        <Projects projects={projects} tags={tags} />
         <ProductSection />
         <FaqQuoteSection faqItems={faqItems} />
       </main>
