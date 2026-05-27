@@ -10,7 +10,7 @@ import FaqQuoteSection from "@/components/sections/FaqQuoteSection";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { CreativeHeroConfig } from "@/lib/hero-types";
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export default async function Home({
   params,

@@ -22,7 +22,7 @@ export const getNavLinks = unstable_cache(
     return data as NavLink[];
   },
   ["nav_links"],
-  { revalidate: 60, tags: ["nav_links"] }
+  { revalidate: false, tags: ["nav_links"] }
 );
 
 /** Admin fetch — all links including disabled. */

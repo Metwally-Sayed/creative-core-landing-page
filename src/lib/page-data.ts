@@ -129,7 +129,7 @@ export const getPages = unstable_cache(
     return data as PageSummaryDb[];
   },
   ["pages"],
-  { revalidate: 60, tags: ["pages"] }
+  { revalidate: false, tags: ["pages"] }
 );
 
 export const getPage = unstable_cache(
@@ -150,7 +150,7 @@ export const getPage = unstable_cache(
     return { ...row, sections: sections ?? [] } as PageFullDb;
   },
   ["pages"],
-  { revalidate: 60, tags: ["pages"] }
+  { revalidate: false, tags: ["pages"] }
 );
 
 export const getPageTranslations = unstable_cache(
@@ -165,7 +165,7 @@ export const getPageTranslations = unstable_cache(
     return { en: t.en ?? {}, ar: t.ar ?? {} };
   },
   ["pages"],
-  { revalidate: 60, tags: ["pages"] }
+  { revalidate: false, tags: ["pages"] }
 );
 
 export const getSettings = unstable_cache(
@@ -179,7 +179,7 @@ export const getSettings = unstable_cache(
     return data as SiteSettings;
   },
   ["settings"],
-  { revalidate: 60, tags: ["settings"] }
+  { revalidate: false, tags: ["settings"] }
 );
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
@@ -252,5 +252,5 @@ export const getDashboardStats = unstable_cache(
     };
   },
   ["dashboard"],
-  { revalidate: 30, tags: ["projects", "pages", "faq"] }
+  { revalidate: false, tags: ["projects", "pages", "faq"] }
 );

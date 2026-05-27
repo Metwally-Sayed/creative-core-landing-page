@@ -30,5 +30,5 @@ export const getFaqItems = unstable_cache(
     return data as FaqItemDb[];
   },
   ["faq"],
-  { revalidate: 60, tags: ["faq"] }
+  { revalidate: false, tags: ["faq"] }
 );

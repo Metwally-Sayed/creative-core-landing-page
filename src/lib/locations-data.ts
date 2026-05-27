@@ -23,5 +23,5 @@ export const getLocations = unstable_cache(
     return data as Location[];
   },
   ["locations"],
-  { revalidate: 60, tags: ["locations"] }
+  { revalidate: false, tags: ["locations"] }
 );

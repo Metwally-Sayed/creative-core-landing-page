@@ -20,5 +20,5 @@ export const getTags = unstable_cache(
     return data as TagDb[];
   },
   ["tags"],
-  { tags: ["tags"], revalidate: 3600 }
+  { tags: ["tags"], revalidate: false }
 );

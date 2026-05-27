@@ -6,7 +6,7 @@ import SectionRenderer from "@/components/builder/SectionRenderer";
 import type { Metadata } from "next";
 
 export const dynamicParams = true;
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateStaticParams() {
   const pages = await getPages();

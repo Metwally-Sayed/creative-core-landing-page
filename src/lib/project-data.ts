@@ -224,7 +224,7 @@ export const getProjects = unstable_cache(
     return data as ProjectSummaryDb[];
   },
   ["projects"],
-  { revalidate: 60, tags: ["projects"] }
+  { revalidate: false, tags: ["projects"] }
 );
 
 export const getProject = unstable_cache(
@@ -295,7 +295,7 @@ export const getProject = unstable_cache(
     } as ProjectFullDb;
   },
   ["projects"],
-  { revalidate: 60, tags: ["projects"] }
+  { revalidate: false, tags: ["projects"] }
 );
 
 export const getRelatedProjects = unstable_cache(
@@ -310,7 +310,7 @@ export const getRelatedProjects = unstable_cache(
     return data as ProjectSummaryDb[];
   },
   ["projects"],
-  { revalidate: 60, tags: ["projects"] }
+  { revalidate: false, tags: ["projects"] }
 );
 
 // ─── Mapper: DB types → legacy catalog types ─────────────────────────────────
