@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Plus, Upload, ArrowUpRight, FolderKanban, Image as ImageIcon, HelpCircle, FileText } from "lucide-react";
 import { getDashboardStats } from "@/lib/page-data";
 
+export const dynamic = "force-dynamic";
+
 function timeAgo(isoDate: string): string {
   const diff = Date.now() - new Date(isoDate).getTime();
   const mins = Math.floor(diff / 60_000);
