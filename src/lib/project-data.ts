@@ -39,6 +39,12 @@ export interface ProjectTranslationsAr {
   process?: Array<{ label?: string; description?: string }>;
 }
 
+export interface ProjectTranslations {
+  ar?: ProjectTranslationsAr;
+  /** Per-project logo shown in the site header on this project's public page. */
+  nav_logo_url?: string;
+}
+
 export interface ProjectSummaryDb {
   id: string;
   slug: string;
@@ -53,7 +59,7 @@ export interface ProjectSummaryDb {
   featured_aspect_ratio: string;
   inherit_theme_from_palette: boolean;
   theme_palette: ThemePalette;
-  translations: { ar?: ProjectTranslationsAr };
+  translations: ProjectTranslations;
 }
 
 export interface ProjectProcessDb {
@@ -205,7 +211,7 @@ export interface ProjectFullInput {
   overview: ProjectFactInput[];
   process: ProjectProcessInput[];
   related_ids: string[];
-  translations?: { ar?: ProjectTranslationsAr };
+  translations?: ProjectTranslations;
 }
 
 // ─── Public cached fetchers ───────────────────────────────────────────────────
@@ -388,5 +394,6 @@ export function dbFullToLegacy(db: ProjectFullDb, locale = "en"): ProjectDetail 
       label: isAr ? (p.translations?.ar?.label || p.label) : p.label,
       desc: isAr ? (p.translations?.ar?.description || p.description) : p.description,
     })),
+    navLogoUrl: db.translations?.nav_logo_url || undefined,
   };
 }

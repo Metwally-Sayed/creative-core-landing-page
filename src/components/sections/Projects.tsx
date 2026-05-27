@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate, LayoutGroup } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -71,7 +71,7 @@ function LiquidProjectCard({ project, index, locale, allTags }: { project: Proje
       <Link href={`/projects/${project.slug}`} className="block">
         <LiquidCard
           aspectRatio={aspectRatioClass}
-          className="mb-4 border border-white/70 bg-white/78 shadow-[0_18px_44px_rgba(30,52,86,0.1)]"
+          className="mb-3 border border-white/70 bg-white/78 shadow-[0_18px_44px_rgba(30,52,86,0.1)]"
         >
           <div ref={cardRef} className="absolute inset-0 overflow-hidden bg-white/70">
             <motion.img
@@ -185,6 +185,44 @@ export default function Projects({ projects, tags = [], showHeader = true }: { p
         );
       })();
 
+  // ── Infinite-scroll pagination ──────────────────────────────────────────────
+  // Page size = 6 → divides perfectly into the 3-column lg layout (2 per col),
+  // matching the photography-tab look. Each scroll-triggered load adds 6 more.
+  const PAGE_SIZE = 6;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Reset pagination whenever the user changes the filter tab.
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeSlug]);
+
+  const visibleProjects = filteredProjects.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredProjects.length;
+
+  // Observe the sentinel; when it enters the viewport, load the next page.
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((c) =>
+            Math.min(c + PAGE_SIZE, filteredProjects.length)
+          );
+        }
+      },
+      // Trigger 300px before the user actually reaches the bottom so the
+      // load feels seamless rather than a hard stop.
+      { rootMargin: "300px 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, filteredProjects.length]);
+
   const headingText = t("projectsTitle");
 
   return (
@@ -267,29 +305,67 @@ export default function Projects({ projects, tags = [], showHeader = true }: { p
 
         {/* Masonry Grid — controlled columns so parallax is always conflict-free */}
         {(() => {
-          const total = filteredProjects.length;
+          const total = visibleProjects.length;
           if (total === 0) return null;
 
-          // Split items into N column arrays using sequential fill,
-          // matching what CSS columns does for equal-height items.
+          // Use 4 lg columns when the full filtered set has 7+ items so the
+          // layout stays balanced regardless of how many pages have loaded.
+          // With 7–12 items: 4 cols → ~3/3/2/2 or 3/3/3/3 distributions.
+          // With ≤6 items (e.g. a small filter tab): 3 cols → 2/2/2.
+          const numLgCols: 3 | 4 = filteredProjects.length >= 7 ? 4 : 3;
+
+          // Distribute items into N columns by *estimated height* while preserving
+          // sequential reading order (items 0..k in col 0, k+1..m in col 1, etc).
+          // Each card's height ≈ image aspect-ratio + a constant title block.
+          // This keeps column bottoms roughly aligned even when aspect ratios vary
+          // and the item count doesn't divide evenly into N.
+          const TITLE_BLOCK = 0.28; // ~title + tags height, normalized to image width
+          const estHeight = (ar: ProjectSummaryDb["aspect_ratio"]) => {
+            // image height / image width
+            const ratio = ar === "portrait" ? 4 / 3 : ar === "landscape" ? 3 / 4 : 1;
+            return ratio + TITLE_BLOCK;
+          };
+
           const makeCols = (n: number) => {
-            const perCol = Math.ceil(total / n);
-            return Array.from({ length: n }, (_, ci) =>
-              filteredProjects
-                .map((p, i) => ({ p, i }))
-                .filter(({ i }) => Math.floor(i / perCol) === ci)
-            );
+            const heights = visibleProjects.map((p) => estHeight(p.aspect_ratio));
+            const totalH = heights.reduce((s, h) => s + h, 0);
+            const targetPerCol = totalH / n;
+
+            const cols: { p: typeof visibleProjects[0]; i: number }[][] =
+              Array.from({ length: n }, () => []);
+
+            let curCol = 0;
+            let cumulative = 0;
+            for (let i = 0; i < visibleProjects.length; i++) {
+              // Advance to the next column when crossing the running threshold,
+              // but only if we still have items left for the remaining columns
+              // (avoid leaving a column empty).
+              const itemsLeft = visibleProjects.length - i;
+              const colsLeft = n - curCol;
+              const mustAdvance = itemsLeft <= colsLeft - 1;
+              const wantAdvance =
+                curCol < n - 1 && cumulative >= targetPerCol * (curCol + 1);
+
+              if (mustAdvance || wantAdvance) {
+                curCol = Math.min(curCol + 1, n - 1);
+              }
+
+              cols[curCol].push({ p: visibleProjects[i], i });
+              cumulative += heights[i];
+            }
+
+            return cols;
           };
 
           // Parallax direction: even column index → up, odd → down
           const colClass = (ci: number) =>
-            `flex flex-col gap-8 will-change-transform ${
+            `flex flex-col gap-4 will-change-transform ${
               ci % 2 === 0
                 ? "![transform:translateY(var(--y-up))]"
                 : "![transform:translateY(var(--y-down))]"
             }`;
 
-          const renderCols = (cols: { p: typeof filteredProjects[0]; i: number }[][]) =>
+          const renderCols = (cols: { p: typeof visibleProjects[0]; i: number }[][]) =>
             cols.map((colItems, ci) => (
               <div key={ci} className={colClass(ci)}>
                 {colItems.map(({ p, i }) => (
@@ -301,26 +377,38 @@ export default function Projects({ projects, tags = [], showHeader = true }: { p
           return (
             <div key={activeSlug} className="min-h-[600px]">
               {/* Mobile — 1 column, original item order */}
-              <div className="flex flex-col gap-8 md:hidden">
-                {filteredProjects.map((p, i) => (
+              <div className="flex flex-col gap-4 md:hidden">
+                {visibleProjects.map((p, i) => (
                   <LiquidProjectCard key={p.id} project={p} index={i} locale={locale} allTags={tags} />
                 ))}
               </div>
 
               {/* md — 2 columns */}
-              <div className={`hidden gap-8 ${total >= 3 ? "md:grid lg:hidden" : "md:grid"} grid-cols-2`}>
+              <div className={`hidden gap-x-8 gap-y-4 ${total >= 3 ? "md:grid lg:hidden" : "md:grid"} grid-cols-2`}>
                 {renderCols(makeCols(2))}
               </div>
 
-              {/* lg — 3 columns (only when 3+ items) */}
+              {/* lg — 3 or 4 columns depending on how many items the active filter has */}
               {total >= 3 && (
-                <div className="hidden lg:grid grid-cols-3 gap-8">
-                  {renderCols(makeCols(3))}
+                <div className={`hidden lg:grid gap-x-8 gap-y-4 ${numLgCols === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
+                  {renderCols(makeCols(numLgCols))}
                 </div>
               )}
             </div>
           );
         })()}
+
+        {/* Infinite-scroll sentinel + loading indicator. The observer watches
+            this element; as it nears the viewport, the next 6 projects load. */}
+        {hasMore && (
+          <div
+            ref={sentinelRef}
+            className="mt-12 flex items-center justify-center py-8"
+            aria-hidden
+          >
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
+          </div>
+        )}
 
         {/* View All Button */}
         {/* <motion.div

@@ -9,6 +9,7 @@ import { useDirection } from "@/hooks/useDirection";
 import QuoteBriefDialog from "@/components/QuoteBriefDialog";
 import LocaleSwitch from "@/components/LocaleSwitch";
 import BrandLogo from "@/components/BrandLogo";
+import { useProjectNavLogo } from "@/contexts/ProjectNavLogoContext";
 import type { NavLink } from "@/lib/nav-data";
 import type { SiteSettings } from "@/lib/page-data";
 
@@ -65,6 +66,7 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
   const tFooter = useTranslations("footer");
   const locale = useLocale();
   const dir = useDirection();
+  const { navLogoUrl } = useProjectNavLogo();
 
   const menuItems = navLinks.map((link) => ({
     label: locale === "ar" && link.label_ar ? link.label_ar : link.label_en,
@@ -194,7 +196,16 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
           >
             <div className="pointer-events-auto mx-auto flex max-w-[1740px] items-center justify-between px-4 pt-4 lg:px-20 lg:pt-8 w-full">
               <Link href="/" aria-label={tHeader("homeAriaLabel")}>
-                <BrandLogo logoUrl={forceInvert ? (settings?.logo_dark_url || settings?.logo_url) : settings?.logo_url} siteName={settings?.site_name} inverted={forceInvert} neutral={useNeutralHeader} className="h-12 min-w-0 max-w-[9rem] lg:h-20 lg:max-w-[14rem]" />
+                <BrandLogo
+                  logoUrl={
+                    navLogoUrl ||
+                    (forceInvert ? (settings?.logo_dark_url || settings?.logo_url) : settings?.logo_url)
+                  }
+                  siteName={settings?.site_name}
+                  inverted={!navLogoUrl && forceInvert}
+                  neutral={!navLogoUrl && useNeutralHeader}
+                  className="h-12 min-w-0 max-w-[9rem] lg:h-20 lg:max-w-[14rem]"
+                />
               </Link>
 
               <div className="flex items-center gap-2 lg:gap-3">
@@ -357,7 +368,12 @@ export default function Header({ navLinks = [], settings }: { navLinks?: NavLink
                 className="absolute left-[7.2vw] top-[32%] hidden -translate-y-1/2 lg:block"
                 aria-label={tHeader("homeAriaLabel")}
               >
-                <BrandLogo logoUrl={settings?.logo_dark_url || settings?.logo_url} siteName={settings?.site_name} inverted className="opacity-[0.92] h-12 min-w-0 max-w-[10rem]" />
+                <BrandLogo
+                  logoUrl={navLogoUrl || settings?.logo_dark_url || settings?.logo_url}
+                  siteName={settings?.site_name}
+                  inverted={!navLogoUrl}
+                  className="opacity-[0.92] h-12 min-w-0 max-w-[10rem]"
+                />
               </Link>
 
               <motion.button

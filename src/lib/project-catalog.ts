@@ -80,6 +80,8 @@ export type ProjectDetail = ProjectSummary & {
   relatedIds: string[];
   colors?: ProjectColor[];
   process?: ProjectProcess[];
+  /** Custom logo to show in the site header when on this project's page. */
+  navLogoUrl?: string;
 };
 
 export const projects: ProjectSummary[] = [

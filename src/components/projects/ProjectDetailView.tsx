@@ -16,6 +16,7 @@ import { Link } from "@/i18n/navigation";
 import type { ProjectColor, ProjectDetail, ProjectSummary, ProjectSection } from "@/lib/project-catalog";
 import { COLOR_TOKENS, buildProjectThemeTokens } from "@/lib/project-theme";
 import LiquidCard from "@/components/LiquidCard";
+import { useProjectNavLogo } from "@/contexts/ProjectNavLogoContext";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -50,37 +51,159 @@ const EMPTY_COLORS: ProjectColor[] = [];
 function Preloader({ title, skip = false }: { title: string; skip?: boolean }) {
   const t = useTranslations("projectDetail");
   const [isVisible, setIsVisible] = useState(!skip);
+  const [progress, setProgress] = useState(0);
 
-  // The preloader lasts 2 seconds (desktop only — skipped on mobile for perf).
-  // `skip` flips after mount when the media query resolves, so we must
-  // explicitly hide here — otherwise the earlier state (isVisible=true) sticks.
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(false), skip ? 0 : 2000);
-    return () => clearTimeout(timer);
+    if (skip) { setIsVisible(false); return; }
+
+    let raf: number;
+    const start = performance.now();
+    const DURATION = 1500;
+
+    function tick(now: number) {
+      const p = Math.min((now - start) / DURATION, 1);
+      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      setProgress(eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    const timer = setTimeout(() => setIsVisible(false), 2000);
+    return () => { cancelAnimationFrame(raf); clearTimeout(timer); };
   }, [skip]);
+
+  const count = Math.floor(progress * 100);
+  const words = title.split(" ");
+  const hasArabic = isArabicText(title);
 
   return (
     <AnimatePresence>
       {isVisible && (
+        // Outer panel slides out; inner content moves at a slightly slower
+        // rate so the title appears to "stay behind" for a split second —
+        // a subtle parallax that adds depth to the curtain-rise exit.
         <motion.div
           key="preloader"
-          initial={{ y: 0 }}
           exit={{ y: "-100%" }}
-          transition={{ duration: 1.2, ease: transitionEase }}
-          className="fixed inset-0 z-100 bg-accent flex flex-col items-center justify-center text-white overflow-hidden pointer-events-none"
+          transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-100 pointer-events-none overflow-hidden flex flex-col"
+          style={{ background: "hsl(var(--accent))" }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
+          {/* ── Subtle vignette — deepens the corners without adding noise ── */}
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.22) 100%)",
+            }}
+          />
+
+          {/* ── Inner content — rides up fractionally slower (parallax) ───── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 0.8, ease: transitionEase }}
-            className="text-center"
+            exit={{ y: "-6%" }}
+            transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
+            className="relative z-10 flex flex-col h-full"
           >
-            <p className="eyebrow text-[hsl(var(--accent-foreground))/60] mb-6">{t("loadingCaseStudy")}</p>
-            <h1 className="font-serif text-5xl md:text-7xl overflow-hidden text-[hsl(var(--accent-foreground))]">
-              <span className="block">{title}</span>
-            </h1>
+            {/* Top bar */}
+            <div className="flex justify-between items-center px-7 md:px-16 pt-7 md:pt-12">
+              <motion.span
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 0.4, y: 0 }}
+                transition={{ delay: 0.05, duration: 0.7, ease: transitionEase }}
+                className="text-[0.58rem] md:text-[0.65rem] tracking-[0.28em] uppercase text-white"
+              >
+                {t("loadingCaseStudy")}
+              </motion.span>
+
+              {/* Small counter top-right */}
+              <motion.span
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 0.4, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.6, ease: transitionEase }}
+                className="font-serif text-xs md:text-sm text-white tabular-nums"
+              >
+                {String(count).padStart(3, "0")}
+              </motion.span>
+            </div>
+
+            {/* ── Core: title + inline progress ─────────────────────────────
+                 Everything is grouped here so the vertical rhythm is tight
+                 and the blank space above / below feels intentional. */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-10 md:gap-12 px-6 md:px-20">
+
+              {/* Title */}
+              {hasArabic ? (
+                <motion.h1
+                  dir="rtl"
+                  initial={{ opacity: 0, y: 32 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 1.0, ease: transitionEase }}
+                  className="font-serif text-white text-center leading-[0.88] tracking-tight"
+                  style={{ fontSize: "clamp(2.4rem, 7.5vw, 7.5rem)" }}
+                >
+                  {title}
+                </motion.h1>
+              ) : (
+                <h1
+                  className="font-serif text-white text-center leading-[0.88] tracking-tight"
+                  style={{ fontSize: "clamp(2.4rem, 7.5vw, 7.5rem)" }}
+                >
+                  {words.map((word, i) => (
+                    <span
+                      key={i}
+                      className="inline-block overflow-hidden"
+                      style={{ marginInline: "0.14em" }}
+                    >
+                      <motion.span
+                        className="inline-block"
+                        initial={{ y: "110%" }}
+                        animate={{ y: "0%" }}
+                        transition={{
+                          delay: 0.15 + i * 0.1,
+                          duration: 1.05,
+                          ease: transitionEase,
+                        }}
+                      >
+                        {word}
+                      </motion.span>
+                    </span>
+                  ))}
+                </h1>
+              )}
+
+              {/* Progress group — number + bar, visually linked */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="flex flex-col items-center gap-3 w-full max-w-xs md:max-w-sm"
+              >
+                {/* Percentage number — mid-size, subdued */}
+                <span
+                  className="font-serif text-white/30 tabular-nums leading-none select-none"
+                  style={{ fontSize: "clamp(0.75rem, 1.5vw, 1rem)" }}
+                >
+                  {count}%
+                </span>
+
+                {/* Progress track */}
+                <div className="w-full h-px bg-white/12 relative overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 w-full rounded-full"
+                    style={{
+                      background: "hsl(var(--secondary))",
+                      scaleX: progress,
+                      transformOrigin: "left",
+                    }}
+                  />
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Bottom spacer — keeps the group from sitting at the exact
+                mathematical center (slightly above feels more deliberate). */}
+            <div className="pb-12 md:pb-16" />
           </motion.div>
         </motion.div>
       )}
@@ -847,7 +970,7 @@ function ProjectCinematicHero({
         >
           <div
             className="relative w-full"
-            style={{ aspectRatio: "3 / 1", opacity: isMobile ? 0.45 : 0.55 }}
+            style={{ aspectRatio: "3 / 1", opacity: 1}}
           >
             <Image
               src={project.heroImage}
@@ -965,6 +1088,14 @@ export default function ProjectDetailView({ project, relatedProjects }: ProjectD
   const projectThemeColors = project.colors ?? EMPTY_COLORS;
   const projectColors = project.colors?.length ? project.colors : DEFAULT_COLORS;
   const projectProcess = project.process?.length ? project.process : DEFAULT_PROCESS_EN;
+
+  // Push the project-specific nav logo into the shared Header via context.
+  // Clears automatically when the user navigates away from this project page.
+  const { setNavLogoUrl } = useProjectNavLogo();
+  useEffect(() => {
+    setNavLogoUrl(project.navLogoUrl ?? null);
+    return () => setNavLogoUrl(null);
+  }, [project.navLogoUrl, setNavLogoUrl]);
 
   // Mobile gets stripped-down effects — blur/mix-blend/parallax tank perf on phones.
   const [isMobile, setIsMobile] = useState(false);

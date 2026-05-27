@@ -18,6 +18,7 @@ import { getSettings } from "@/lib/page-data";
 import { getNavLinks } from "@/lib/nav-data";
 import LenisProvider from "@/components/ui/LenisProvider";
 import PageTransition from "@/components/ui/PageTransition";
+import { ProjectNavLogoProvider } from "@/contexts/ProjectNavLogoContext";
 import "../globals.css";
 
 const inter = Inter({
@@ -82,23 +83,25 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full">
         <NextIntlClientProvider messages={messages} locale={lang}>
-          <LenisProvider>
-            <Suspense fallback={null}>
-              <PageLoadingBar />
-            </Suspense>
-            <div aria-hidden className="site-ambient fixed inset-0 -z-10 overflow-hidden" />
-            <div className="relative z-10 flex min-h-full flex-col">
-              <Header navLinks={navLinks} settings={settings} />
-              <main className="flex-1 flex flex-col">
-                <AnimatePresence mode="wait">
-                  <PageTransition>
-                    {children}
-                  </PageTransition>
-                </AnimatePresence>
-              </main>
-              <Footer locations={locations} settings={settings} />
-            </div>
-          </LenisProvider>
+          <ProjectNavLogoProvider>
+            <LenisProvider>
+              <Suspense fallback={null}>
+                <PageLoadingBar />
+              </Suspense>
+              <div aria-hidden className="site-ambient fixed inset-0 -z-10 overflow-hidden" />
+              <div className="relative z-10 flex min-h-full flex-col">
+                <Header navLinks={navLinks} settings={settings} />
+                <main className="flex-1 flex flex-col">
+                  <AnimatePresence mode="wait">
+                    <PageTransition>
+                      {children}
+                    </PageTransition>
+                  </AnimatePresence>
+                </main>
+                <Footer locations={locations} settings={settings} />
+              </div>
+            </LenisProvider>
+          </ProjectNavLogoProvider>
         </NextIntlClientProvider>
       </body>
     </html>

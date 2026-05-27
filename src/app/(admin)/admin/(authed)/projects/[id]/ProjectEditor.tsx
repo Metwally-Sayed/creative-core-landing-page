@@ -906,6 +906,9 @@ export default function ProjectEditor({ project, allProjects, allTags }: Props) 
   const [overviewFacts, setOverviewFacts] = useState<EditorFact[]>(project.overview.map((o) => ({ ...o, _id: o.id || factId() })));
   const [relatedIds, setRelatedIds] = useState(project.related_ids);
 
+  // ── Nav logo (header logo override for this project's public page) ────────
+  const [navLogoUrl, setNavLogoUrl] = useState(project.translations?.nav_logo_url ?? "");
+
   // ── Arabic translation state ───────────────────────────────────────────────
   const projectAr = project.translations?.ar ?? {};
   const [arTitle, setArTitle] = useState(projectAr.title ?? "");
@@ -958,6 +961,7 @@ export default function ProjectEditor({ project, allProjects, allTags }: Props) 
       process: [],
       related_ids: relatedIds,
       translations: {
+        nav_logo_url: navLogoUrl.trim() || undefined,
         ar: {
           title: arTitle.trim() || undefined,
           hero_label: arHeroLabel.trim() || undefined,
@@ -1058,6 +1062,15 @@ export default function ProjectEditor({ project, allProjects, allTags }: Props) 
               </Field>
               <Field label="Cover Image">
                 <ImageField value={coverImageUrl} onChange={setCoverImageUrl} label="Cover" />
+              </Field>
+              <Field label="Header Logo (optional)">
+                <ImageField value={navLogoUrl} onChange={setNavLogoUrl} label="Nav Logo" />
+                <p className="text-xs text-[hsl(var(--admin-text-muted))] mt-1">
+                  Custom logo shown in the site header on this project&apos;s public page. Replaces the
+                  default site logo for that page only. Upload the version that works on the hero
+                  background color (usually a version designed for dark or light backgrounds, depending
+                  on this project&apos;s hero). Leave blank to use the default site logo.
+                </p>
               </Field>
               <div className="flex items-center gap-3">
                 <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4" />
